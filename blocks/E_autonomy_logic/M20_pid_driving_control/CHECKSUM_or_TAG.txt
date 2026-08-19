@@ -1,0 +1,5 @@
+M20 complete checkpoint
+SHA-256 manifest (source snapshot at PPT generation time)
+db91b84cd4878feee3e922ba393db7340927ec2d6312abefd115f6d329dcc4b4  agv_ws/src/agv_control/agv_control/pid_controller.py
+8b0e45a5b827fd5bba3738ddc61b5d0a79bbadb15fe50b8a8bec6c3ead61aacf  agv_ws/src/agv_control/setup.py
+cfcd67d14615fb265b9fa97f37531de230093b4f197615ee91d4980953beae43  agv_ws/src/agv_bringup/config/mission.yaml

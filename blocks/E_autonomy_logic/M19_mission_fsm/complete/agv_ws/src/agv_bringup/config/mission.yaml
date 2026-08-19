@@ -1,0 +1,12 @@
+mission_manager:
+  ros__parameters:
+    use_sim_time: true
+    stop_distance: 0.50
+    search_speed: 0.25
+    approach_speed: 0.15
+    image_center_x: 320
+safety_controller:
+  ros__parameters:
+    use_sim_time: true
+    stop_distance: 0.50
+    front_half_angle_deg: 15.0

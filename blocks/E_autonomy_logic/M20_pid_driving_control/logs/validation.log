@@ -1,0 +1,12 @@
+agv_control cmd_test_node
+agv_control counter_monitor
+agv_control counter_publisher
+agv_control pid_controller
+agv_control safety_controller
+agv_control velocity_monitor
+10:        self.declare_parameter('kp_angular', 0.004)
+11:        self.declare_parameter('max_linear_speed', 0.25)
+12:        self.declare_parameter('max_angular_speed', 0.8)
+13:        self.publisher = self.create_publisher(Twist, '/cmd_vel_raw', 10)
+18:        command.linear.x = min(max(error.linear.x, 0.0), self.get_parameter('max_linear_speed').value)
+19:        command.angular.z = max(min(error.angular.z * self.get_parameter('kp_angular').value, self.get_parameter('max_angular_speed').value), -self.get_parameter('max_angular_speed').value)

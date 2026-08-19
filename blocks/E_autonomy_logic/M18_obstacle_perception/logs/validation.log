@@ -1,0 +1,13 @@
+agv_control cmd_test_node
+agv_control counter_monitor
+agv_control counter_publisher
+agv_control pid_controller
+agv_control safety_controller
+agv_control velocity_monitor
+9:    """Pass a desired command through unless an obstacle is within stop_distance."""
+12:        self.declare_parameter('stop_distance', 0.50)
+13:        self.declare_parameter('front_half_angle_deg', 15.0)
+16:        self.create_subscription(Twist, '/cmd_vel_raw', self.command_callback, 10)
+17:        self.publisher = self.create_publisher(Twist, '/cmd_vel', 10)
+20:        limit = math.radians(self.get_parameter('front_half_angle_deg').value)
+27:        if self.obstacle_distance >= self.get_parameter('stop_distance').value or command.linear.x <= 0.0:

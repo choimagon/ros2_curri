@@ -1,0 +1,6 @@
+M02 complete checkpoint
+SHA-256 manifest (source snapshot at PPT generation time)
+b63ccab201dc2fa2db9512b61ea0e7b7beb119993e099963f601f7aa13e901e5  agv_ws/src/agv_control/package.xml
+8b0e45a5b827fd5bba3738ddc61b5d0a79bbadb15fe50b8a8bec6c3ead61aacf  agv_ws/src/agv_control/setup.py
+c888b7bdb3b6171ad87db0cf75875b689737222bdb868560015fc988b2514c62  agv_ws/src/agv_cpp_examples/CMakeLists.txt
+86f72d8701e04f6de19382b9a6c8d31cf1d3c8040d90f5eddd42f98774979142  agv_ws/src/agv_cpp_examples/src/status_publisher.cpp

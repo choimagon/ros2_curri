@@ -1,0 +1,4 @@
+M09 complete checkpoint
+SHA-256 manifest (source snapshot at PPT generation time)
+49e5aff504250a5301e7286bc3b9045b4bf2342fa7b7de555f3fd4c4bda109c1  agv_ws/src/agv_gazebo/models/agv/model.sdf
+f9a9ce01dadb602ae822138660a9b4e66d1f0f6fa4cb5f453fb2eb64cc381737  agv_ws/src/agv_control/agv_control/cmd_test_node.py

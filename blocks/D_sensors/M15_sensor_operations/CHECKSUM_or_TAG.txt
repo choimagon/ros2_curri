@@ -1,0 +1,6 @@
+M15 complete checkpoint
+SHA-256 manifest (source snapshot at PPT generation time)
+b36919405fae9a836ab2e7bb6c36fdc3980df46b7f21aa9d8e4da71b690e789d  agv_ws/src/agv_bringup/config/sensors.yaml
+f11c8fff1f6af61939b4644c67af67d188194883a2d00c8c3a2655c1a6ec3290  agv_ws/src/agv_gazebo/config/bridge.yaml
+7fbac06026887eeb9320395e58d14b4f8001b458f168b47a8342279a9c623bbe  agv_ws/src/agv_sensors/agv_sensors/lidar_processor.py
+f995a1598aea96bb52147f4744b103974fb76bc710414b139429f72a95abfc92  agv_ws/src/agv_sensors/agv_sensors/imu_monitor.py

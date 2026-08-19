@@ -1,0 +1,5 @@
+/opt/ros/jazzy
+7:    Fixed Frame: base_link
+11:      Class: rviz_default_plugins/RobotModel
+28:      Name: RobotModel
+55:      Target Frame: <Fixed Frame>

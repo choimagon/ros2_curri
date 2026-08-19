@@ -1,0 +1,7 @@
+M03 complete checkpoint
+SHA-256 manifest (source snapshot at PPT generation time)
+459d9ef7d1a8a72e6951a2204acaf31226031af55f8510b00bc0e0045a09274b  agv_ws/src/agv_control/agv_control/counter_publisher.py
+d1a0c0d027162eeaeded79a92f40f62f8dbeff2db1d35e8e1b3bd4e14b711da9  agv_ws/src/agv_control/agv_control/counter_monitor.py
+f9a9ce01dadb602ae822138660a9b4e66d1f0f6fa4cb5f453fb2eb64cc381737  agv_ws/src/agv_control/agv_control/cmd_test_node.py
+b998b4e1fe9ba74606cccb8912c82e4853221ba656a290a904850757f4378cec  agv_ws/src/agv_control/agv_control/velocity_monitor.py
+8b0e45a5b827fd5bba3738ddc61b5d0a79bbadb15fe50b8a8bec6c3ead61aacf  agv_ws/src/agv_control/setup.py

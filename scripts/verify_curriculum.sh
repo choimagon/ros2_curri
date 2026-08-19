@@ -6,9 +6,26 @@ root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 missing=0
 
 for module in $(seq -w 1 22); do
-  guide=$(find "${root_dir}/blocks" -path "*/M${module}_*/README.md" -print -quit)
+  # blocks/<block>/MXX_module/README.md만 찾는다. complete/starter의 README는 제외한다.
+  guide=$(find "${root_dir}/blocks" -mindepth 3 -maxdepth 3 -path "*/M${module}_*/README.md" -print -quit)
   if [ -n "${guide}" ]; then
     printf 'OK      M%s %s\n' "${module}" "${guide#${root_dir}/}"
+    module_dir="$(dirname "${guide}")"
+    deck=$(find "${module_dir}" -maxdepth 1 -type f -name "M${module}_*.pptx" -print -quit)
+    for artifact in starter/README.md complete/README.md screenshots/validation_terminal.png logs/validation.log CHECKSUM_or_TAG.txt; do
+      if [ -f "${module_dir}/${artifact}" ]; then
+        printf 'OK      M%s %s\n' "${module}" "${artifact}"
+      else
+        printf 'MISSING M%s %s\n' "${module}" "${artifact}"
+        missing=1
+      fi
+    done
+    if [ -n "${deck}" ]; then
+      printf 'OK      M%s PPTX %s\n' "${module}" "${deck##*/}"
+    else
+      printf 'MISSING M%s module PPTX\n' "${module}"
+      missing=1
+    fi
   else
     printf 'MISSING M%s guide\n' "${module}"
     missing=1
@@ -17,6 +34,8 @@ done
 
 for file in \
   docs/BEGINNER_FILE_MAKING_GUIDE.md \
+  docs/PPT_FOLLOW_ALONG_DELIVERY.md \
+  tools/create_module_presentations.py \
   agv_ws/src/agv_cpp_examples/CMakeLists.txt \
   agv_ws/src/agv_cpp_examples/package.xml \
   agv_ws/src/agv_cpp_examples/src/status_publisher.cpp \

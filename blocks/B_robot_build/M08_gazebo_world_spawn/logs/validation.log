@@ -1,0 +1,5 @@
+Valid.
+
+--- World model URI ---
+2:<sdf version="1.10"><world name="warehouse">
+10:  <include><uri>model://agv</uri><name>agv</name><pose>0 0 0.08 0 0 0</pose></include>

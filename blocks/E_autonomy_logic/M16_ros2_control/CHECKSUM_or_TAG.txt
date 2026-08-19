@@ -1,0 +1,4 @@
+M16 complete checkpoint
+SHA-256 manifest (source snapshot at PPT generation time)
+58551473f763c737f17904f58bde98201023583ef7e06d64d0c5229019830b3e  agv_ws/src/agv_control/config/controllers.yaml
+f5e8a250a76b6b11ab3f027a531e74482e1a0d2487169cc04f85da12c1006c79  agv_ws/src/agv_description/urdf/agv.urdf.xacro

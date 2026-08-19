@@ -14,7 +14,7 @@
 | 경로 | 용도 |
 | --- | --- |
 | `docs/` | ROS 2·Gazebo 설치 및 전체 검증 안내 |
-| `blocks/` | A–F 교육 구간별 README, 명령어 해설·설정값·구현 결과, 실제 실행 캡처, 발표 자료 |
+| `blocks/` | A–F 교육 구간과 M01–M22별 README, Starter/Complete, 실제 검증 로그·캡처, 따라 하기 PPT |
 | `agv_ws/` | 빌드하여 실행하는 AGV ROS 2 패키지 소스 |
 | `scripts/` | 설치·커리큘럼 상태를 확인하는 점검 스크립트 |
 | `tools/` | Block별 실행 캡처와 PPTX를 다시 생성하는 도구 |
@@ -29,6 +29,29 @@
 - 코드·URDF/SDF/YAML이 구현하는 구조와 실행 뒤 확인할 결과
 
 Block B와 C에는 실제 실행한 Gazebo AGV 화면과 RViz AGV·센서 frame 화면도 각 폴더의 `captures/`와 PPTX에 포함했습니다.
+
+## 따라 하기 PPT 사용법
+
+제작 기준은 저장소 루트의 `ROS2_Gazebo_AGV_따라하기형_PPT_제작_가이드.docx`이며, 가이드 반영 사항은 [PPT 배포 구조](docs/PPT_FOLLOW_ALONG_DELIVERY.md)에 정리했습니다. Block 요약 자료와 별도로 각 M01–M22 폴더에 독립 실행용 PPTX가 있습니다. 각 모듈 폴더는 다음 구조를 공통으로 사용합니다.
+
+```text
+MXX_module/
+├── MXX_*.pptx                 # 강의·실습용 따라 하기 PPT
+├── starter/                   # 시작 상태와 선행 조건
+├── complete/                  # PPT에서 만든 핵심 파일 snapshot
+├── screenshots/               # 실제 validation terminal / GUI 캡처
+├── logs/                      # 실제 검증 명령 출력
+└── CHECKSUM_or_TAG.txt        # Complete source SHA-256 manifest
+```
+
+| Block | 모듈별 PPT 폴더 |
+| --- | --- |
+| A — ROS 2 기초 | [M01–M04](blocks/A_ros2_basics/) |
+| B — 로봇 제작 | [M05–M08](blocks/B_robot_build/) |
+| C — 주행과 시각화 | [M09–M11](blocks/C_drive_visualization/) |
+| D — 센서 | [M12–M15](blocks/D_sensors/) |
+| E — 제어·인지·미션 | [M16–M20](blocks/E_autonomy_logic/) |
+| F — 통합 | [M21–M22](blocks/F_integration/) |
 
 ## 커리큘럼 순서
 

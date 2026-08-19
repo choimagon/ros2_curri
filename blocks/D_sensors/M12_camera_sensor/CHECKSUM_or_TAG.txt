@@ -1,0 +1,5 @@
+M12 complete checkpoint
+SHA-256 manifest (source snapshot at PPT generation time)
+49e5aff504250a5301e7286bc3b9045b4bf2342fa7b7de555f3fd4c4bda109c1  agv_ws/src/agv_gazebo/models/agv/model.sdf
+f11c8fff1f6af61939b4644c67af67d188194883a2d00c8c3a2655c1a6ec3290  agv_ws/src/agv_gazebo/config/bridge.yaml
+08bda923d515c3d392cbbfb3d496e440adae089790a8056fe2850ff41b05bb97  agv_ws/src/agv_vision/agv_vision/yolo_node.py

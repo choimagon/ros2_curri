@@ -1,0 +1,13 @@
+lidar_processor:
+  ros__parameters:
+    use_sim_time: true
+    front_half_angle_deg: 15.0
+imu_monitor:
+  ros__parameters:
+    use_sim_time: true
+
+--- QoS source ---
+src/agv_sensors/agv_sensors/lidar_processor.py:4:from rclpy.qos import qos_profile_sensor_data
+src/agv_sensors/agv_sensors/lidar_processor.py:13:        self.subscription = self.create_subscription(LaserScan, '/scan', self.callback, qos_profile_sensor_data)
+src/agv_sensors/agv_sensors/imu_monitor.py:3:from rclpy.qos import qos_profile_sensor_data
+src/agv_sensors/agv_sensors/imu_monitor.py:10:        self.create_subscription(Imu, '/imu/data', self.callback, qos_profile_sensor_data)

@@ -1,0 +1,1 @@
+21:    <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive"><left_joint>left_wheel_joint</left_joint><right_joint>right_wheel_joint</right_joint><wheel_separation>0.38</wheel_separation><wheel_radius>0.08</wheel_radius><topic>/cmd_vel</topic><odom_topic>/odom</odom_topic><frame_id>odom</frame_id><child_frame_id>base_link</child_frame_id></plugin>

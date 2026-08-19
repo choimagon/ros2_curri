@@ -1,0 +1,3 @@
+M01 complete checkpoint
+SHA-256 manifest (source snapshot at PPT generation time)
+No user source file: ROS 2 built-in demo module.

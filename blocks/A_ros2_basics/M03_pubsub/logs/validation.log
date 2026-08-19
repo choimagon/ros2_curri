@@ -1,0 +1,16 @@
+agv_control cmd_test_node
+agv_control counter_monitor
+agv_control counter_publisher
+agv_control pid_controller
+agv_control safety_controller
+agv_control velocity_monitor
+# This expresses velocity in free space broken into its linear and angular parts.
+
+Vector3  linear
+	float64 x
+	float64 y
+	float64 z
+Vector3  angular
+	float64 x
+	float64 y
+	float64 z

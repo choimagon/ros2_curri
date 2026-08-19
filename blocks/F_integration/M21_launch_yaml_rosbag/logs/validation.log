@@ -1,0 +1,41 @@
+Arguments (pass arguments as '<name>:=<value>'):
+
+    'rviz':
+        Start RViz2
+        (default: 'true')
+
+    'gz_args':
+        Arguments to be passed to Gazebo Sim
+        (default: '')
+
+    'gz_version':
+        Gazebo Sim's major version
+        (default: '8')
+
+    'ign_args':
+        Deprecated: Arguments to be passed to Gazebo Sim
+        (default: '')
+
+    'ign_version':
+        Deprecated: Gazebo Sim's major version
+        (default: '')
+
+    'debugger':
+        Run in Debugger
+        (default: 'false')
+
+    'debug_env':
+        Debug environment variables
+        (default: 'false')
+
+    'on_exit_shutdown':
+        Shutdown on gz-sim exit
+        (default: 'false')
+
+--- config files ---
+src/agv_bringup/config/mission.yaml
+src/agv_bringup/config/robot.yaml
+src/agv_bringup/config/sensors.yaml
+src/agv_bringup/config/vision.yaml
+src/agv_control/config/controllers.yaml
+src/agv_gazebo/config/bridge.yaml

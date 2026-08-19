@@ -1,0 +1,19 @@
+std_msgs/Header header
+	builtin_interfaces/Time stamp
+		int32 sec
+		uint32 nanosec
+	string frame_id
+string class_name
+float32 confidence
+int32 center_x
+int32 center_y
+int32 width
+int32 height
+float32 estimated_distance
+agv_vision yolo_node
+yolo_node:
+  ros__parameters:
+    use_sim_time: true
+    enable_yolo: false
+    model_path: yolo11n.pt
+    confidence_threshold: 0.50

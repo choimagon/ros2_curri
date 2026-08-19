@@ -1,0 +1,4 @@
+M10 complete checkpoint
+SHA-256 manifest (source snapshot at PPT generation time)
+f11c8fff1f6af61939b4644c67af67d188194883a2d00c8c3a2655c1a6ec3290  agv_ws/src/agv_gazebo/config/bridge.yaml
+b30affd0ac4a1208db254d0abacee056c5967c1fc4e199893a86c12f66f17dd5  agv_ws/src/agv_gazebo/launch/gazebo.launch.py

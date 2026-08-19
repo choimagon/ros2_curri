@@ -1,0 +1,7 @@
+M05 complete checkpoint
+SHA-256 manifest (source snapshot at PPT generation time)
+f5e8a250a76b6b11ab3f027a531e74482e1a0d2487169cc04f85da12c1006c79  agv_ws/src/agv_description/urdf/agv.urdf.xacro
+72eaeddc002608af5952757aad4fb70f6a8f4fc4dd9c589fd993154b59d5a164  agv_ws/src/agv_description/urdf/common.xacro
+c9da9efce08a45ba1eed3eb053ff7304b8024ad1a3c0dafefb6e0066807cc2ed  agv_ws/src/agv_description/urdf/wheels.xacro
+9523c0f75f0f141e29275bff307c08e5c0ddfdcfcce5048290b12089a5ec65fc  agv_ws/src/agv_description/urdf/sensors.xacro
+cf5ae3da2371b94c5eaa23a8b0283620718550813708e5cd72ed9d250069bd0d  agv_ws/src/agv_description/launch/display.launch.py
