@@ -17,7 +17,7 @@
 | `blocks/` | A–F 교육 구간과 M01–M22별 README, Starter/Complete, 실제 검증 로그·캡처, 따라 하기 PPT |
 | `agv_ws/` | 빌드하여 실행하는 AGV ROS 2 패키지 소스 |
 | `scripts/` | 설치·커리큘럼 상태를 확인하는 점검 스크립트 |
-| `tools/` | Block별 실행 캡처와 PPTX를 다시 생성하는 도구 |
+| `tools/` | M01–M22 따라 하기 PPT와 실제 검증 캡처를 다시 생성하는 도구 |
 
 처음 ROS 2 파일을 만드는 사람은 [Python·C++·URDF/Xacro·SDF·YAML·launch 파일 가이드](docs/BEGINNER_FILE_MAKING_GUIDE.md)를 먼저 읽습니다. 이 저장소에는 설명용으로 실제 실행 가능한 C++ 패키지 `agv_cpp_examples`도 포함되어 있습니다.
 
@@ -28,11 +28,11 @@
 - 명령어가 실제로 하는 일과 바꿔 볼 수 있는 parameter/설정값
 - 코드·URDF/SDF/YAML이 구현하는 구조와 실행 뒤 확인할 결과
 
-Block B와 C에는 실제 실행한 Gazebo AGV 화면과 RViz AGV·센서 frame 화면도 각 폴더의 `captures/`와 PPTX에 포함했습니다.
+M08에는 실제 Gazebo AGV 화면, M11에는 실제 RViz AGV·센서 frame 화면을 각 모듈의 `screenshots/`와 PPTX에 포함했습니다.
 
 ## 따라 하기 PPT 사용법
 
-제작 기준은 저장소 루트의 `ROS2_Gazebo_AGV_따라하기형_PPT_제작_가이드.docx`이며, 가이드 반영 사항은 [PPT 배포 구조](docs/PPT_FOLLOW_ALONG_DELIVERY.md)에 정리했습니다. Block 요약 자료와 별도로 각 M01–M22 폴더에 독립 실행용 PPTX가 있습니다. 각 모듈 폴더는 다음 구조를 공통으로 사용합니다.
+제작 기준은 저장소 루트의 `ROS2_Gazebo_AGV_따라하기형_PPT_제작_가이드.docx`이며, 가이드 반영 사항은 [PPT 배포 구조](docs/PPT_FOLLOW_ALONG_DELIVERY.md)에 정리했습니다. 각 M01–M22 폴더에 독립 실행용 PPTX가 있으며, Block별 결과 요약 PPT는 제공하지 않습니다. 각 모듈 폴더는 다음 구조를 공통으로 사용합니다.
 
 ```text
 MXX_module/
