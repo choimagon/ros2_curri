@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="agv_wheel" params="side y radius width">
+    <link name="${side}_wheel_link">
+      <visual><origin xyz="0 0 0" rpy="1.5708 0 0"/><geometry><cylinder radius="${radius}" length="${width}"/></geometry><material name="wheel_gray"/></visual>
+      <collision><origin xyz="0 0 0" rpy="1.5708 0 0"/><geometry><cylinder radius="${radius}" length="${width}"/></geometry></collision>
+      <xacro:cylinder_inertia mass="0.6" radius="${radius}" length="${width}"/>
+    </link>
+    <joint name="${side}_wheel_joint" type="continuous">
+      <parent link="base_link"/><child link="${side}_wheel_link"/>
+      <origin xyz="0 ${y} ${radius}" rpy="0 0 0"/><axis xyz="0 1 0"/>
+    </joint>
+  </xacro:macro>
+</robot>

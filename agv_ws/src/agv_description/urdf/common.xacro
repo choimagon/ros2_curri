@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <material name="agv_blue"><color rgba="0.10 0.35 0.80 1.0"/></material>
+  <material name="sensor_black"><color rgba="0.06 0.06 0.06 1.0"/></material>
+  <material name="wheel_gray"><color rgba="0.15 0.15 0.15 1.0"/></material>
+
+  <xacro:macro name="box_inertia" params="mass x y z">
+    <inertial>
+      <mass value="${mass}"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${mass * (y*y + z*z) / 12}" ixy="0" ixz="0"
+               iyy="${mass * (x*x + z*z) / 12}" iyz="0"
+               izz="${mass * (x*x + y*y) / 12}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="cylinder_inertia" params="mass radius length">
+    <inertial>
+      <mass value="${mass}"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${mass * (3*radius*radius + length*length) / 12}" ixy="0" ixz="0"
+               iyy="${mass * (3*radius*radius + length*length) / 12}" iyz="0"
+               izz="${mass * radius*radius / 2}"/>
+    </inertial>
+  </xacro:macro>
+</robot>

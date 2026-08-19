@@ -1,0 +1,12 @@
+# ROS 2 / colcon generated outputs
+agv_ws/build/
+agv_ws/install/
+agv_ws/log/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local agent metadata
+.agents/
+.codex/

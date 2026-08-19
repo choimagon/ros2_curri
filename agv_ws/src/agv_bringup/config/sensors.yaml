@@ -1,0 +1,7 @@
+lidar_processor:
+  ros__parameters:
+    use_sim_time: true
+    front_half_angle_deg: 15.0
+imu_monitor:
+  ros__parameters:
+    use_sim_time: true
