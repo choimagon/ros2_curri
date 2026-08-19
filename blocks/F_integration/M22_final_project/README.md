@@ -2,7 +2,7 @@
 
 ## 필수 파일과 제출 기준
 
-최종 구조는 `agv_ws/src/`의 `agv_description`, `agv_gazebo`, `agv_control`, `agv_sensors`, `agv_vision`, `agv_mission`, `agv_interfaces`, `agv_bringup` 여덟 패키지입니다. `agv_bringup/launch/agv_sim.launch.py` 하나로 실행합니다.
+최종 AGV 실행 구조는 `agv_ws/src/`의 `agv_description`, `agv_gazebo`, `agv_control`, `agv_sensors`, `agv_vision`, `agv_mission`, `agv_interfaces`, `agv_bringup` 여덟 패키지입니다. `agv_bringup/launch/agv_sim.launch.py` 하나로 실행합니다. 별도의 `agv_cpp_examples`는 Python과 C++ 파일 구성을 비교하기 위한 교육용 패키지이며 최종 launch에는 넣지 않습니다.
 
 | 마일스톤 | 증명 |
 | --- | --- |

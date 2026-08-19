@@ -19,6 +19,8 @@
 | `scripts/` | 설치·커리큘럼 상태를 확인하는 점검 스크립트 |
 | `tools/` | Block별 실행 캡처와 PPTX를 다시 생성하는 도구 |
 
+처음 ROS 2 파일을 만드는 사람은 [Python·C++·URDF/Xacro·SDF·YAML·launch 파일 가이드](docs/BEGINNER_FILE_MAKING_GUIDE.md)를 먼저 읽습니다. 이 저장소에는 설명용으로 실제 실행 가능한 C++ 패키지 `agv_cpp_examples`도 포함되어 있습니다.
+
 각 모듈 README에는 다음 네 가지를 반드시 적었습니다.
 
 - 이번 구간의 목표와 선행 조건

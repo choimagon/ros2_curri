@@ -43,27 +43,30 @@ BLOCKS = [
         "key": "A",
         "folder": "blocks/A_ros2_basics",
         "title": "Block A — ROS 2 기초",
-        "modules": "M01 ROS 2 개념 · M02 Workspace · M03 Pub/Sub · M04 TF2",
+        "modules": "M01 ROS 2 개념 · M02 Python/C++ Workspace · M03 Pub/Sub · M04 TF2",
         "goal": "ROS 2 노드·토픽 흐름을 확인하고 AGV의 기본 TF tree를 이해한다.",
         "files": [
             "agv_control/agv_control/counter_publisher.py",
             "agv_control/agv_control/counter_monitor.py",
+            "agv_cpp_examples/src/status_publisher.cpp",
+            "agv_cpp_examples/CMakeLists.txt",
             "agv_description/urdf/agv.urdf.xacro",
             "agv_description/launch/display.launch.py",
         ],
         "commands": """source /opt/ros/jazzy/setup.bash
 cd /home/lab4090/ros2_curri/agv_ws
-colcon build --symlink-install --packages-select agv_control agv_description
+colcon build --symlink-install --packages-select agv_control agv_description agv_cpp_examples
 source install/setup.bash
 ros2 run agv_control counter_publisher
-# 새 터미널: ros2 run agv_control counter_monitor""",
+# 새 터미널: ros2 run agv_control counter_monitor
+# C++ 비교: ros2 run agv_cpp_examples status_publisher""",
         "command_notes": [
             "source: 현재 터미널에 ROS 2 Jazzy와 workspace overlay를 등록한다.",
             "ros2 run: setup.py에 등록된 console script를 찾아 독립 노드로 실행한다.",
             "counter_publisher는 1초 timer·queue depth 10으로 /counter를 발행하며, 속도 명령은 -p linear_speed:=값으로 조절한다.",
         ],
-        "capture_command": """tmp=$(mktemp -d /tmp/agv_ppt_a.XXXXXX); export ROS_LOG_DIR=$tmp; timeout --signal=INT 5s ros2 run agv_control counter_publisher >$tmp/publisher.log 2>&1 & pub=$!; sleep 1; timeout --signal=INT 3s ros2 run agv_control counter_monitor 2>&1 || true; wait $pub || true""",
-        "checks": "counter_monitor에 received /counter가 반복되면 publisher·subscriber·DDS 통신이 정상이다. 다음으로 M04에서 RViz Fixed Frame과 TF tree를 확인한다.",
+        "capture_command": """tmp=$(mktemp -d /tmp/agv_ppt_a.XXXXXX); export ROS_LOG_DIR=$tmp; timeout --signal=INT 4s ros2 run agv_cpp_examples status_publisher --ros-args -p message:='C++ 노드 시작' >$tmp/publisher.log 2>&1 & pub=$!; sleep 1; timeout --signal=INT 2s ros2 topic echo /cpp_status --once 2>&1 || true; wait $pub || true; cat $tmp/publisher.log""",
+        "checks": "C++ publisher의 /cpp_status와 Python counter_monitor의 /counter가 각각 수신되면 두 언어의 ROS 2 node 구조가 정상이다. 다음으로 M04에서 RViz Fixed Frame과 TF tree를 확인한다.",
     },
     {
         "key": "B",
@@ -184,7 +187,7 @@ ros2 topic echo /mission_state""",
         "folder": "blocks/F_integration",
         "title": "Block F — 통합·재현·최종 프로젝트",
         "modules": "M21 YAML/Launch/rosbag2 · M22 Final Project",
-        "goal": "YAML과 하나의 launch 명령으로 전체 시스템을 재현하고 rosbag으로 주행을 기록한다.",
+        "goal": "YAML과 하나의 launch 명령으로 8개 최종 AGV 패키지를 재현하고 rosbag으로 주행을 기록한다.",
         "files": [
             "agv_bringup/config/robot.yaml",
             "agv_bringup/config/sensors.yaml",
@@ -205,9 +208,135 @@ ros2 bag record -o ~/agv_bag_01 /scan /imu/data /odom /camera/image_raw""",
             "ros2 bag record는 지정 토픽을 기록하며, --clock 재생은 use_sim_time 노드와 함께 사용한다.",
         ],
         "capture_command": """colcon list; printf '\\n--- 최종 launch 인자 ---\\n'; ros2 launch agv_bringup agv_sim.launch.py --show-args; printf '\\n--- 의존성 ---\\n'; rosdep check --from-paths src --ignore-src --rosdistro jazzy --skip-keys ament_python""",
-        "checks": "8개 패키지와 agv_sim.launch.py 인자가 출력되고 rosdep이 All system dependencies have been satisfied를 표시하면 재현 가능한 최종 구조다.",
+        "checks": "8개 최종 AGV 패키지와 별도 C++ 교육 예제 1개, agv_sim.launch.py 인자가 출력되고 rosdep이 All system dependencies have been satisfied를 표시하면 재현 가능한 최종 구조다.",
     },
 ]
+
+
+# 각 Block에서 처음 배우는 사람이 실제로 따라 만드는 파일 실습입니다.
+# code는 슬라이드에 표시할 핵심 발췌이며, 전체 파일은 path에 있습니다.
+WORKSHOPS = {
+    "A": [
+        {
+            "title": "Python 노드 파일 만들기 (.py)",
+            "path": "agv_ws/src/agv_control/agv_control/counter_publisher.py + setup.py",
+            "make_command": "ros2 pkg create --build-type ament_python learning_py --dependencies rclpy std_msgs",
+            "steps": [
+                "1. ament_python 패키지를 만들고 agv_control/agv_control/에 .py 파일을 둡니다.",
+                "2. Node·publisher·timer를 작성한 뒤 setup.py의 console_scripts에 실행 이름을 등록합니다.",
+                "3. build → source → ros2 run 순서로 실행합니다. source가 없으면 새 실행 이름을 찾지 못합니다.",
+            ],
+            "code": "self.publisher = self.create_publisher(Int32, '/counter', 10)\nself.value = 0\nself.create_timer(1.0, self.publish_counter)\n\ndef publish_counter(self):\n    message = Int32(data=self.value)\n    self.publisher.publish(message)\n    self.value += 1\n\n# setup.py\n'counter_publisher = agv_control.counter_publisher:main'",
+            "result": "실행하면 1초마다 /counter에 0, 1, 2…가 publish되고, counter_monitor가 같은 값을 받습니다.",
+        },
+        {
+            "title": "C++ 노드 파일 만들기 (.cpp)",
+            "path": "agv_ws/src/agv_cpp_examples/src/status_publisher.cpp + CMakeLists.txt",
+            "make_command": "ros2 pkg create --build-type ament_cmake learning_cpp --dependencies rclcpp std_msgs",
+            "steps": [
+                "1. ros2 pkg create --build-type ament_cmake로 C++ 패키지와 src/ 폴더를 만듭니다.",
+                "2. .cpp에서 rclcpp::Node, publisher, timer, spin을 작성합니다.",
+                "3. CMakeLists.txt의 add_executable·ament_target_dependencies·install을 모두 작성합니다.",
+            ],
+            "code": "publisher_ = this->create_publisher<std_msgs::msg::String>(\n  \"/cpp_status\", 10);\ntimer_ = this->create_wall_timer(1s,\n  std::bind(&StatusPublisher::publish_status, this));\n\n# CMakeLists.txt\nadd_executable(status_publisher src/status_publisher.cpp)\nament_target_dependencies(status_publisher rclcpp std_msgs)\ninstall(TARGETS status_publisher\n  DESTINATION lib/${PROJECT_NAME})",
+            "result": "ros2 run agv_cpp_examples status_publisher 뒤 /cpp_status에 'C++ AGV 상태 정상 #0'이 1초마다 나옵니다.",
+        },
+    ],
+    "B": [
+        {
+            "title": "RViz용 로봇 조립 파일 만들기 (URDF/Xacro)",
+            "path": "agv_ws/src/agv_description/urdf/agv.urdf.xacro",
+            "make_command": "mkdir -p agv_description/urdf  # 패키지 안에 URDF/Xacro 폴더 준비",
+            "steps": [
+                "1. base_link에 visual·collision·inertial을 정의합니다.",
+                "2. wheel_radius 같은 property를 먼저 선언하고 left/right wheel macro에 전달합니다.",
+                "3. camera·LiDAR·IMU는 fixed joint로 base_link에 연결한 뒤 xacro/check_urdf로 검사합니다.",
+            ],
+            "code": "<xacro:property name='wheel_radius' value='0.08'/>\n<link name='base_link'>\n  <visual><geometry><box size='0.60 0.42 0.16'/></geometry></visual>\n</link>\n<xacro:agv_wheel side='left' y='${wheel_base/2}'\n                 radius='${wheel_radius}' width='${wheel_width}'/>\n<xacro:fixed_sensor name='lidar' parent='base_link'\n                    xyz='0.12 0 0.28' rpy='0 0 0' size='0.09 0.09 0.05'/>",
+            "result": "xacro가 순수 URDF를 만들고, RViz에는 파란 body·두 바퀴·세 센서 frame이 보입니다.",
+        },
+        {
+            "title": "Gazebo 물리·센서 파일 만들기 (SDF)",
+            "path": "agv_ws/src/agv_gazebo/models/agv/model.sdf",
+            "make_command": "mkdir -p agv_gazebo/models/agv  # model.config와 model.sdf를 같은 폴더에 둠",
+            "steps": [
+                "1. visual과 별도로 collision·inertial을 넣어 물리 엔진이 계산할 값을 만듭니다.",
+                "2. LiDAR/camera/IMU sensor마다 topic과 update_rate를 정합니다.",
+                "3. DiffDrive plugin의 joint 이름·wheel radius·separation을 URDF와 맞춥니다.",
+            ],
+            "code": "<sensor name='lidar' type='gpu_lidar'>\n  <topic>/scan</topic><update_rate>10</update_rate>\n  <lidar><scan><horizontal><samples>720</samples></horizontal></scan></lidar>\n</sensor>\n<plugin filename='gz-sim-diff-drive-system'>\n  <left_joint>left_wheel_joint</left_joint>\n  <right_joint>right_wheel_joint</right_joint>\n  <wheel_separation>0.38</wheel_separation><wheel_radius>0.08</wheel_radius>\n</plugin>",
+            "result": "Gazebo는 충돌·질량을 계산하고 /scan·/imu/data·/camera/image_raw·/odom을 생성합니다.",
+        },
+    ],
+    "C": [
+        {
+            "title": "Gazebo–ROS 연결 파일 만들기 (bridge.yaml)",
+            "path": "agv_ws/src/agv_gazebo/config/bridge.yaml",
+            "make_command": "mkdir -p agv_gazebo/config  # bridge.yaml을 launch와 같은 패키지에 둠",
+            "steps": [
+                "1. Gazebo의 실제 topic 이름을 gz topic -l로 확인합니다.",
+                "2. ROS 이름·Gazebo 이름·양쪽 메시지 타입·방향을 한 항목에 적습니다.",
+                "3. 명령은 ROS_TO_GZ, 센서와 odom은 GZ_TO_ROS인지 확인하고 launch를 다시 시작합니다.",
+            ],
+            "code": "- ros_topic_name: '/cmd_vel'\n  gz_topic_name: '/cmd_vel'\n  ros_type_name: 'geometry_msgs/msg/Twist'\n  gz_type_name: 'gz.msgs.Twist'\n  direction: ROS_TO_GZ\n- ros_topic_name: '/scan'\n  ros_type_name: 'sensor_msgs/msg/LaserScan'\n  gz_type_name: 'gz.msgs.LaserScan'\n  direction: GZ_TO_ROS",
+            "result": "ROS의 /cmd_vel은 Gazebo DiffDrive로 가고, Gazebo /scan·/odom은 ROS에서 echo·RViz로 볼 수 있습니다.",
+        },
+    ],
+    "D": [
+        {
+            "title": "LiDAR 처리 노드 만들기 (.py)",
+            "path": "agv_ws/src/agv_sensors/agv_sensors/lidar_processor.py",
+            "make_command": "ros2 pkg create --build-type ament_python agv_sensors --dependencies rclpy sensor_msgs std_msgs",
+            "steps": [
+                "1. LaserScan을 SensorDataQoS로 구독해 센서 publisher와 QoS를 맞춥니다.",
+                "2. angle_min + index × angle_increment로 각 sample 방향을 계산합니다.",
+                "3. 전방 ±15°의 유한 range 중 최솟값을 Float32로 publish합니다.",
+            ],
+            "code": "half_angle = radians(get_parameter('front_half_angle_deg').value)\nfront_ranges = [distance for index, distance in enumerate(scan.ranges)\n  if abs(scan.angle_min + index * scan.angle_increment) <= half_angle\n  and math.isfinite(distance)]\nresult = Float32(data=min(front_ranges) if front_ranges else float('inf'))\npublisher.publish(result)  # /obstacle_distance",
+            "result": "전방 장애물이 0.48 m면 /obstacle_distance는 약 0.48, 측정값이 없으면 inf가 됩니다.",
+        },
+    ],
+    "E": [
+        {
+            "title": "안전 필터 노드 만들기 (.py)",
+            "path": "agv_ws/src/agv_control/agv_control/safety_controller.py",
+            "make_command": "agv_control/agv_control/ 안에 safety_controller.py를 만들고 setup.py entry point를 추가",
+            "steps": [
+                "1. /scan과 /cmd_vel_raw를 구독하고 /cmd_vel publisher를 만듭니다.",
+                "2. stop_distance와 front_half_angle_deg를 parameter로 선언합니다.",
+                "3. 장애물이 가까운 전진 명령만 zero Twist로 바꿔 Gazebo에 전달합니다.",
+            ],
+            "code": "if obstacle_distance >= get_parameter('stop_distance').value\n   or command.linear.x <= 0.0:\n    safe = command\nelse:\n    safe = Twist()  # 모든 속도 0\n    logger.warn('stopping forward command')\npublisher.publish(safe)  # /cmd_vel",
+            "result": "미션이 전진을 요청해도 LiDAR 전방 0.5 m 안에 물체가 있으면 /cmd_vel은 0이 됩니다.",
+        },
+    ],
+    "F": [
+        {
+            "title": "숫자를 YAML 설정으로 분리하기 (.yaml)",
+            "path": "agv_ws/src/agv_bringup/config/mission.yaml",
+            "make_command": "mkdir -p agv_bringup/config  # node별 YAML을 config/에 저장",
+            "steps": [
+                "1. node 이름을 최상위 key로 쓰고 ros__parameters 아래에 값만 둡니다.",
+                "2. 코드의 declare_parameter 이름과 YAML key 철자를 정확히 맞춥니다.",
+                "3. 숫자를 바꾼 뒤 launch를 다시 시작해 코드 수정 없이 동작을 비교합니다.",
+            ],
+            "code": "mission_manager:\n  ros__parameters:\n    use_sim_time: true\n    stop_distance: 0.50\n    search_speed: 0.25\n    approach_speed: 0.15\n    image_center_x: 320\nsafety_controller:\n  ros__parameters:\n    stop_distance: 0.50",
+            "result": "같은 0.50 m 정지 거리가 FSM과 safety node에 전달돼 서로 다른 기준으로 움직이지 않습니다.",
+        },
+        {
+            "title": "여러 노드를 한 명령으로 실행하기 (launch.py)",
+            "path": "agv_ws/src/agv_bringup/launch/agv_sim.launch.py",
+            "make_command": "mkdir -p agv_bringup/launch  # launch.py는 패키지 setup.py의 data_files에도 등록",
+            "steps": [
+                "1. gazebo launch를 IncludeLaunchDescription으로 포함합니다.",
+                "2. 각 Node에 해당 YAML 파일을 parameters로 전달합니다.",
+                "3. rviz launch argument로 GUI를 켜거나 끄고, 실행 로그에서 각 process가 시작됐는지 확인합니다.",
+            ],
+            "code": "DeclareLaunchArgument('rviz', default_value='true')\nIncludeLaunchDescription(...gazebo.launch.py...)\nNode(package='agv_sensors', executable='lidar_processor',\n     parameters=[os.path.join(bringup, 'config', 'sensors.yaml')])\nNode(package='agv_mission', executable='mission_manager',\n     parameters=[os.path.join(bringup, 'config', 'mission.yaml')])\nNode(package='agv_control', executable='safety_controller',\n     parameters=[os.path.join(bringup, 'config', 'mission.yaml')])",
+            "result": "ros2 launch 한 번으로 Gazebo·bridge·TF·센서·미션·안전 노드가 함께 시작됩니다.",
+        },
+    ],
+}
 
 
 def trim(text: str, max_lines: int = 20, max_width: int = 100) -> str:
@@ -294,6 +423,29 @@ def add_command_notes_slide(slide, block: dict) -> None:
     add_textbox(slide, Inches(0.8), Inches(5.95), Inches(11.7), Inches(0.55), "수치·토픽·방향을 바꿀 때는 해당 Block의 Mxx README에서 구현 파일과 기대 결과를 함께 확인합니다.", 12, False, RGBColor(63, 83, 115))
 
 
+def add_workshop_slide(slide, block: dict, workshop: dict, number: int, total: int) -> None:
+    add_header(slide, block["title"], f"초심자 파일 제작 실습 {number}/{total}")
+    add_textbox(slide, Inches(0.55), Inches(0.92), Inches(12.1), Inches(0.30), workshop["title"], 19, True, RGBColor(23, 62, 111))
+    add_textbox(slide, Inches(0.58), Inches(1.27), Inches(12.0), Inches(0.22), "실제 파일: " + workshop["path"], 11, False, RGBColor(76, 91, 116))
+    add_textbox(slide, Inches(0.58), Inches(1.49), Inches(12.0), Inches(0.20), "처음 만들 때: " + workshop["make_command"], 10, False, RGBColor(23, 99, 140))
+
+    code = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.55), Inches(1.78), Inches(6.35), Inches(4.83))
+    code.fill.solid(); code.fill.fore_color.rgb = RGBColor(20, 28, 42); code.line.color.rgb = RGBColor(64, 80, 110)
+    frame = code.text_frame; frame.clear(); frame.margin_left = Inches(0.20); frame.margin_top = Inches(0.15)
+    for index, line in enumerate(workshop["code"].splitlines()):
+        paragraph = frame.paragraphs[0] if index == 0 else frame.add_paragraph()
+        paragraph.text = line
+        paragraph.font.name = FONT
+        paragraph.font.size = Pt(10)
+        paragraph.font.color.rgb = RGBColor(223, 237, 255)
+        paragraph.space_after = Pt(3)
+
+    add_textbox(slide, Inches(7.15), Inches(1.78), Inches(5.35), Inches(0.35), "만드는 순서", 16, True, RGBColor(23, 62, 111))
+    add_textbox(slide, Inches(7.18), Inches(2.16), Inches(5.25), Inches(2.47), "\n".join(workshop["steps"]), 12, False, RGBColor(33, 43, 61), bullet=True)
+    add_textbox(slide, Inches(7.18), Inches(4.90), Inches(5.25), Inches(0.35), "실행하면 이렇게 됩니다", 16, True, RGBColor(23, 62, 111))
+    add_textbox(slide, Inches(7.18), Inches(5.35), Inches(5.25), Inches(0.90), workshop["result"], 12, False, RGBColor(33, 43, 61))
+
+
 def add_visual_capture_slide(slide, block: dict, image_path: Path) -> None:
     add_header(slide, block["title"], "실제 Gazebo / RViz 화면")
     add_textbox(slide, Inches(0.75), Inches(0.98), Inches(11.9), Inches(0.30), block["visual_caption"], 16, True, RGBColor(23, 62, 111))
@@ -319,6 +471,11 @@ def create_presentation(block: dict, capture: Path) -> None:
     add_header(overview, block["title"], "만들어진 파일")
     add_bullets(overview, "이 Block에서 실제로 만든 핵심 파일", block["files"])
     add_textbox(overview, Inches(0.8), Inches(5.85), Inches(11.7), Inches(0.55), "모듈별 만드는 방법과 상세 확인 기준은 이 폴더의 Mxx/README.md에 정리되어 있습니다.", 13, False, RGBColor(63, 83, 115))
+
+    workshops = WORKSHOPS[block["key"]]
+    for number, workshop in enumerate(workshops, start=1):
+        workshop_slide = ppt.slides.add_slide(blank)
+        add_workshop_slide(workshop_slide, block, workshop, number, len(workshops))
 
     commands = ppt.slides.add_slide(blank)
     add_code_slide(commands, block)

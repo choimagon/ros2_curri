@@ -16,6 +16,10 @@ for module in $(seq -w 1 22); do
 done
 
 for file in \
+  docs/BEGINNER_FILE_MAKING_GUIDE.md \
+  agv_ws/src/agv_cpp_examples/CMakeLists.txt \
+  agv_ws/src/agv_cpp_examples/package.xml \
+  agv_ws/src/agv_cpp_examples/src/status_publisher.cpp \
   agv_ws/src/agv_description/urdf/agv.urdf.xacro \
   agv_ws/src/agv_gazebo/worlds/warehouse.sdf \
   agv_ws/src/agv_gazebo/config/bridge.yaml \

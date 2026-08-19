@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>agv_cpp_examples</name>
+  <version>0.1.0</version>
+  <description>초심자가 ament_cmake와 rclcpp 파일 구성을 배우기 위한 실행 가능한 예제입니다.</description>
+  <maintainer email="student@example.com">AGV student</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
