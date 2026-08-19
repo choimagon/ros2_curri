@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create Korean Block presentations with terminal captures from real commands."""
+"""Create Korean Block presentations with real terminal and GUI captures."""
 from __future__ import annotations
 
 import os
@@ -57,6 +57,11 @@ colcon build --symlink-install --packages-select agv_control agv_description
 source install/setup.bash
 ros2 run agv_control counter_publisher
 # 새 터미널: ros2 run agv_control counter_monitor""",
+        "command_notes": [
+            "source: 현재 터미널에 ROS 2 Jazzy와 workspace overlay를 등록한다.",
+            "ros2 run: setup.py에 등록된 console script를 찾아 독립 노드로 실행한다.",
+            "counter_publisher는 1초 timer·queue depth 10으로 /counter를 발행하며, 속도 명령은 -p linear_speed:=값으로 조절한다.",
+        ],
         "capture_command": """tmp=$(mktemp -d /tmp/agv_ppt_a.XXXXXX); export ROS_LOG_DIR=$tmp; timeout --signal=INT 5s ros2 run agv_control counter_publisher >$tmp/publisher.log 2>&1 & pub=$!; sleep 1; timeout --signal=INT 3s ros2 run agv_control counter_monitor 2>&1 || true; wait $pub || true""",
         "checks": "counter_monitor에 received /counter가 반복되면 publisher·subscriber·DDS 통신이 정상이다. 다음으로 M04에서 RViz Fixed Frame과 TF tree를 확인한다.",
     },
@@ -79,6 +84,13 @@ source install/setup.bash
 xacro src/agv_description/urdf/agv.urdf.xacro > /tmp/agv.urdf
 check_urdf /tmp/agv.urdf
 ros2 launch agv_gazebo gazebo.launch.py""",
+        "command_notes": [
+            "xacro: macro/property/include를 순수 URDF로 펼친다. 원본의 body·wheel 치수를 바꾸면 생성 결과가 함께 바뀐다.",
+            "check_urdf: root link와 joint 연결을 검사하지만 Gazebo 물리를 실행하지는 않는다.",
+            "ros2 launch: model URI 경로·World·bridge를 한 LaunchDescription으로 시작한다.",
+        ],
+        "visual_capture": "captures/gazebo_agv_actual.png",
+        "visual_caption": "실제 Gazebo Sim: warehouse World에 spawn된 agv entity",
         "capture_command": """xacro src/agv_description/urdf/agv.urdf.xacro > /tmp/agv_ppt.urdf && check_urdf /tmp/agv_ppt.urdf && gz sdf -k src/agv_gazebo/models/agv/model.sdf""",
         "checks": "check_urdf 출력에 base_footprint → base_link와 두 바퀴·세 센서 link가 보이면 모델 구조가 정상이다. Gazebo에서 바닥 관통이나 진동이 없는지 이어서 확인한다.",
     },
@@ -101,6 +113,13 @@ ros2 topic pub --rate 10 /cmd_vel geometry_msgs/msg/Twist \\
 ros2 topic echo /odom --once
 ros2 topic echo /scan --once
 rviz2""",
+        "command_notes": [
+            "ros2 topic pub --rate 10: Twist를 초당 10회 보내 DiffDrive가 연속 주행하도록 한다.",
+            "linear.x(m/s)와 angular.z(rad/s)를 조절해 직진·회전·곡선 주행을 만든다.",
+            "ros_gz_bridge는 /cmd_vel은 ROS→Gazebo, odom·scan은 Gazebo→ROS 방향으로 타입을 변환한다.",
+        ],
+        "visual_capture": "captures/rviz_agv_sensors_actual.png",
+        "visual_caption": "실제 RViz: URDF AGV body·wheel·camera·LiDAR·IMU frame",
         "capture_command": """printf 'Gazebo Sim version: '; gz sim --versions; printf '\\nros_gz_bridge prefix: '; ros2 pkg prefix ros_gz_bridge; printf '\\nSDF validation: '; gz sdf -k src/agv_gazebo/models/agv/model.sdf""",
         "checks": "Gazebo Harmonic 버전과 ros_gz_bridge 설치 경로가 출력되면 연동 도구가 준비된 상태다. 실제 주행 후 RViz에서 Fixed Frame=odom, Odometry=/odom, LaserScan=/scan을 설정한다.",
     },
@@ -124,6 +143,11 @@ ros2 topic echo /imu/data --once
 ros2 run agv_sensors lidar_processor
 ros2 topic echo /obstacle_distance
 ros2 run rqt_image_view rqt_image_view""",
+        "command_notes": [
+            "SDF sensor의 update_rate·range·FOV가 Gazebo 원본 데이터를 만들고, bridge가 ROS 메시지로 변환한다.",
+            "ros2 topic hz는 내용 대신 도착 주기를 측정한다. 현재 LiDAR 10 Hz, camera 15 Hz, IMU 100 Hz이다.",
+            "front_half_angle_deg는 LiDAR processor가 장애물을 검사할 전방 반각을 정한다.",
+        ],
         "capture_command": """printf 'SDF sensor declarations\\n'; rg -n '<sensor name=|<topic>|<update_rate>' src/agv_gazebo/models/agv/model.sdf; printf '\\nBridge mapping\\n'; cat src/agv_gazebo/config/bridge.yaml""",
         "checks": "SDF에 camera·lidar·imu sensor와 topic/update_rate가, bridge YAML에 ROS 메시지 타입과 방향이 함께 있어야 한다. 실행 중에는 topic hz와 header.frame_id를 반드시 확인한다.",
     },
@@ -147,6 +171,11 @@ ros2 run agv_sensors lidar_processor
 ros2 run agv_control safety_controller --ros-args -p stop_distance:=0.5
 ros2 run agv_mission mission_manager
 ros2 topic echo /mission_state""",
+        "command_notes": [
+            "DetectionArray는 class·confidence·box 중심을 담고, yolo_node의 enable_yolo/model_path/threshold를 parameter로 조절한다.",
+            "safety_controller는 /scan을 직접 검사해 stop_distance 안의 전진 명령을 zero Twist로 바꾼다.",
+            "mission_manager는 10 Hz로 SEARCH·APPROACH·AVOID를 전환해 /cmd_vel_raw를 만든다.",
+        ],
         "capture_command": """ros2 interface show agv_interfaces/msg/Detection; printf '\\n--- 실행 파일 ---\\n'; ros2 pkg executables agv_control; ros2 pkg executables agv_mission; ros2 pkg executables agv_vision""",
         "checks": "Detection 메시지 필드와 safety_controller·mission_manager 실행 파일이 출력되면 인지→안전→미션 구조가 빌드됐다. YOLO는 M17 문서의 가상환경 설치 후 enable_yolo=true로 활성화한다.",
     },
@@ -170,6 +199,11 @@ colcon build --symlink-install --cmake-args -DPython3_EXECUTABLE=/usr/bin/python
 source install/setup.bash
 ros2 launch agv_bringup agv_sim.launch.py
 ros2 bag record -o ~/agv_bag_01 /scan /imu/data /odom /camera/image_raw""",
+        "command_notes": [
+            "colcon build는 8개 패키지를 의존성 순서로 install하고, source는 새 overlay를 현재 셸에 적용한다.",
+            "agv_sim.launch.py는 Gazebo·bridge·TF·sensor·mission·safety를 한 명령으로 조립한다. rviz:=false로 GUI만 제외할 수 있다.",
+            "ros2 bag record는 지정 토픽을 기록하며, --clock 재생은 use_sim_time 노드와 함께 사용한다.",
+        ],
         "capture_command": """colcon list; printf '\\n--- 최종 launch 인자 ---\\n'; ros2 launch agv_bringup agv_sim.launch.py --show-args; printf '\\n--- 의존성 ---\\n'; rosdep check --from-paths src --ignore-src --rosdistro jazzy --skip-keys ament_python""",
         "checks": "8개 패키지와 agv_sim.launch.py 인자가 출력되고 rosdep이 All system dependencies have been satisfied를 표시하면 재현 가능한 최종 구조다.",
     },
@@ -254,6 +288,18 @@ def add_code_slide(slide, block: dict) -> None:
     add_textbox(slide, Inches(0.75), Inches(6.66), Inches(11.8), Inches(0.28), "명령은 Block README의 순서와 동일합니다. 새 터미널에서도 ROS와 workspace를 source해야 합니다.", 10, False, RGBColor(80, 92, 112))
 
 
+def add_command_notes_slide(slide, block: dict) -> None:
+    add_header(slide, block["title"], "명령어 동작과 설정 포인트")
+    add_bullets(slide, "이 명령이 실제로 하는 일", block["command_notes"])
+    add_textbox(slide, Inches(0.8), Inches(5.95), Inches(11.7), Inches(0.55), "수치·토픽·방향을 바꿀 때는 해당 Block의 Mxx README에서 구현 파일과 기대 결과를 함께 확인합니다.", 12, False, RGBColor(63, 83, 115))
+
+
+def add_visual_capture_slide(slide, block: dict, image_path: Path) -> None:
+    add_header(slide, block["title"], "실제 Gazebo / RViz 화면")
+    add_textbox(slide, Inches(0.75), Inches(0.98), Inches(11.9), Inches(0.30), block["visual_caption"], 16, True, RGBColor(23, 62, 111))
+    slide.shapes.add_picture(str(image_path), Inches(3.35), Inches(1.35), height=Inches(5.50))
+
+
 def create_presentation(block: dict, capture: Path) -> None:
     ppt = Presentation()
     ppt.slide_width = Inches(13.333)
@@ -277,9 +323,17 @@ def create_presentation(block: dict, capture: Path) -> None:
     commands = ppt.slides.add_slide(blank)
     add_code_slide(commands, block)
 
+    command_notes = ppt.slides.add_slide(blank)
+    add_command_notes_slide(command_notes, block)
+
     result = ppt.slides.add_slide(blank)
     add_header(result, block["title"], "실제 실행 결과")
     result.shapes.add_picture(str(capture), Inches(0.45), Inches(1.02), width=Inches(12.43), height=Inches(5.93))
+
+    if "visual_capture" in block:
+        visual = ROOT / block["folder"] / block["visual_capture"]
+        visual_slide = ppt.slides.add_slide(blank)
+        add_visual_capture_slide(visual_slide, block, visual)
 
     checklist = ppt.slides.add_slide(blank)
     add_header(checklist, block["title"], "확인 기준과 다음 단계")
