@@ -601,17 +601,17 @@ def add_code_slide(slide, module: dict, relative: str, lines: list[str], chunk_n
     display_path = canonical_path(relative)
     title(slide, module, f"파일을 {'새로 만들고' if chunk_no == 1 else '계속 작성하고'} 저장한다 ({chunk_no}/{chunk_count})", display_path)
     status(slide, module, f"{step_no}/{step_no + chunk_count - chunk_no + 1}", "~/agv_ws")
-    text_box(slide, 0.72, 1.84, 12.0, 0.38, "이번 단계: 파일의 전체 내용을 중간 생략 없이 작성합니다. 아래 줄 범위를 끝까지 입력하세요.", 17, NAVY, True)
-    command_box = box(slide, 0.72, 2.30, 12.0, 0.54, fill=LIGHT, line=LIGHT, radius=MSO_AUTO_SHAPE_TYPE.RECTANGLE)
+    text_box(slide, 0.72, 1.78, 12.0, 0.28, "이번 단계: 파일의 전체 내용을 중간 생략 없이 작성합니다. 아래 줄 범위를 끝까지 입력하세요.", 15, NAVY, True)
+    command_box = box(slide, 0.72, 2.14, 12.0, 0.66, fill=LIGHT, line=LIGHT, radius=MSO_AUTO_SHAPE_TYPE.RECTANGLE)
     directory = str(Path(display_path).parent)
-    set_text(command_box, f"파일 생성/열기: mkdir -p {directory}    &&    nano {display_path}", 14, NAVY, False, MONO)
-    code_box = box(slide, 0.72, 3.02, 12.0, 3.70, fill=DARK, line=DARK, radius=MSO_AUTO_SHAPE_TYPE.RECTANGLE)
+    set_text(command_box, f"파일 생성: mkdir -p {directory}\n파일 열기: nano {display_path}", 14, NAVY, False, MONO)
+    code_box = box(slide, 0.72, 2.96, 12.0, 3.68, fill=DARK, line=DARK, radius=MSO_AUTO_SHAPE_TYPE.RECTANGLE)
     code_shape = code_box
     code_text = "\n".join(lines)
     set_text(code_shape, code_text, 14, WHITE, False, MONO)
     code_shape.text_frame.margin_left = code_shape.text_frame.margin_right = Inches(0.18)
     code_shape.text_frame.margin_top = Inches(0.12)
-    text_box(slide, 0.82, 6.78, 11.8, 0.22, f"파일 전체 {chunk_no}/{chunk_count} · 이 슬라이드 다음에 같은 파일의 나머지 줄이 이어집니다.", 10, GREY)
+    text_box(slide, 0.82, 6.76, 11.8, 0.22, f"파일 전체 {chunk_no}/{chunk_count} · 이 슬라이드 다음에 같은 파일의 나머지 줄이 이어집니다.", 10, GREY)
     add_notes(slide, f"{display_path}의 전체 파일을 {chunk_no}/{chunk_count} 구간으로 작성한다.", command=f"nano {display_path}", check="코드를 저장하고 다음 코드 슬라이드 또는 build 단계로 이동한다.", error="들여쓰기·XML 태그·따옴표가 슬라이드와 정확히 같은지 확인한다.")
 
 
@@ -659,7 +659,10 @@ def add_errors_slide(slide, module: dict) -> None:
         panel = box(slide, 0.76, y, 12.0, 1.22, fill=RGBColor(255, 247, 244), line=RGBColor(237, 190, 180))
         text_box(slide, 0.98, y + 0.16, 3.2, 0.30, f"증상 {index + 1}: {symptom}", 18, RED, True)
         text_box(slide, 4.15, y + 0.14, 8.25, 0.68, f"우선 확인: {check}\n수정 후: {module['validate'].splitlines()[0]}", 16, NAVY)
-    text_box(slide, 0.9, 5.58, 11.6, 0.44, "공통 순서: ① 현재 폴더 ② source ③ 파일 경로 ④ 이름/타입/단위 ⑤ build·source 후 재실행", 18, ORANGE, True, align=PP_ALIGN.CENTER)
+    if len(errors) <= 2:
+        text_box(slide, 0.9, 5.58, 11.6, 0.44, "공통 순서: ① 현재 폴더 ② source ③ 파일 경로 ④ 이름/타입/단위 ⑤ build·source 후 재실행", 18, ORANGE, True, align=PP_ALIGN.CENTER)
+    else:
+        text_box(slide, 0.9, 6.32, 11.6, 0.54, "공통 순서: ① 현재 폴더 ② source ③ 파일 경로\n④ 이름/타입/단위 ⑤ build·source 후 재실행", 15, ORANGE, True, align=PP_ALIGN.CENTER)
     add_notes(slide, "오류를 대신 해결하지 말고 증상부터 우선 확인 순서대로 교육생이 실행하게 한다.", check="수정 뒤 첫 검증 명령을 다시 실행한다.", error="슬라이드의 두 대표 오류를 먼저 사용한다.")
 
 
@@ -689,9 +692,9 @@ def add_reference_slide(slide, module: dict) -> None:
     ]
     panel = box(slide, 0.72, 1.70, 12.0, 4.95, fill=LIGHT, line=RGBColor(215, 223, 233))
     for index, (name, url) in enumerate(refs):
-        y = 1.98 + index * 1.1
+        y = 1.94 + index * 1.18
         text_box(slide, 1.0, y, 4.2, 0.28, name, 17, NAVY, True)
-        text_box(slide, 1.0, y + 0.34, 10.9, 0.28, url, 12, BLUE, False, MONO)
+        text_box(slide, 1.0, y + 0.30, 10.9, 0.52, url, 10, BLUE, False, MONO)
     add_notes(slide, "공식 문서는 버전 차이와 확장 학습을 확인할 때 사용한다.", check="학습자는 본문만으로 현재 모듈을 완료한 상태여야 한다.")
 
 
@@ -787,7 +790,9 @@ def build_deck(module: dict) -> tuple[Path, str]:
     code_step = action_count + 1
     for relative in module["files"]:
         lines = source_text(relative).splitlines() or [""]
-        chunks = [lines[index:index + 14] for index in range(0, len(lines), 14)]
+        # A code line can wrap once on a projector. Keep each code pane below
+        # its visual height limit instead of packing in the theoretical 14 rows.
+        chunks = [lines[index:index + 12] for index in range(0, len(lines), 12)]
         for number, chunk in enumerate(chunks, start=1):
             slide = presentation.slides.add_slide(blank)
             add_code_slide(slide, module, relative, chunk, number, len(chunks), code_step)
