@@ -1,5 +1,5 @@
 M19 complete checkpoint
 SHA-256 manifest (source snapshot at PPT generation time)
-f88b1433f467a7322eafbcde93cf870e5956e763d528a3060df153b0bfdd899d  agv_ws/src/agv_mission/agv_mission/mission_manager.py
-cfcd67d14615fb265b9fa97f37531de230093b4f197615ee91d4980953beae43  agv_ws/src/agv_bringup/config/mission.yaml
-15472d431b7fdd870296a850eadd4763f4cd0a77448c6168a219f18840ee9861  agv_ws/src/agv_mission/setup.py
+646d32a7f649f819f8abd81216ea59c77d4823258d53938b1da8f9faeaec369a  agv_ws/src/agv_mission/agv_mission/mission_manager.py
+8387af19fa8137ef37734a1ba02a3d24ac861c7987be8639a36d4afafc24e0a6  agv_ws/src/agv_bringup/config/mission.yaml
+a130ea8cf741921080ba16cc1c0355b158d0e65907c97076a29c95e1fe4c4d18  agv_ws/src/agv_mission/setup.py

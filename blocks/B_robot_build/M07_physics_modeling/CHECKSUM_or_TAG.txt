@@ -1,3 +1,3 @@
 M07 complete checkpoint
 SHA-256 manifest (source snapshot at PPT generation time)
-49e5aff504250a5301e7286bc3b9045b4bf2342fa7b7de555f3fd4c4bda109c1  agv_ws/src/agv_gazebo/models/agv/model.sdf
+66dac133d0ff880579d511e49f828bd6ab24659e0595a91ac619d7ae69c09e87  agv_ws/src/agv_description/curriculum_stages/M07/model.sdf

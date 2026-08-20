@@ -43,7 +43,7 @@ WHITE = RGBColor(255, 255, 255)
 DARK = RGBColor(29, 35, 45)
 
 
-# source paths are relative to ~/agv_ws/src.  The files are read directly into
+# source paths are relative to ~/ros2_curri/agv_ws/src.  The files are read directly into
 # the deck, so the slides never depend on an unlisted external snippet.
 MODULES = [
     {
@@ -70,17 +70,17 @@ MODULES = [
     {
         "id": "M02", "block": "A", "folder": "blocks/A_ros2_basics/M02_workspace_package",
         "filename": "M02_Workspace_생성과_빌드.pptx", "title": "Workspace 생성과 Python·C++ 패키지 빌드",
-        "goal": "~/agv_ws를 만들고 Python ament_python과 C++ ament_cmake 패키지를 빌드한다.",
+        "goal": "~/ros2_curri/agv_ws를 만들고 Python ament_python과 C++ ament_cmake 패키지를 빌드한다.",
         "completion": "build/install/log와 두 언어의 실행 파일을 source 뒤에 확인한다.",
-        "start": "M01을 끝낸 터미널. ~/agv_ws가 없거나, 기존 폴더를 별도로 백업한 상태.",
+        "start": "M01을 끝낸 터미널. ~/ros2_curri/agv_ws가 없거나, 기존 폴더를 별도로 백업한 상태.",
         "previous": "M01 ROS 2 source", "next": "M03 Python Pub/Sub",
         "flow": ["src\n소스", "colcon build", "install\noverlay"],
         "files": ["agv_control/package.xml", "agv_control/setup.py", "agv_cpp_examples/CMakeLists.txt", "agv_cpp_examples/src/status_publisher.cpp"],
-        "actions": [("workspace 뼈대를 만든다", "colcon은 src 아래 패키지를 찾아 build/install/log를 만든다.", "mkdir -p ~/agv_ws/src\ncd ~/agv_ws\ncolcon build --symlink-install"), ("새 터미널에서 overlay를 source한다", "기본 ROS와 내가 만든 패키지는 서로 다른 setup 파일이다.", "source /opt/ros/jazzy/setup.bash\nsource ~/agv_ws/install/setup.bash\nros2 pkg executables agv_cpp_examples")],
-        "run": "cd ~/agv_ws\nsource /opt/ros/jazzy/setup.bash\ncolcon build --symlink-install\nsource install/setup.bash\nros2 run agv_cpp_examples status_publisher",
+        "actions": [("workspace 뼈대를 만든다", "colcon은 src 아래 패키지를 찾아 build/install/log를 만든다.", "mkdir -p ~/ros2_curri/agv_ws/src\ncd ~/ros2_curri/agv_ws\ncolcon build --symlink-install"), ("새 터미널에서 overlay를 source한다", "기본 ROS와 내가 만든 패키지는 서로 다른 setup 파일이다.", "source /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/agv_ws/install/setup.bash\nros2 pkg executables agv_cpp_examples")],
+        "run": "cd ~/ros2_curri/agv_ws\nsource /opt/ros/jazzy/setup.bash\ncolcon build --symlink-install\nsource install/setup.bash\nros2 run agv_cpp_examples status_publisher",
         "validate": "pwd\nfind src -maxdepth 2 -name package.xml -o -name CMakeLists.txt\nros2 pkg prefix agv_cpp_examples",
         "capture": "colcon list --names-only; ros2 pkg executables agv_cpp_examples",
-        "errors": [("패키지를 찾을 수 없음", "~/agv_ws에서 build했는지와 install/setup.bash source를 확인한다."), ("중복 패키지 오류", "src 안에 같은 package name이 두 개 없는지 확인한다.")],
+        "errors": [("패키지를 찾을 수 없음", "~/ros2_curri/agv_ws에서 build했는지와 install/setup.bash source를 확인한다."), ("중복 패키지 오류", "src 안에 같은 package name이 두 개 없는지 확인한다.")],
         "mini": "C++ publisher의 message 파라미터를 바꾸고 /cpp_status에서 바뀐 문자열을 확인한다.",
     },
     {
@@ -92,8 +92,8 @@ MODULES = [
         "previous": "M02 agv_control 패키지", "next": "M04 TF2 frame",
         "flow": ["timer", "publisher\n/counter", "subscriber\ncallback"],
         "files": ["agv_control/agv_control/counter_publisher.py", "agv_control/agv_control/counter_monitor.py", "agv_control/agv_control/cmd_test_node.py", "agv_control/agv_control/velocity_monitor.py", "agv_control/setup.py"],
-        "actions": [("console_scripts를 등록한다", "ros2 run은 setup.py에 등록된 실행 이름을 사용한다.", "cd ~/agv_ws\ncolcon build --symlink-install --packages-select agv_control\nsource install/setup.bash"), ("counter 두 노드를 실행한다", "publisher 출력과 monitor 수신을 분리해 확인한다.", "# 터미널 1\nros2 run agv_control counter_publisher\n# 터미널 2\nros2 run agv_control counter_monitor")],
-        "run": "cd ~/agv_ws && source install/setup.bash\nros2 run agv_control counter_publisher\n# 새 터미널: ros2 run agv_control counter_monitor",
+        "actions": [("console_scripts를 등록한다", "ros2 run은 setup.py에 등록된 실행 이름을 사용한다.", "cd ~/ros2_curri/agv_ws\ncolcon build --symlink-install --packages-select agv_control\nsource install/setup.bash"), ("counter 두 노드를 실행한다", "publisher 출력과 monitor 수신을 분리해 확인한다.", "# 터미널 1\nros2 run agv_control counter_publisher\n# 터미널 2\nros2 run agv_control counter_monitor")],
+        "run": "cd ~/ros2_curri/agv_ws && source install/setup.bash\nros2 run agv_control counter_publisher\n# 새 터미널: ros2 run agv_control counter_monitor",
         "validate": "ros2 topic info /counter\nros2 topic echo /counter --once\nros2 interface show geometry_msgs/msg/Twist",
         "capture": "ros2 pkg executables agv_control; ros2 interface show geometry_msgs/msg/Twist",
         "errors": [("No executable found", "setup.py entry_points·재빌드·source 순서로 확인한다."), ("callback이 오지 않음", "토픽 이름과 message type이 양쪽에서 같은지 확인한다.")],
@@ -123,11 +123,11 @@ MODULES = [
         "start": "M04 TF2 개념을 이해하고 agv_description 패키지가 존재하는 상태.",
         "previous": "M04 frame tree", "next": "M06 Xacro 모듈화",
         "flow": ["base_link\nbox", "wheel\ncylinder", "sensor\nfixed joint"],
-        "files": ["agv_description/urdf/agv.urdf.xacro", "agv_description/urdf/common.xacro", "agv_description/urdf/wheels.xacro", "agv_description/urdf/sensors.xacro", "agv_description/launch/display.launch.py"],
-        "actions": [("URDF/Xacro를 펼쳐 검사한다", "Xacro의 macro와 property가 유효 URDF가 되는지 먼저 확인한다.", "cd ~/agv_ws\nxacro src/agv_description/urdf/agv.urdf.xacro > /tmp/agv.urdf\ncheck_urdf /tmp/agv.urdf"), ("RViz로 표시한다", "RobotModel과 TF를 같은 기준 frame에서 함께 확인한다.", "source install/setup.bash\nros2 launch agv_description display.launch.py")],
-        "run": "cd ~/agv_ws && source install/setup.bash\nros2 launch agv_description display.launch.py",
-        "validate": "xacro ~/agv_ws/src/agv_description/urdf/agv.urdf.xacro > /tmp/agv.urdf\ncheck_urdf /tmp/agv.urdf",
-        "capture": "xacro src/agv_description/urdf/agv.urdf.xacro > /tmp/m05.urdf && check_urdf /tmp/m05.urdf",
+        "files": ["agv_description/curriculum_stages/M05/agv.urdf"],
+        "actions": [("단일 URDF를 검사한다", "M05에서는 macro·property·xacro 없이 한 파일에 link와 joint를 직접 작성한다.", "cd ~/ros2_curri/agv_ws\ncheck_urdf src/agv_description/curriculum_stages/M05/agv.urdf"), ("RViz로 표시한다", "RobotModel에는 단일 URDF 텍스트를 robot_description으로 넣고 TF를 함께 확인한다.", "ros2 run robot_state_publisher robot_state_publisher \\\n  --ros-args -p robot_description:=\"$(cat src/agv_description/curriculum_stages/M05/agv.urdf)\"\n# 새 터미널: rviz2 → Add → RobotModel, TF")],
+        "run": "cd ~/ros2_curri/agv_ws\ncheck_urdf src/agv_description/curriculum_stages/M05/agv.urdf\n# 다음 M06에서 처음으로 xacro를 사용한다.",
+        "validate": "check_urdf ~/ros2_curri/agv_ws/src/agv_description/curriculum_stages/M05/agv.urdf\nrg -n '<xacro:|<link |<joint ' ~/ros2_curri/agv_ws/src/agv_description/curriculum_stages/M05/agv.urdf",
+        "capture": "check_urdf src/agv_description/curriculum_stages/M05/agv.urdf",
         "errors": [("XML parsing error", "닫는 태그·따옴표·중첩 구조를 확인한다."), ("바퀴가 눕거나 TF가 없음", "cylinder rpy·joint axis·parent/child link 이름을 확인한다.")],
         "mini": "wheel_radius를 0.08 m에서 0.10 m로 바꾸고 RobotModel에서 바퀴 크기 변화를 확인한다.",
     },
@@ -139,11 +139,11 @@ MODULES = [
         "start": "M05의 단일 AGV 구조가 RViz에 정상 표시되는 상태.",
         "previous": "M05 완성 URDF", "next": "M07 Gazebo 물리",
         "flow": ["agv.urdf.xacro", "include\nmacro", "생성 URDF"],
-        "files": ["agv_description/urdf/agv.urdf.xacro", "agv_description/urdf/common.xacro", "agv_description/urdf/wheels.xacro", "agv_description/urdf/sensors.xacro"],
-        "actions": [("include 관계를 만든다", "공통 관성·wheel·sensor를 파일별 책임으로 분리한다.", "cd ~/agv_ws/src/agv_description/urdf\nmkdir -p .\nxacro agv.urdf.xacro > /tmp/agv_from_xacro.urdf"), ("property 변경을 검증한다", "하나의 수치가 모든 macro 호출에 같은 값으로 전달되어야 한다.", "check_urdf /tmp/agv_from_xacro.urdf\n# wheel_radius 값을 바꾼 뒤 같은 두 명령을 다시 실행")],
-        "run": "xacro ~/agv_ws/src/agv_description/urdf/agv.urdf.xacro > /tmp/agv.urdf\ncheck_urdf /tmp/agv.urdf",
-        "validate": "xacro ~/agv_ws/src/agv_description/urdf/agv.urdf.xacro > /tmp/agv.urdf\nrg -n 'wheel_radius|left_wheel_joint|right_wheel_joint' /tmp/agv.urdf",
-        "capture": "xacro src/agv_description/urdf/agv.urdf.xacro > /tmp/m06.urdf && check_urdf /tmp/m06.urdf",
+        "files": ["agv_description/curriculum_stages/M06/agv.urdf.xacro"],
+        "actions": [("처음으로 Xacro macro를 만든다", "M05 단일 URDF의 반복 바퀴 구조를 macro/property로 바꾸는 첫 단계다.", "cd ~/ros2_curri/agv_ws\nxacro src/agv_description/curriculum_stages/M06/agv.urdf.xacro > /tmp/agv_from_xacro.urdf"), ("property 변경을 검증한다", "하나의 wheel_radius가 좌우 바퀴에 함께 적용되어야 한다.", "check_urdf /tmp/agv_from_xacro.urdf\n# wheel_radius 값을 바꾼 뒤 같은 두 명령을 다시 실행")],
+        "run": "xacro ~/ros2_curri/agv_ws/src/agv_description/curriculum_stages/M06/agv.urdf.xacro > /tmp/agv.urdf\ncheck_urdf /tmp/agv.urdf",
+        "validate": "xacro ~/ros2_curri/agv_ws/src/agv_description/curriculum_stages/M06/agv.urdf.xacro > /tmp/agv.urdf\nrg -n 'wheel_radius|left_wheel_joint|right_wheel_joint' /tmp/agv.urdf",
+        "capture": "xacro src/agv_description/curriculum_stages/M06/agv.urdf.xacro > /tmp/m06.urdf && check_urdf /tmp/m06.urdf",
         "errors": [("unknown macro/property", "선언 순서·xacro namespace·철자를 확인한다."), ("include file not found", "패키지 이름과 설치 대상·파일 경로를 확인한다.")],
         "mini": "wheel_radius 0.08→0.12 m를 적용한 뒤 joint origin과 cylinder radius가 함께 바뀌는지 비교한다.",
     },
@@ -155,11 +155,11 @@ MODULES = [
         "start": "M06 Xacro가 RViz에서 보이지만 Gazebo 물리 모델은 아직 별도인 상태.",
         "previous": "M06 Xacro 치수", "next": "M08 World/Spawn",
         "flow": ["visual\n보이는 모양", "collision\n접촉", "inertial\n질량/관성", "friction\n접지"],
-        "files": ["agv_gazebo/models/agv/model.sdf"],
-        "actions": [("SDF 물리 모델을 검사한다", "visual이 보인다고 collision과 inertia가 자동으로 생기지는 않는다.", "cd ~/agv_ws\ngz sdf -k src/agv_gazebo/models/agv/model.sdf"), ("값을 한 번에 하나씩 바꾼다", "증상 원인을 찾으려면 mass→inertia→collision→friction 순서를 지킨다.", "rg -n '<mass>|<inertia>|<collision>|<friction>' src/agv_gazebo/models/agv/model.sdf")],
-        "run": "cd ~/agv_ws && source install/setup.bash\nros2 launch agv_gazebo gazebo.launch.py",
-        "validate": "gz sdf -k ~/agv_ws/src/agv_gazebo/models/agv/model.sdf",
-        "capture": "gz sdf -k src/agv_gazebo/models/agv/model.sdf; rg -n '<mass>|<friction>|left_wheel_joint' src/agv_gazebo/models/agv/model.sdf",
+        "files": ["agv_description/curriculum_stages/M07/model.sdf"],
+        "actions": [("SDF 물리 모델을 검사한다", "M07에는 visual·collision·inertial·friction만 있으며 sensor와 drive plugin은 아직 없다.", "cd ~/ros2_curri/agv_ws\ngz sdf -k src/agv_description/curriculum_stages/M07/model.sdf"), ("값을 한 번에 하나씩 바꾼다", "증상 원인을 찾으려면 mass→inertia→collision→friction 순서를 지킨다.", "rg -n '<mass>|<inertia>|<collision>|<friction>' src/agv_description/curriculum_stages/M07/model.sdf")],
+        "run": "cd ~/ros2_curri/agv_ws\ngz sdf -k src/agv_description/curriculum_stages/M07/model.sdf",
+        "validate": "gz sdf -k ~/ros2_curri/agv_ws/src/agv_description/curriculum_stages/M07/model.sdf\nrg -n '<sensor|DiffDrive' ~/ros2_curri/agv_ws/src/agv_description/curriculum_stages/M07/model.sdf",
+        "capture": "gz sdf -k src/agv_description/curriculum_stages/M07/model.sdf; rg -n '<mass>|<friction>|left_wheel_joint' src/agv_description/curriculum_stages/M07/model.sdf",
         "errors": [("spawn 직후 떨리거나 날아감", "inertia·collision overlap·너무 작은 mass를 확인한다."), ("바퀴가 헛돎", "friction·contact·joint axis·wheel radius를 확인한다.")],
         "mini": "wheel friction mu를 1.0에서 0.3으로만 바꾼 뒤 직진 시 미끄럼 변화를 기록한다.",
     },
@@ -171,12 +171,12 @@ MODULES = [
         "start": "M07의 SDF AGV 물리 모델이 유효한 상태.",
         "previous": "M07 물리 모델", "next": "M09 Differential Drive",
         "flow": ["warehouse.sdf", "ros_gz_sim", "model URI\nAGV spawn"],
-        "files": ["agv_gazebo/worlds/warehouse.sdf", "agv_gazebo/models/agv/model.config", "agv_gazebo/launch/gazebo.launch.py"],
-        "actions": [("model 파일을 먼저 검증한다", "CLI의 `gz sdf -k`는 standalone World에서 model:// URI를 해석하지 못할 수 있다. AGV model 자체를 먼저 검사한다.", "cd ~/agv_ws\ngz sdf -k src/agv_gazebo/models/agv/model.sdf\nrg -n 'model://agv|<world name=' src/agv_gazebo/worlds/warehouse.sdf"), ("launch로 World와 bridge를 시작한다", "launch가 Gazebo resource path와 World 실행을 한 번에 준비하므로 World는 이 명령으로 검증한다.", "source install/setup.bash\nros2 launch agv_gazebo gazebo.launch.py")],
-        "run": "cd ~/agv_ws && source install/setup.bash\nros2 launch agv_gazebo gazebo.launch.py",
-        "validate": "gz sdf -k ~/agv_ws/src/agv_gazebo/models/agv/model.sdf\nrg -n 'model://agv|<world name=' ~/agv_ws/src/agv_gazebo/worlds/warehouse.sdf\n# 이어서 ros2 launch agv_gazebo gazebo.launch.py로 World를 연다.",
-        "capture": "gz sdf -k src/agv_gazebo/models/agv/model.sdf; printf '\\n--- World model URI ---\\n'; rg -n 'model://agv|<world name=' src/agv_gazebo/worlds/warehouse.sdf",
-        "visual": "blocks/B_robot_build/captures/gazebo_agv_actual.png", "visual_caption": "실제 Gazebo Sim에서 warehouse World에 spawn된 AGV",
+        "files": ["agv_description/curriculum_stages/M08/model.config", "agv_description/curriculum_stages/M08/model.sdf", "agv_description/curriculum_stages/M08/warehouse.sdf"],
+        "actions": [("model과 World를 각각 검사한다", "M08은 M07 물리 AGV를 World에 배치하는 단계이며 DiffDrive·Camera·LiDAR·IMU는 아직 넣지 않는다.", "cd ~/ros2_curri/agv_ws\ngz sdf -k src/agv_description/curriculum_stages/M08/model.sdf\nrg -n 'model://agv|<world name=' src/agv_description/curriculum_stages/M08/warehouse.sdf"), ("World를 실행한다", "M08 snapshot을 agv_gazebo models/worlds 경로에 복사한 뒤 Gazebo를 실행해 spawn만 확인한다.", "gz sim -r src/agv_description/curriculum_stages/M08/warehouse.sdf\n# 이 단계에는 ROS bridge와 구동 topic이 없다.")],
+        "run": "cd ~/ros2_curri/agv_ws\ngz sim -r src/agv_description/curriculum_stages/M08/warehouse.sdf",
+        "validate": "gz sdf -k ~/ros2_curri/agv_ws/src/agv_description/curriculum_stages/M08/model.sdf\nrg -n '<sensor|DiffDrive|/cmd_vel|/odom' ~/ros2_curri/agv_ws/src/agv_description/curriculum_stages/M08/model.sdf",
+        "capture": "gz sdf -k src/agv_description/curriculum_stages/M08/model.sdf; rg -n 'model://agv|<world name=' src/agv_description/curriculum_stages/M08/warehouse.sdf",
+        "visual": "blocks/B_robot_build/captures/01_gazebo_world_spawn_actual.png", "visual_caption": "실제 Gazebo Sim에서 warehouse World에 spawn된 AGV",
         "errors": [("world 파일을 못 찾음", "launch의 package share path와 install data_files를 확인한다."), ("모델이 공중/바닥 아래", "초기 z·collision origin·geometry 크기를 확인한다.")],
         "mini": "World의 box pose x 좌표를 1 m 바꾼 후 저장·재실행하여 top-view 위치 변화를 확인한다.",
     },
@@ -193,6 +193,7 @@ MODULES = [
         "run": "ros2 launch agv_gazebo gazebo.launch.py\n# 새 터미널: ros2 run agv_control cmd_test_node",
         "validate": "ros2 topic info /cmd_vel\nros2 topic echo /odom --once",
         "capture": "rg -n 'DiffDrive|wheel_separation|wheel_radius|<topic>/cmd_vel' src/agv_gazebo/models/agv/model.sdf",
+        "visual": "blocks/C_drive_visualization/captures/01_gazebo_drive_actual.png", "visual_caption": "실제 Gazebo Sim: World 안의 AGV와 장애물·목표물 배치",
         "errors": [("바퀴는 도는데 이동 안 함", "joint axis·friction·contact·wheel radius를 확인한다."), ("회전 방향이 반대", "left/right joint와 angular.z 부호를 확인한다.")],
         "mini": "0.15 m/s 직진, 0.4 rad/s 회전, 둘 다 비영 값인 곡선을 각각 2초씩 시험해 경로를 비교한다.",
     },
@@ -205,8 +206,8 @@ MODULES = [
         "previous": "M09 /cmd_vel", "next": "M11 RViz2",
         "flow": ["ROS 2\n/cmd_vel", "ros_gz_bridge", "Gazebo\nDiffDrive"],
         "files": ["agv_gazebo/config/bridge.yaml", "agv_gazebo/launch/gazebo.launch.py"],
-        "actions": [("bridge YAML을 작성한다", "방향과 양쪽 message type을 한 topic마다 정확히 적는다.", "cd ~/agv_ws\nnano src/agv_gazebo/config/bridge.yaml"), ("launch가 YAML을 읽게 한다", "config_file은 package share 경로에서 찾도록 launch에 넣는다.", "colcon build --symlink-install --packages-select agv_gazebo\nsource install/setup.bash\nros2 launch agv_gazebo gazebo.launch.py")],
-        "run": "source ~/agv_ws/install/setup.bash\nros2 launch agv_gazebo gazebo.launch.py",
+        "actions": [("bridge YAML을 작성한다", "방향과 양쪽 message type을 한 topic마다 정확히 적는다.", "cd ~/ros2_curri/agv_ws\nnano src/agv_gazebo/config/bridge.yaml"), ("launch가 YAML을 읽게 한다", "config_file은 package share 경로에서 찾도록 launch에 넣는다.", "colcon build --symlink-install --packages-select agv_gazebo\nsource install/setup.bash\nros2 launch agv_gazebo gazebo.launch.py")],
+        "run": "source ~/ros2_curri/agv_ws/install/setup.bash\nros2 launch agv_gazebo gazebo.launch.py",
         "validate": "ros2 topic list | rg '/cmd_vel|/odom|/scan|/imu|/camera|/clock'\nros2 topic info /scan",
         "capture": "ros2 pkg prefix ros_gz_bridge; printf '\\n--- bridge.yaml ---\\n'; cat src/agv_gazebo/config/bridge.yaml",
         "errors": [("ROS topic이 생성되지 않음", "bridge 프로세스·topic 이름·message type을 확인한다."), ("한 방향으로만 전달됨", "direction ROS_TO_GZ/GZ_TO_ROS 설정을 확인한다.")],
@@ -221,11 +222,11 @@ MODULES = [
         "previous": "M10 bridge topic", "next": "M12~M15 센서 display",
         "flow": ["robot_description", "TF / odom", "RViz Displays"],
         "files": [],
-        "actions": [("RViz를 설정 파일로 연다", "같은 display 설정을 다음 센서 모듈에서도 재사용한다.", "source ~/agv_ws/install/setup.bash\nrviz2 -d ~/agv_ws/src/agv_description/rviz/agv.rviz"), ("RobotModel과 TF를 먼저 확인한다", "모델과 frame이 맞아야 scan·image 위치도 맞는다.", "Fixed Frame: odom 또는 base_link\nAdd → RobotModel → Description Topic: /robot_description\nAdd → TF"), ("센서 display를 추가한다", "각 display는 topic과 message frame_id를 TF로 변환한다.", "Add → LaserScan → Topic: /scan\nAdd → Odometry → Topic: /odom\nFile → Save Config As → agv.rviz")],
-        "run": "source ~/agv_ws/install/setup.bash\nros2 launch agv_bringup agv_sim.launch.py",
+        "actions": [("RViz를 설정 파일로 연다", "같은 display 설정을 다음 센서 모듈에서도 재사용한다.", "source ~/ros2_curri/agv_ws/install/setup.bash\nrviz2 -d ~/ros2_curri/agv_ws/src/agv_description/rviz/agv.rviz"), ("RobotModel과 TF를 먼저 확인한다", "모델과 frame이 맞아야 scan·image 위치도 맞는다.", "Fixed Frame: odom 또는 base_link\nAdd → RobotModel → Description Topic: /robot_description\nAdd → TF"), ("센서 display를 추가한다", "각 display는 topic과 message frame_id를 TF로 변환한다.", "Add → LaserScan → Topic: /scan\nAdd → Odometry → Topic: /odom\nFile → Save Config As → agv.rviz")],
+        "run": "source ~/ros2_curri/agv_ws/install/setup.bash\nros2 launch agv_bringup agv_sim.launch.py",
         "validate": "ros2 topic info /robot_description\nros2 topic echo /scan --once\nros2 topic echo /odom --once",
         "capture": "ros2 pkg prefix rviz2; rg -n 'Fixed Frame|RobotModel|LaserScan|Odometry' src/agv_description/rviz/agv.rviz",
-        "visual": "blocks/C_drive_visualization/captures/rviz_agv_sensors_actual.png", "visual_caption": "실제 RViz2: AGV body·wheel·camera·LiDAR·IMU frame",
+        "visual": "blocks/C_drive_visualization/captures/01_rviz_integrated_actual.png", "visual_caption": "실제 RViz2: RobotModel·TF·Odometry·LaserScan·Path·Marker display를 함께 연 상태",
         "errors": [("RobotModel이 안 보임", "robot_description·Fixed Frame·TF를 순서대로 확인한다."), ("LaserScan 위치가 이상함", "scan header.frame_id와 lidar TF를 확인한다.")],
         "mini": "Fixed Frame을 의도적으로 없는 이름으로 바꾼 뒤 Global Status 오류를 읽고 odom으로 되돌린다.",
     },
@@ -238,10 +239,11 @@ MODULES = [
         "previous": "M11 RViz2", "next": "M13 LiDAR",
         "flow": ["Gazebo camera", "bridge", "/camera/image_raw", "cv_bridge"],
         "files": ["agv_gazebo/models/agv/model.sdf", "agv_gazebo/config/bridge.yaml", "agv_vision/agv_vision/yolo_node.py"],
-        "actions": [("camera sensor 설정을 확인한다", "해상도·FOV·update_rate는 생성되는 영상의 크기와 주기를 정한다.", "rg -n '<sensor name=\"camera\"|<width>|<height>|<horizontal_fov>|<update_rate>' \\\n  ~/agv_ws/src/agv_gazebo/models/agv/model.sdf"), ("Image topic을 확인한다", "topic 이름은 SDF sensor와 bridge YAML 양쪽에서 일치해야 한다.", "ros2 topic info /camera/image_raw\nros2 topic hz /camera/image_raw\nros2 run rqt_image_view rqt_image_view")],
-        "run": "ros2 launch agv_bringup agv_sim.launch.py rviz:=false\n# 새 터미널: ros2 run rqt_image_view rqt_image_view",
+        "actions": [("camera sensor 설정을 확인한다", "해상도·FOV·update_rate는 생성되는 영상의 크기와 주기를 정한다.", "rg -n '<sensor name=\"camera\"|<width>|<height>|<horizontal_fov>|<update_rate>' \\\n  ~/ros2_curri/agv_ws/src/agv_gazebo/models/agv/model.sdf"), ("Image topic을 확인한다", "topic 이름은 SDF sensor와 bridge YAML 양쪽에서 일치해야 한다.", "ros2 topic info /camera/image_raw\nros2 topic hz /camera/image_raw\nros2 run rqt_image_view rqt_image_view")],
+        "run": "ros2 launch agv_bringup agv_sim.launch.py rviz:=false autonomy:=false\n# 새 터미널: ros2 run rqt_image_view rqt_image_view /camera/image_raw",
         "validate": "ros2 topic info /camera/image_raw\nros2 topic hz /camera/image_raw",
         "capture": "rg -n '<sensor name=\"camera\"|<topic>/camera/image_raw|<width>|<height>' src/agv_gazebo/models/agv/model.sdf; rg -n 'camera/image_raw' src/agv_gazebo/config/bridge.yaml",
+        "visual": "blocks/D_sensors/captures/02_camera_image_actual.png", "visual_caption": "실제 /camera/image_raw 캡처: 화면 방향·FOV·world 배치를 점검하는 기준",
         "errors": [("영상이 검정", "camera pose/FOV·world light·clipping range를 확인한다."), ("RViz 이미지가 비어 있음", "Image topic·QoS·bridge mapping을 확인한다.")],
         "mini": "camera update_rate 15→5 Hz와 width 640→320을 각각 바꾸고 topic hz와 처리량 차이를 기록한다.",
     },
@@ -254,10 +256,11 @@ MODULES = [
         "previous": "M12 Camera pipeline", "next": "M14 IMU",
         "flow": ["gpu_lidar", "bridge\n/scan", "lidar_processor", "/obstacle_distance"],
         "files": ["agv_gazebo/models/agv/model.sdf", "agv_gazebo/config/bridge.yaml", "agv_sensors/agv_sensors/lidar_processor.py"],
-        "actions": [("LiDAR 범위와 angle을 읽는다", "ranges의 index는 angle_min + index×angle_increment로 실제 각도가 된다.", "ros2 interface show sensor_msgs/msg/LaserScan\nros2 topic echo /scan --once"), ("전방 최소거리 노드를 실행한다", "inf·NaN은 충돌 판단에서 제외해야 안전한 최소값을 얻는다.", "source ~/agv_ws/install/setup.bash\nros2 run agv_sensors lidar_processor\nros2 topic echo /obstacle_distance")],
+        "actions": [("LiDAR 범위와 angle을 읽는다", "ranges의 index는 angle_min + index×angle_increment로 실제 각도가 된다.", "ros2 interface show sensor_msgs/msg/LaserScan\nros2 topic echo /scan --once"), ("전방 최소거리 노드를 실행한다", "inf·NaN은 충돌 판단에서 제외해야 안전한 최소값을 얻는다.", "source ~/ros2_curri/agv_ws/install/setup.bash\nros2 run agv_sensors lidar_processor\nros2 topic echo /obstacle_distance")],
         "run": "ros2 launch agv_bringup agv_sim.launch.py rviz:=false\n# 새 터미널: ros2 run agv_sensors lidar_processor",
         "validate": "ros2 topic info /scan\nros2 topic hz /scan\nros2 topic echo /obstacle_distance --once",
         "capture": "ros2 pkg executables agv_sensors; rg -n '<sensor name=\"lidar\"|<samples>|<min_angle>|<max_angle>' src/agv_gazebo/models/agv/model.sdf",
+        "visual": "blocks/D_sensors/captures/03_rviz_sensors_actual.png", "visual_caption": "실제 RViz2 통합 display: LaserScan·frame·Fixed Frame을 점검하는 화면",
         "errors": [("/scan이 없음", "SDF sensor → bridge YAML → ROS topic 순서로 확인한다."), ("최소거리가 항상 inf", "유효 range 필터와 sector index 계산을 확인한다.")],
         "mini": "front_half_angle_deg를 15°와 45°로 각각 실행해 장애물 판정 영역이 어떻게 달라지는지 비교한다.",
     },
@@ -270,10 +273,11 @@ MODULES = [
         "previous": "M13 /scan", "next": "M15 운영/QoS",
         "flow": ["Gazebo IMU", "bridge", "/imu/data", "imu_monitor"],
         "files": ["agv_gazebo/models/agv/model.sdf", "agv_gazebo/config/bridge.yaml", "agv_sensors/agv_sensors/imu_monitor.py"],
-        "actions": [("Imu message 필드를 확인한다", "z축 angular velocity는 제자리 회전에서 가장 먼저 변화를 보인다.", "ros2 interface show sensor_msgs/msg/Imu\nros2 topic echo /imu/data --once"), ("IMU monitor를 실행한다", "출력에 단위와 frame을 함께 남기면 축 오류를 찾기 쉽다.", "source ~/agv_ws/install/setup.bash\nros2 run agv_sensors imu_monitor")],
+        "actions": [("Imu message 필드를 확인한다", "z축 angular velocity는 제자리 회전에서 가장 먼저 변화를 보인다.", "ros2 interface show sensor_msgs/msg/Imu\nros2 topic echo /imu/data --once"), ("IMU monitor를 실행한다", "출력에 단위와 frame을 함께 남기면 축 오류를 찾기 쉽다.", "source ~/ros2_curri/agv_ws/install/setup.bash\nros2 run agv_sensors imu_monitor")],
         "run": "ros2 launch agv_bringup agv_sim.launch.py rviz:=false\n# 새 터미널: ros2 run agv_sensors imu_monitor",
         "validate": "ros2 topic info /imu/data\nros2 topic hz /imu/data\nros2 topic echo /imu/data --once",
         "capture": "ros2 pkg executables agv_sensors; rg -n '<sensor name=\"imu\"|<stddev>|<update_rate>' src/agv_gazebo/models/agv/model.sdf",
+        "visual": "blocks/B_robot_build/captures/01_gazebo_world_spawn_actual.png", "visual_caption": "실제 Gazebo AGV: IMU가 base_link 위에 고정 장착되는 물리 모델 화면",
         "errors": [("값 축이 예상과 다름", "imu_link 축·origin rpy·header.frame_id를 확인한다."), ("값이 지나치게 요동", "noise/bias·update_rate·시뮬레이션 부하를 확인한다.")],
         "mini": "정지·직진·제자리 회전에서 angular_velocity.z를 각각 기록하고 부호가 어느 동작에서 바뀌는지 설명한다.",
     },
@@ -290,22 +294,24 @@ MODULES = [
         "run": "ros2 launch agv_bringup agv_sim.launch.py rviz:=false",
         "validate": "ros2 topic echo /clock --once\nros2 topic hz /scan\nros2 topic hz /imu/data\nros2 param get /lidar_processor use_sim_time",
         "capture": "cat src/agv_bringup/config/sensors.yaml; printf '\\n--- QoS source ---\\n'; rg -n 'qos_profile_sensor_data|use_sim_time' src/agv_sensors",
+        "visual": "blocks/D_sensors/captures/03_rviz_sensors_actual.png", "visual_caption": "실제 RViz2: 여러 sensor display를 같은 Fixed Frame에서 여는 운영 점검 화면",
         "errors": [("ROS 노드 시간이 안 감", "use_sim_time과 /clock bridge를 확인한다."), ("topic은 있는데 subscriber가 못 받음", "publisher/subscriber QoS reliability 호환을 확인한다.")],
         "mini": "/scan과 /imu/data의 hz를 표로 기록하고 SDF update_rate 10/100 Hz와 비교한다.",
     },
     {
         "id": "M16", "block": "E", "folder": "blocks/E_autonomy_logic/M16_ros2_control",
         "filename": "M16_ros2_control_gz_ros2_control.pptx", "title": "ros2_control + gz_ros2_control",
-        "goal": "controller_manager·joint_state_broadcaster·diff_drive_controller 설정의 책임을 이해한다.",
-        "completion": "wheel joint 이름과 controller YAML의 좌·우 목록·반지름·wheel separation을 일치시킨다.",
+        "goal": "gz_ros2_control이 만든 controller_manager에서 joint_state_broadcaster와 diff_drive_controller를 실제 active로 만든다.",
+        "completion": "`ros2 control list_controllers`에서 joint_state_broadcaster와 diff_drive_controller가 모두 active이고 wheel joint state가 publish된다.",
         "start": "M09 native Gazebo DiffDrive가 동작하고 wheel joint 이름을 알고 있는 상태.",
         "previous": "M09 wheel joint", "next": "M17~M20 autonomy command",
         "flow": ["/cmd_vel", "controller_manager", "gz_ros2_control", "Gazebo joints"],
-        "files": ["agv_control/config/controllers.yaml", "agv_description/urdf/agv.urdf.xacro"],
-        "actions": [("controller YAML을 작성한다", "controller type과 wheel parameter는 URDF/SDF joint 이름과 같아야 한다.", "nano ~/agv_ws/src/agv_control/config/controllers.yaml\nros2 pkg prefix gz_ros2_control"), ("plugin 전환 전 기준선을 확인한다", "이 저장소의 기본 실행은 M09 native DiffDrive다. gz_ros2_control로 바꾸기 전 joint·config를 먼저 검증한다.", "ros2 pkg prefix controller_manager\nros2 pkg prefix diff_drive_controller\nros2 pkg prefix gz_ros2_control")],
-        "run": "source ~/agv_ws/install/setup.bash\nros2 pkg prefix gz_ros2_control\nros2 pkg prefix controller_manager",
-        "validate": "rg -n 'left_wheel_joint|right_wheel_joint|wheel_separation|wheel_radius' ~/agv_ws/src/agv_control/config/controllers.yaml\nrg -n 'left_wheel_joint|right_wheel_joint' ~/agv_ws/src/agv_gazebo/models/agv/model.sdf",
+        "files": ["agv_control/config/controllers.yaml", "agv_description/urdf/agv_ros2_control.urdf.xacro", "agv_gazebo/models/agv_ros2_control/model.sdf", "agv_gazebo/launch/ros2_control.launch.py"],
+        "actions": [("controller YAML을 작성한다", "controller type과 wheel parameter는 URDF/SDF joint 이름과 같아야 한다.", "nano ~/ros2_curri/agv_ws/src/agv_control/config/controllers.yaml\nros2 pkg prefix gz_ros2_control"), ("실제 controller를 활성화한다", "M16은 M09 native DiffDrive와 별도 launch를 사용한다. plugin이 controller_manager를 만들고 spawner가 두 controller를 active로 전환한다.", "ros2 launch agv_gazebo ros2_control.launch.py\n# 새 터미널\nros2 control list_controllers -c /controller_manager")],
+        "run": "source ~/ros2_curri/agv_ws/install/setup.bash\nros2 launch agv_gazebo ros2_control.launch.py\n# 새 터미널: ros2 control list_controllers -c /controller_manager",
+        "validate": "ros2 control list_controllers -c /controller_manager\nros2 topic echo /joint_states --once",
         "capture": "ros2 pkg prefix gz_ros2_control; ros2 pkg prefix controller_manager; cat src/agv_control/config/controllers.yaml",
+        "visual": "blocks/E_autonomy_logic/captures/01_controller_active_actual.png", "visual_caption": "실제 M16 격리 launch의 ros2 control 출력: 두 controller가 모두 active",
         "errors": [("controller가 inactive", "load/activate 순서와 YAML controller 이름을 확인한다."), ("joint를 찾을 수 없음", "URDF/SDF joint 이름과 controller 목록을 한 글자씩 비교한다.")],
         "mini": "controllers.yaml의 wheel_radius와 model.sdf의 wheel_radius가 모두 0.08 m인지 확인하고 한쪽만 바꿨을 때 생길 오차를 설명한다.",
     },
@@ -318,10 +324,11 @@ MODULES = [
         "previous": "M12 camera image", "next": "M18 safety fusion",
         "flow": ["Image", "cv_bridge", "YOLO", "/detections"],
         "files": ["agv_interfaces/msg/Detection.msg", "agv_interfaces/msg/DetectionArray.msg", "agv_interfaces/CMakeLists.txt", "agv_vision/agv_vision/yolo_node.py", "agv_bringup/config/vision.yaml", "agv_vision/setup.py"],
-        "actions": [("interface를 먼저 빌드한다", "vision node보다 custom message package가 먼저 install/source되어야 import된다.", "cd ~/agv_ws\ncolcon build --symlink-install --packages-select agv_interfaces agv_vision\nsource install/setup.bash\nros2 interface show agv_interfaces/msg/Detection"), ("YOLO 실행 정책을 정한다", "모델 파일과 Python dependency는 교육 환경에서 고정해야 재현된다.", "ros2 run agv_vision yolo_node --ros-args \\\n  -p enable_yolo:=false\n# ultralytics와 모델 파일 준비 뒤에만 true로 변경")],
-        "run": "source ~/agv_ws/install/setup.bash\nros2 run agv_vision yolo_node --ros-args -p enable_yolo:=false",
+        "actions": [("interface를 먼저 빌드한다", "vision node보다 custom message package가 먼저 install/source되어야 import된다.", "cd ~/ros2_curri/agv_ws\ncolcon build --symlink-install --packages-select agv_interfaces agv_vision\nsource install/setup.bash\nros2 interface show agv_interfaces/msg/Detection"), ("YOLO 실행 정책을 정한다", "모델 파일과 Python dependency는 교육 환경에서 고정해야 재현된다.", "ros2 run agv_vision yolo_node --ros-args \\\n  -p enable_yolo:=false\n# ultralytics와 모델 파일 준비 뒤에만 true로 변경")],
+        "run": "source ~/ros2_curri/agv_ws/install/setup.bash\nros2 run agv_vision yolo_node --ros-args -p enable_yolo:=false",
         "validate": "ros2 interface show agv_interfaces/msg/Detection\nros2 topic info /detections\nros2 param get /yolo_node confidence_threshold",
         "capture": "ros2 interface show agv_interfaces/msg/Detection; ros2 pkg executables agv_vision; cat src/agv_bringup/config/vision.yaml",
+        "visual": "blocks/E_autonomy_logic/captures/01_vision_debug_actual.png", "visual_caption": "실제 /vision/debug_image: fallback이 ‘target not visible’을 표시해 camera pose·FOV·world 배치를 점검하는 오류 사례",
         "errors": [("모델 파일을 못 찾음", "model_path와 모델 파일 배포 정책을 확인한다."), ("Custom msg import 실패", "agv_interfaces 빌드·source·package dependency를 확인한다.")],
         "mini": "confidence_threshold를 0.50에서 0.70으로 바꿨을 때 어떤 검출이 제거될지 설명하고 parameter 값을 확인한다.",
     },
@@ -335,9 +342,10 @@ MODULES = [
         "flow": ["/scan", "safety\npriority", "/cmd_vel", "DiffDrive"],
         "files": ["agv_sensors/agv_sensors/lidar_processor.py", "agv_control/agv_control/safety_controller.py", "agv_bringup/config/mission.yaml"],
         "actions": [("안전 임계값을 고정한다", "distance는 m 단위이며 safety가 vision보다 먼저 final /cmd_vel을 결정한다.", "ros2 run agv_control safety_controller --ros-args \\\n  -p stop_distance:=0.5 -p front_half_angle_deg:=15.0"), ("raw와 safe command를 분리한다", "mission은 /cmd_vel_raw, 안전 필터만 /cmd_vel을 발행한다.", "ros2 topic echo /cmd_vel_raw\nros2 topic echo /cmd_vel\nros2 topic echo /scan --once")],
-        "run": "source ~/agv_ws/install/setup.bash\nros2 run agv_control safety_controller --ros-args -p stop_distance:=0.5",
+        "run": "source ~/ros2_curri/agv_ws/install/setup.bash\nros2 run agv_control safety_controller --ros-args -p stop_distance:=0.5",
         "validate": "ros2 topic info /cmd_vel_raw\nros2 topic info /cmd_vel\nros2 param get /safety_controller stop_distance",
         "capture": "ros2 pkg executables agv_control; rg -n 'stop_distance|cmd_vel_raw|/cmd_vel|front_half_angle' src/agv_control/agv_control/safety_controller.py",
+        "visual": "blocks/E_autonomy_logic/captures/02_rviz_marker_path_actual.png", "visual_caption": "실제 RViz2: safety sector Marker와 Path를 추가해 확인하는 통합 display",
         "errors": [("장애물이 있는데 멈추지 않음", "sector 각도·finite range·threshold m 단위를 확인한다."), ("항상 STOP", "inf/NaN 처리와 lidar frame 전방 방향을 확인한다.")],
         "mini": "stop_distance 0.50→0.80 m로 바꾸면 어떤 상황에서 더 일찍 멈추는지 /cmd_vel 로그 기준으로 작성한다.",
     },
@@ -350,10 +358,11 @@ MODULES = [
         "previous": "M18 priority decision", "next": "M20 PID",
         "flow": ["SEARCH", "APPROACH", "AVOID", "GOAL"],
         "files": ["agv_mission/agv_mission/mission_manager.py", "agv_bringup/config/mission.yaml", "agv_mission/setup.py"],
-        "actions": [("FSM node를 빌드하고 실행한다", "상태는 흩어진 if문이 아니라 한 곳에서 /cmd_vel_raw를 결정한다.", "cd ~/agv_ws\ncolcon build --symlink-install --packages-select agv_mission\nsource install/setup.bash\nros2 run agv_mission mission_manager"), ("상태 변화를 관찰한다", "상태의 이름과 속도 command를 서로 다른 topic에서 확인한다.", "ros2 topic echo /mission_state\nros2 topic echo /cmd_vel_raw")],
-        "run": "source ~/agv_ws/install/setup.bash\nros2 run agv_mission mission_manager",
+        "actions": [("FSM node를 빌드하고 실행한다", "상태는 흩어진 if문이 아니라 한 곳에서 /cmd_vel_raw를 결정한다.", "cd ~/ros2_curri/agv_ws\ncolcon build --symlink-install --packages-select agv_mission\nsource install/setup.bash\nros2 run agv_mission mission_manager"), ("상태 변화를 관찰한다", "상태의 이름과 속도 command를 서로 다른 topic에서 확인한다.", "ros2 topic echo /mission_state\nros2 topic echo /cmd_vel_raw")],
+        "run": "source ~/ros2_curri/agv_ws/install/setup.bash\nros2 run agv_mission mission_manager",
         "validate": "ros2 topic info /mission_state\nros2 topic info /cmd_vel_raw\nros2 param get /mission_manager stop_distance",
         "capture": "ros2 pkg executables agv_mission; cat src/agv_bringup/config/mission.yaml",
+        "visual": "blocks/E_autonomy_logic/captures/02_rviz_marker_path_actual.png", "visual_caption": "실제 RViz2: mission text Marker를 같은 scene에서 확인하는 display 구성",
         "errors": [("상태가 전환되지 않음", "callback input·조건식·거리 단위를 확인한다."), ("SEARCH↔APPROACH 반복", "detection timeout·hysteresis·우선순위를 추가 점검한다.")],
         "mini": "target 없음, target 있음, obstacle<0.5 m의 세 입력에 대해 예상 state와 /cmd_vel_raw를 표로 작성한다.",
     },
@@ -367,9 +376,10 @@ MODULES = [
         "flow": ["target error", "P / PID\ncontroller", "/cmd_vel_raw", "Safety"],
         "files": ["agv_control/agv_control/pid_controller.py", "agv_control/setup.py", "agv_bringup/config/mission.yaml"],
         "actions": [("제어 파라미터를 확인한다", "P gain과 최대 속도는 overshoot 전에 먼저 보수적으로 제한한다.", "ros2 run agv_control pid_controller --ros-args \\\n  -p kp_angular:=0.004 -p max_linear_speed:=0.25"), ("error와 command를 분리해 관찰한다", "입력 부호가 바뀌면 angular.z 부호도 기대 방향으로 바뀌어야 한다.", "ros2 topic echo /target_error\nros2 topic echo /cmd_vel_raw")],
-        "run": "source ~/agv_ws/install/setup.bash\nros2 run agv_control pid_controller --ros-args -p kp_angular:=0.004",
+        "run": "source ~/ros2_curri/agv_ws/install/setup.bash\nros2 run agv_control pid_controller --ros-args -p kp_angular:=0.004",
         "validate": "ros2 topic info /target_error\nros2 topic info /cmd_vel_raw\nros2 param get /pid_controller kp_angular",
         "capture": "ros2 pkg executables agv_control; rg -n 'kp_angular|max_linear_speed|max_angular_speed|cmd_vel_raw' src/agv_control/agv_control/pid_controller.py",
+        "visual": "blocks/E_autonomy_logic/captures/02_rviz_marker_path_actual.png", "visual_caption": "실제 RViz2: /path와 robot pose를 함께 보며 PID 전후 궤적을 비교하는 구성",
         "errors": [("로봇이 반대 방향 회전", "error 정의와 angular.z 부호를 확인한다."), ("진동이 심함", "kp/kd·update rate·latency·saturation을 확인한다.")],
         "mini": "kp_angular을 0.002, 0.004, 0.008로 바꿨을 때 반응 속도와 진동 위험을 예측해 기록한다.",
     },
@@ -382,10 +392,11 @@ MODULES = [
         "previous": "M20 controller", "next": "M22 final mission",
         "flow": ["YAML config", "agv_sim.launch.py", "nodes + Gazebo", "rosbag2"],
         "files": ["agv_bringup/config/robot.yaml", "agv_bringup/config/sensors.yaml", "agv_bringup/config/vision.yaml", "agv_bringup/config/mission.yaml", "agv_control/config/controllers.yaml", "agv_bringup/launch/agv_sim.launch.py", "agv_gazebo/launch/gazebo.launch.py"],
-        "actions": [("YAML 책임을 분리한다", "robot·sensor·vision·mission·controller 값은 실행 코드와 분리한다.", "find ~/agv_ws/src -path '*/config/*.yaml' -type f | sort\nros2 param get /mission_manager stop_distance"), ("한 launch로 실행한다", "launch는 Gazebo, TF, processing, mission, safety의 시작 순서를 한 곳에서 관리한다.", "source ~/agv_ws/install/setup.bash\nros2 launch agv_bringup agv_sim.launch.py"), ("주행 데이터를 기록한다", "bag은 simulator 재실행 없이 processing 결과를 비교할 입력 데이터다.", "ros2 bag record -o ~/agv_bag_01 \\\n  /scan /imu/data /odom /camera/image_raw\n# Ctrl-C 뒤: ros2 bag info ~/agv_bag_01")],
-        "run": "cd ~/agv_ws && source install/setup.bash\nros2 launch agv_bringup agv_sim.launch.py\n# 별도 터미널: ros2 bag record -o ~/agv_bag_01 /scan /imu/data /odom /camera/image_raw",
+        "actions": [("YAML 책임을 분리한다", "robot·sensor·vision·mission·controller 값은 실행 코드와 분리한다.", "find ~/ros2_curri/agv_ws/src -path '*/config/*.yaml' -type f | sort\nros2 param get /mission_manager stop_distance"), ("한 launch로 실행한다", "launch는 Gazebo, TF, processing, mission, safety의 시작 순서를 한 곳에서 관리한다.", "source ~/ros2_curri/agv_ws/install/setup.bash\nros2 launch agv_bringup agv_sim.launch.py"), ("주행 데이터를 기록한다", "bag은 simulator 재실행 없이 processing 결과를 비교할 입력 데이터다.", "ros2 bag record -o ~/agv_bag_01 \\\n  /scan /imu/data /odom /camera/image_raw\n# Ctrl-C 뒤: ros2 bag info ~/agv_bag_01")],
+        "run": "cd ~/ros2_curri/agv_ws && source install/setup.bash\nros2 launch agv_bringup agv_sim.launch.py\n# 별도 터미널: ros2 bag record -o ~/agv_bag_01 /scan /imu/data /odom /camera/image_raw",
         "validate": "ros2 launch agv_bringup agv_sim.launch.py --show-args\nros2 node list\nros2 param get /mission_manager stop_distance",
         "capture": "ros2 launch agv_bringup agv_sim.launch.py --show-args; printf '\\n--- config files ---\\n'; find src -path '*/config/*.yaml' -type f | sort",
+        "visual": "blocks/F_integration/captures/01_gazebo_final_actual.png", "visual_caption": "실제 Gazebo Sim: launch로 World와 AGV를 함께 실행한 화면",
         "errors": [("일부 노드 시작 실패", "launch 순서·spawn 준비·package path를 확인한다."), ("YAML 값이 적용 안 됨", "node name/namespace와 parameter key를 확인한다.")],
         "mini": "mission.yaml stop_distance를 0.50→0.70으로 바꾼 뒤 재실행하고 ros2 param get으로 적용값을 확인한다.",
         "extra": [("rosbag2 재생 절차", ["기록 종료 뒤 `ros2 bag info ~/agv_bag_01`로 topic과 duration을 먼저 확인한다.", "Gazebo가 없는 terminal에서 processing node를 source·실행한다.", "`ros2 bag play ~/agv_bag_01 --clock`으로 sensor 입력을 다시 공급한다.", "use_sim_time=true 노드는 /clock을 받아 같은 시간축을 사용한다."]), ("증상별 디버깅 도구", ["node 미실행: ros2 node list", "topic/타입/QoS: ros2 topic info --verbose", "parameter: ros2 param get/list", "frame: tf2_tools view_frames와 RViz2", "시뮬레이터: Gazebo GUI와 bridge log"] )],
@@ -399,10 +410,11 @@ MODULES = [
         "previous": "M21 one-command bringup", "next": "핵심 과정 완료 → SLAM/Nav2 확장",
         "flow": ["START", "SEARCH", "APPROACH", "AVOID / GOAL", "STOP"],
         "files": ["agv_bringup/launch/agv_sim.launch.py", "agv_bringup/config/mission.yaml", "agv_gazebo/worlds/warehouse.sdf", "agv_mission/agv_mission/mission_manager.py", "agv_control/agv_control/safety_controller.py"],
-        "actions": [("환경 기준선을 확인한다", "같은 ROS/Gazebo 조합과 workspace overlay가 결과 재현의 시작점이다.", "source /opt/ros/jazzy/setup.bash\ncd ~/agv_ws\ncolcon build --symlink-install\nsource install/setup.bash"), ("최종 bringup을 실행한다", "최종 launch가 Gazebo·bridge·TF·sensor·mission·safety를 조립한다.", "ros2 launch agv_bringup agv_sim.launch.py"), ("증거 데이터를 남긴다", "화면만이 아니라 topic·log·bag을 함께 남겨야 다른 사람이 검증할 수 있다.", "ros2 node list\nros2 topic list\nros2 bag record -o ~/agv_final_bag /scan /imu/data /odom /camera/image_raw")],
-        "run": "cd ~/agv_ws && source install/setup.bash\nros2 launch agv_bringup agv_sim.launch.py",
+        "actions": [("환경 기준선을 확인한다", "같은 ROS/Gazebo 조합과 workspace overlay가 결과 재현의 시작점이다.", "source /opt/ros/jazzy/setup.bash\ncd ~/ros2_curri/agv_ws\ncolcon build --symlink-install\nsource install/setup.bash"), ("최종 bringup을 실행한다", "최종 launch가 Gazebo·bridge·TF·sensor·mission·safety를 조립한다.", "ros2 launch agv_bringup agv_sim.launch.py"), ("증거 데이터를 남긴다", "화면만이 아니라 topic·log·bag을 함께 남겨야 다른 사람이 검증할 수 있다.", "ros2 node list\nros2 topic list\nros2 bag record -o ~/agv_final_bag /scan /imu/data /odom /camera/image_raw")],
+        "run": "cd ~/ros2_curri/agv_ws && source install/setup.bash\nros2 launch agv_bringup agv_sim.launch.py",
         "validate": "ros2 launch agv_bringup agv_sim.launch.py --show-args\nros2 node list\nros2 topic list | rg '/scan|/imu/data|/odom|/camera/image_raw|/cmd_vel'",
         "capture": "colcon list --names-only; ros2 launch agv_bringup agv_sim.launch.py --show-args; rosdep check --from-paths src --ignore-src --rosdistro jazzy --skip-keys ament_python",
+        "visual": "blocks/F_integration/captures/02_rviz_final_actual.png", "visual_caption": "실제 RViz2 통합 display: 최종 미션에서 RobotModel·TF·sensor·Path·Marker를 함께 확인하는 화면",
         "errors": [("일부 노드만 실행", "launch 순서·namespace·config 경로를 확인한다."), ("센서/TF 위치 불일치", "header.frame_id와 TF tree를 확인한다."), ("로봇이 불안정", "physics collision·friction·inertia를 M07 순서로 점검한다.")],
         "mini": "완료 증거를 ①Gazebo ②RViz ③ros2 topic ④mission log ⑤rosbag으로 나누어 실제 제출 파일 목록을 작성한다.",
         "extra": [("최종 미션 시나리오", ["1. START: launch와 sensor topic을 확인한다.", "2. SEARCH: target이 없을 때 회전 탐색 command를 관찰한다.", "3. APPROACH: detection 중심 오차가 angular command로 바뀌는지 확인한다.", "4. AVOID/STOP: LiDAR threshold 안에서는 safety가 우선하는지 확인한다.", "5. GOAL/STOP: 목표 도달 뒤 forward /cmd_vel이 0인지 확인한다."]), ("최종 기능 체크표", ["Model/Physics: body·wheel·collision·inertia", "Drive/TF/Odom: /cmd_vel, /odom, frame tree", "Sensors: /camera/image_raw, /scan, /imu/data", "Autonomy: detection, safety priority, mission state", "Operations/Data: launch, YAML, rosbag2, README/checkpoint"]), ("Milestone 1~8 제출 증거", ["1 모델 TF, 2 World spawn, 3 Differential Drive, 4 bridge/RViz", "5 Camera/LiDAR/IMU, 6 safety/perception, 7 FSM/PID, 8 launch/rosbag", "각 milestone마다 command 결과와 정상 화면을 함께 저장한다."]), ("실패를 재현 가능하게 기록한다", ["topic: 이름·타입·publisher/subscriber 수", "TF: frame_id·parent/child·Fixed Frame", "bridge: 방향·Gazebo/ROS type", "physics: collision·friction·inertia", "launch: package share·YAML key·실행 순서"] )],
@@ -411,7 +423,7 @@ MODULES = [
 
 
 def canonical_path(relative: str) -> str:
-    return "~/agv_ws/src/" + relative
+    return "~/ros2_curri/agv_ws/src/" + relative
 
 
 def fold_python_line(line: str, width: int = 88) -> list[str]:
@@ -491,8 +503,8 @@ def run_actual(command: str) -> str:
 
 
 def make_terminal_capture(module: dict, text: str, target: Path) -> None:
-    command = module["capture"].replace(str(ROOT), "~/agv_ws")
-    lines = [f"$ cd ~/agv_ws", f"$ {command}", ""] + text.splitlines()
+    command = module["capture"].replace(str(ROOT), "~/ros2_curri/agv_ws")
+    lines = [f"$ cd ~/ros2_curri/agv_ws", f"$ {command}", ""] + text.splitlines()
     wrapped = []
     for line in lines:
         wrapped.extend(textwrap.wrap(line, width=98, replace_whitespace=False, drop_whitespace=False) or [""])
@@ -563,7 +575,7 @@ def title(slide, module: dict, text: str, subtitle: str = "") -> None:
     add_footer(slide, module)
 
 
-def status(slide, module: dict, step: str, folder: str = "~/agv_ws", new_terminal: str = "현재 터미널") -> None:
+def status(slide, module: dict, step: str, folder: str = "~/ros2_curri/agv_ws", new_terminal: str = "현재 터미널") -> None:
     bar = box(slide, 0.62, 1.30, 12.1, 0.38, fill=LIGHT, line=LIGHT, radius=MSO_AUTO_SHAPE_TYPE.RECTANGLE)
     set_text(bar, f"현재 단계 {step}    |    현재 폴더 {folder}    |    {new_terminal}", 13, NAVY, True)
 
@@ -600,7 +612,7 @@ def add_flow(slide, module: dict) -> None:
 def add_code_slide(slide, module: dict, relative: str, lines: list[str], chunk_no: int, chunk_count: int, step_no: int) -> None:
     display_path = canonical_path(relative)
     title(slide, module, f"파일을 {'새로 만들고' if chunk_no == 1 else '계속 작성하고'} 저장한다 ({chunk_no}/{chunk_count})", display_path)
-    status(slide, module, f"{step_no}/{step_no + chunk_count - chunk_no + 1}", "~/agv_ws")
+    status(slide, module, f"{step_no}/{step_no + chunk_count - chunk_no + 1}", "~/ros2_curri/agv_ws")
     text_box(slide, 0.72, 1.78, 12.0, 0.28, "이번 단계: 파일의 전체 내용을 중간 생략 없이 작성합니다. 아래 줄 범위를 끝까지 입력하세요.", 15, NAVY, True)
     command_box = box(slide, 0.72, 2.14, 12.0, 0.66, fill=LIGHT, line=LIGHT, radius=MSO_AUTO_SHAPE_TYPE.RECTANGLE)
     directory = str(Path(display_path).parent)
@@ -618,7 +630,7 @@ def add_code_slide(slide, module: dict, relative: str, lines: list[str], chunk_n
 def add_action_slide(slide, module: dict, step_number: int, total_steps: int, action: tuple[str, str, str]) -> None:
     heading, why, command = action
     title(slide, module, heading, "한 장에는 한 행동만 수행합니다.")
-    status(slide, module, f"{step_number}/{total_steps}", "~/agv_ws", "새 터미널" if "새 터미널" in command else "현재 터미널")
+    status(slide, module, f"{step_number}/{total_steps}", "~/ros2_curri/agv_ws", "새 터미널" if "새 터미널" in command else "현재 터미널")
     text_box(slide, 0.74, 1.93, 2.0, 0.38, "왜 하는가", 18, BLUE, True)
     text_box(slide, 0.74, 2.30, 11.8, 0.56, why, 20, NAVY)
     command_box = box(slide, 0.74, 3.14, 11.85, 2.55, fill=DARK, line=DARK, radius=MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE)
@@ -641,7 +653,7 @@ def add_capture_slide(slide, module: dict, image_path: Path, caption: str) -> No
 
 def add_validation_slide(slide, module: dict) -> None:
     title(slide, module, "객관적 검증 명령으로 완료를 확인한다", "화면만 보지 말고 topic·frame·파일·parameter를 다시 확인합니다.")
-    status(slide, module, "검증", "~/agv_ws")
+    status(slide, module, "검증", "~/ros2_curri/agv_ws")
     command_box = box(slide, 0.72, 1.92, 12.0, 2.35, fill=DARK, line=DARK)
     set_text(command_box, module["validate"], 16, WHITE, False, MONO)
     check_box = box(slide, 0.72, 4.60, 12.0, 1.70, fill=LIGHT, line=RGBColor(209, 223, 213))
@@ -652,7 +664,7 @@ def add_validation_slide(slide, module: dict) -> None:
 
 def add_errors_slide(slide, module: dict) -> None:
     title(slide, module, "막히면: 증상 → 우선 확인 → 재검증", "오류 메시지를 숨기지 않고 같은 순서로 점검합니다.")
-    status(slide, module, "오류 대응", "~/agv_ws")
+    status(slide, module, "오류 대응", "~/ros2_curri/agv_ws")
     errors = module["errors"]
     for index, (symptom, check) in enumerate(errors):
         y = 1.92 + index * 1.55
@@ -668,7 +680,7 @@ def add_errors_slide(slide, module: dict) -> None:
 
 def add_checkpoint_slide(slide, module: dict, artifact_dir: Path) -> None:
     title(slide, module, "체크포인트를 저장하고 다음 모듈로 넘긴다", "현재 Complete는 다음 Starter의 기준선입니다.")
-    status(slide, module, "체크포인트", "~/agv_ws")
+    status(slide, module, "체크포인트", "~/ros2_curri/agv_ws")
     panel = box(slide, 0.75, 1.90, 12.0, 3.95, fill=LIGHT, line=RGBColor(210, 220, 232))
     items = [
         f"□ 완료 화면: {module['completion']}",
@@ -700,7 +712,7 @@ def add_reference_slide(slide, module: dict) -> None:
 
 def add_extra_slide(slide, module: dict, heading: str, bullets: list[str]) -> None:
     title(slide, module, heading, "통합 단계에서 놓치기 쉬운 실행·운영 조건을 정리합니다.")
-    status(slide, module, "통합 보강", "~/agv_ws")
+    status(slide, module, "통합 보강", "~/ros2_curri/agv_ws")
     panel = box(slide, 0.74, 1.85, 12.0, 4.85, fill=LIGHT, line=RGBColor(210, 222, 236))
     add_bullets(slide, 1.0, 2.18, 11.3, 4.10, bullets, 19)
     add_notes(slide, heading, check="각 항목이 현재 시스템의 어느 package/topic/file과 연결되는지 확인한다.")
@@ -751,11 +763,11 @@ def build_deck(module: dict) -> tuple[Path, str]:
     # 3. start
     slide = presentation.slides.add_slide(blank)
     title(slide, module, "시작 상태를 먼저 맞춘다", "실습 시작 전에 현재 폴더·이전 파일·실행 프로그램을 확인합니다.")
-    status(slide, module, "시작", "~/agv_ws")
+    status(slide, module, "시작", "~/ros2_curri/agv_ws")
     panel = box(slide, 0.78, 1.95, 12.0, 3.75, fill=LIGHT, line=RGBColor(215, 225, 235))
-    add_bullets(slide, 1.0, 2.20, 11.4, 3.10, [f"시작 상태: {module['start']}", f"이전 Complete: {module['previous']}", "현재 폴더: ~/agv_ws", "새 터미널마다: source /opt/ros/jazzy/setup.bash → source install/setup.bash", "파일 경로는 PPT와 Complete 폴더에서 같은 이름으로 유지"], 19)
-    text_box(slide, 0.98, 6.05, 11.5, 0.35, "확인: pwd가 ~/agv_ws이고, 이전 모듈의 완료 조건을 한 문장으로 설명할 수 있으면 시작합니다.", 16, GREEN, True, align=PP_ALIGN.CENTER)
-    add_notes(slide, "교육생의 시작 상태를 통일한다.", command="pwd; source /opt/ros/jazzy/setup.bash; source ~/agv_ws/install/setup.bash", check="현재 폴더와 source 상태를 모두 확인한다.")
+    add_bullets(slide, 1.0, 2.20, 11.4, 3.10, [f"시작 상태: {module['start']}", f"이전 Complete: {module['previous']}", "현재 폴더: ~/ros2_curri/agv_ws", "새 터미널마다: source /opt/ros/jazzy/setup.bash → source install/setup.bash", "파일 경로는 PPT와 Complete 폴더에서 같은 이름으로 유지"], 19)
+    text_box(slide, 0.98, 6.05, 11.5, 0.35, "확인: pwd가 ~/ros2_curri/agv_ws이고, 이전 모듈의 완료 조건을 한 문장으로 설명할 수 있으면 시작합니다.", 16, GREEN, True, align=PP_ALIGN.CENTER)
+    add_notes(slide, "교육생의 시작 상태를 통일한다.", command="pwd; source /opt/ros/jazzy/setup.bash; source ~/ros2_curri/agv_ws/install/setup.bash", check="현재 폴더와 source 상태를 모두 확인한다.")
 
     # 4. goal
     slide = presentation.slides.add_slide(blank)
@@ -774,7 +786,7 @@ def build_deck(module: dict) -> tuple[Path, str]:
     slide = presentation.slides.add_slide(blank)
     title(slide, module, "이번 모듈에서 생성·수정하는 파일", "파일명과 package 경로를 끝까지 동일하게 사용합니다.")
     files = module["files"] or ["(M01은 사용자 파일 없이 ROS 2 내장 demo node를 사용합니다.)"]
-    tree_lines = ["~/agv_ws/src/"] + ["└── " + value for value in files]
+    tree_lines = ["~/ros2_curri/agv_ws/src/"] + ["└── " + value for value in files]
     panel = box(slide, 0.85, 1.75, 11.8, 4.82, fill=DARK, line=DARK)
     set_text(panel, "\n".join(tree_lines), 16, WHITE, False, MONO)
     text_box(slide, 0.96, 6.72, 11.3, 0.22, "파일 전체 코드는 다음 슬라이드에 이어집니다. 중간 줄을 빼지 않고 끝까지 제공합니다.", 11, GREY, align=PP_ALIGN.CENTER)
@@ -801,7 +813,7 @@ def build_deck(module: dict) -> tuple[Path, str]:
     # build/run, real capture, optional GUI capture, validation, errors, mini, extras, checkpoint, references.
     slide = presentation.slides.add_slide(blank)
     title(slide, module, "build → source → run 순서로 실행한다", "새 파일 또는 수정 파일은 build와 source 뒤에만 실행 이름·설정에 반영됩니다.")
-    status(slide, module, "실행", "~/agv_ws")
+    status(slide, module, "실행", "~/ros2_curri/agv_ws")
     panel = box(slide, 0.72, 1.86, 12.0, 3.48, fill=DARK, line=DARK)
     set_text(panel, module["run"], 16, WHITE, False, MONO)
     text_box(slide, 0.86, 5.73, 1.38, 0.26, "확인 기준", 18, GREEN, True)
@@ -819,7 +831,7 @@ def build_deck(module: dict) -> tuple[Path, str]:
     slide = presentation.slides.add_slide(blank); add_errors_slide(slide, module)
     slide = presentation.slides.add_slide(blank)
     title(slide, module, "미니 실습: 값 하나를 바꾸고 결과를 비교한다", "정상 결과를 만든 뒤에는 한 번에 하나의 값만 바꿉니다.")
-    status(slide, module, "미니 실습", "~/agv_ws")
+    status(slide, module, "미니 실습", "~/ros2_curri/agv_ws")
     panel = box(slide, 0.82, 2.05, 11.65, 2.18, fill=RGBColor(255, 248, 235), line=RGBColor(236, 198, 128))
     set_text(panel, module["mini"], 23, NAVY, True, align=PP_ALIGN.CENTER); panel.text_frame.vertical_anchor = MSO_ANCHOR.MIDDLE
     text_box(slide, 0.96, 5.02, 11.2, 0.65, "기록할 것: 바꾼 값(단위) · 기대한 변화 · 실제 출력/화면 · 원래 값으로 되돌린 결과", 19, ORANGE, True, align=PP_ALIGN.CENTER)
@@ -843,7 +855,7 @@ def make_artifacts(module: dict, validation_log: str) -> None:
         f"- 시작 상태: {module['start']}\n"
         f"- 이전 모듈 기준: {module['previous']}\n"
         "- 이 폴더의 PPT를 1번 슬라이드부터 순서대로 수행한다.\n"
-        "- 실제 작업 workspace는 `~/agv_ws`이고, source 원본은 이 저장소의 `agv_ws/src/`이다.\n",
+        "- 실제 작업 workspace는 `~/ros2_curri/agv_ws`이고, source 원본은 이 저장소의 `agv_ws/src/`이다.\n",
         encoding="utf-8")
     manifest = []
     for relative in module["files"]:

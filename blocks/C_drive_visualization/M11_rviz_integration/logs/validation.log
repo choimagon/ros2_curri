@@ -1,5 +1,9 @@
 /opt/ros/jazzy
-7:    Fixed Frame: base_link
+7:    Fixed Frame: odom
 11:      Class: rviz_default_plugins/RobotModel
 28:      Name: RobotModel
-55:      Target Frame: <Fixed Frame>
+36:    - Class: rviz_default_plugins/Odometry
+39:      Name: Odometry
+54:    - Class: rviz_default_plugins/LaserScan
+56:      Name: LaserScan
+119:      Target Frame: <Fixed Frame>

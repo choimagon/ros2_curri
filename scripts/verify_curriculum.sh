@@ -32,10 +32,22 @@ for module in $(seq -w 1 22); do
   fi
 done
 
+for block in A B C D E F; do
+  combined=$(find "${root_dir}/blocks" -maxdepth 2 -type f -name "Block_${block}_M시리즈_통합_따라하기.pptx" -print -quit)
+  if [ -n "${combined}" ]; then
+    printf 'OK      Block %s combined M-series PPTX %s\n' "${block}" "${combined#${root_dir}/}"
+  else
+    printf 'MISSING Block %s combined M-series PPTX\n' "${block}"
+    missing=1
+  fi
+done
+
 for file in \
   docs/BEGINNER_FILE_MAKING_GUIDE.md \
   docs/PPT_FOLLOW_ALONG_DELIVERY.md \
   tools/create_module_presentations.py \
+  tools/create_block_combined_presentations.py \
+  tools/xwd_to_png.py \
   agv_ws/src/agv_cpp_examples/CMakeLists.txt \
   agv_ws/src/agv_cpp_examples/package.xml \
   agv_ws/src/agv_cpp_examples/src/status_publisher.cpp \
@@ -44,8 +56,10 @@ for file in \
   agv_ws/src/agv_gazebo/config/bridge.yaml \
   agv_ws/src/agv_control/agv_control/safety_controller.py \
   agv_ws/src/agv_sensors/agv_sensors/lidar_processor.py \
+  agv_ws/src/agv_sensors/agv_sensors/odom_path.py \
   agv_ws/src/agv_vision/agv_vision/yolo_node.py \
   agv_ws/src/agv_mission/agv_mission/mission_manager.py \
+  agv_ws/src/agv_mission/agv_mission/mission_markers.py \
   agv_ws/src/agv_bringup/launch/agv_sim.launch.py; do
   if [ -f "${root_dir}/${file}" ]; then
     printf 'OK      %s\n' "${file}"

@@ -1,6 +1,6 @@
 # ROS 2 + Gazebo AGV 실습 커리큘럼
 
-워드 원본 `ROS2_Gazebo_AGV_교육_커리큘럼.docx`를 실제로 따라 만들 수 있는 실습 저장소입니다. 기준 조합은 **Ubuntu 24.04 LTS + ROS 2 Jazzy + Gazebo Harmonic**입니다.
+워드 원본과 개선 가이드를 실제로 따라 만들 수 있는 초보자용 ROS 2 + Gazebo AGV 실습 저장소입니다. 기준 조합은 **Ubuntu 24.04 LTS + ROS 2 Jazzy + Gazebo Harmonic**입니다.
 
 ## 시작 순서
 
@@ -28,11 +28,11 @@
 - 명령어가 실제로 하는 일과 바꿔 볼 수 있는 parameter/설정값
 - 코드·URDF/SDF/YAML이 구현하는 구조와 실행 뒤 확인할 결과
 
-M08에는 실제 Gazebo AGV 화면, M11에는 실제 RViz AGV·센서 frame 화면을 각 모듈의 `screenshots/`와 PPTX에 포함했습니다.
+실제 Gazebo, RViz, Camera topic 화면은 해당 모듈의 `screenshots/`에 저장합니다. 화면마다 파일명 순서와 source commit을 기록해 PPT의 결과가 어떤 코드 기준인지 추적할 수 있습니다.
 
 ## 따라 하기 PPT 사용법
 
-제작 기준은 저장소 루트의 `ROS2_Gazebo_AGV_따라하기형_PPT_제작_가이드.docx`이며, 가이드 반영 사항은 [PPT 배포 구조](docs/PPT_FOLLOW_ALONG_DELIVERY.md)에 정리했습니다. 각 M01–M22 폴더에 독립 실행용 PPTX가 있으며, Block별 결과 요약 PPT는 제공하지 않습니다. 각 모듈 폴더는 다음 구조를 공통으로 사용합니다.
+제작 기준은 저장소 루트의 PPT 제작 가이드와 커리큘럼 개선 가이드이며, 가이드 반영 사항은 [PPT 배포 구조](docs/PPT_FOLLOW_ALONG_DELIVERY.md)에 정리했습니다. 각 M01–M22 폴더에 독립 실행용 PPTX가 있고, 각 Block 루트에는 해당 M 시리즈 전체를 순서대로 합친 `Block_*_M시리즈_통합_따라하기.pptx`가 있습니다. 이는 예전의 ‘실습 결과 명령어’ PPT가 아니라 개별 M 강의 자료를 모은 통합본입니다. 각 모듈 폴더는 다음 구조를 공통으로 사용합니다.
 
 ```text
 MXX_module/
@@ -46,12 +46,12 @@ MXX_module/
 
 | Block | 모듈별 PPT 폴더 |
 | --- | --- |
-| A — ROS 2 기초 | [M01–M04](blocks/A_ros2_basics/) |
-| B — 로봇 제작 | [M05–M08](blocks/B_robot_build/) |
-| C — 주행과 시각화 | [M09–M11](blocks/C_drive_visualization/) |
-| D — 센서 | [M12–M15](blocks/D_sensors/) |
-| E — 제어·인지·미션 | [M16–M20](blocks/E_autonomy_logic/) |
-| F — 통합 | [M21–M22](blocks/F_integration/) |
+| A — ROS 2 기초 | [M01–M04와 통합 PPT](blocks/A_ros2_basics/) |
+| B — 로봇 제작 | [M05–M08와 통합 PPT](blocks/B_robot_build/) |
+| C — 주행과 시각화 | [M09–M11와 통합 PPT](blocks/C_drive_visualization/) |
+| D — 센서 | [M12–M15와 통합 PPT](blocks/D_sensors/) |
+| E — 제어·인지·미션 | [M16–M20와 통합 PPT](blocks/E_autonomy_logic/) |
+| F — 통합 | [M21–M22와 통합 PPT](blocks/F_integration/) |
 
 ## 커리큘럼 순서
 

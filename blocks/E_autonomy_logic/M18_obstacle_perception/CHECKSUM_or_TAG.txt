@@ -2,4 +2,4 @@ M18 complete checkpoint
 SHA-256 manifest (source snapshot at PPT generation time)
 7fbac06026887eeb9320395e58d14b4f8001b458f168b47a8342279a9c623bbe  agv_ws/src/agv_sensors/agv_sensors/lidar_processor.py
 2871d73d6a3d48063c00f9e691925ebb48d6cfe0983a2151eeb2cf8799234685  agv_ws/src/agv_control/agv_control/safety_controller.py
-cfcd67d14615fb265b9fa97f37531de230093b4f197615ee91d4980953beae43  agv_ws/src/agv_bringup/config/mission.yaml
+8387af19fa8137ef37734a1ba02a3d24ac861c7987be8639a36d4afafc24e0a6  agv_ws/src/agv_bringup/config/mission.yaml

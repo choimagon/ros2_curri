@@ -11,4 +11,13 @@ colcon build --symlink-install --packages-select agv_control agv_cpp_examples ag
 source install/setup.bash
 ```
 
-순서대로 M01 → M04를 진행하고, 각 README의 `확인`을 통과한 뒤 다음 모듈로 갑니다.
+## Block 커리큘럼 요약
+
+| 순서 | 핵심 결과 | 다음 단계로 넘기는 것 |
+| --- | --- | --- |
+| M01 | node·topic·message를 CLI로 관찰 | ROS 환경 source 습관 |
+| M02 | Python/C++ 패키지를 colcon으로 빌드 | workspace·overlay |
+| M03 | timer 기반 pub/sub 작성 | `/counter`, `/cmd_vel` 이해 |
+| M04 | `map → odom → base_link` TF 관계 | URDF link/joint 기준 |
+
+Block 전체 강의·복습은 [M 시리즈 통합 PPT](Block_A_M시리즈_통합_따라하기.pptx)를, 직접 실습은 M01 → M04 개별 PPT를 사용합니다.

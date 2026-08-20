@@ -1,5 +1,5 @@
 M08 complete checkpoint
 SHA-256 manifest (source snapshot at PPT generation time)
-6f8c182597c2913afa04151732dc8dc2bd003582e6a8b374597ab7ceb849a990  agv_ws/src/agv_gazebo/worlds/warehouse.sdf
-ad9af8c9d4aa9cb31f5bded86b5d5d92269897d6e667736b799b44f286e7fa4c  agv_ws/src/agv_gazebo/models/agv/model.config
-b30affd0ac4a1208db254d0abacee056c5967c1fc4e199893a86c12f66f17dd5  agv_ws/src/agv_gazebo/launch/gazebo.launch.py
+060f336a844320fdd94a66d1e1513191a35088e101e419dc5e1f882b172b07a4  agv_ws/src/agv_description/curriculum_stages/M08/model.config
+70274a3f329ad459633a6de76b5e014b72307480b9099690915cfce74db2826d  agv_ws/src/agv_description/curriculum_stages/M08/model.sdf
+67ed5ddfcc65afff2664b3863cf455a3d755d0ddf32931a4ee2d4ba60e8acfce  agv_ws/src/agv_description/curriculum_stages/M08/warehouse.sdf

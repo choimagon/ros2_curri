@@ -13,9 +13,11 @@ class MissionManager(Node):
         self.declare_parameter('search_speed', 0.25)
         self.declare_parameter('approach_speed', 0.15)
         self.declare_parameter('image_center_x', 320)
+        self.declare_parameter('target_timeout_sec', 0.70)
         self.state = 'IDLE'
         self.obstacle_distance = math.inf
         self.target = None
+        self.last_target_time = None
         self.create_subscription(Float32, '/obstacle_distance', self.obstacle_callback, 10)
         self.create_subscription(DetectionArray, '/detections', self.detections_callback, 10)
         self.command_publisher = self.create_publisher(Twist, '/cmd_vel_raw', 10)
@@ -26,7 +28,9 @@ class MissionManager(Node):
         self.obstacle_distance = message.data
 
     def detections_callback(self, message):
-        self.target = message.detections[0] if message.detections else None
+        if message.detections:
+            self.target = message.detections[0]
+            self.last_target_time = self.get_clock().now()
 
     def set_state(self, state):
         if state != self.state:
@@ -36,6 +40,10 @@ class MissionManager(Node):
 
     def tick(self):
         command = Twist()
+        if self.last_target_time is not None:
+            age = (self.get_clock().now() - self.last_target_time).nanoseconds / 1e9
+            if age > self.get_parameter('target_timeout_sec').value:
+                self.target = None
         if self.obstacle_distance < self.get_parameter('stop_distance').value:
             self.set_state('AVOID')
             command.angular.z = self.get_parameter('search_speed').value

@@ -2,5 +2,6 @@ yolo_node:
   ros__parameters:
     use_sim_time: true
     enable_yolo: false
+    enable_red_target_fallback: true
     model_path: yolo11n.pt
     confidence_threshold: 0.50

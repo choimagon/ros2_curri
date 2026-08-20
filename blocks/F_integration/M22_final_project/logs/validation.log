@@ -7,39 +7,117 @@ agv_interfaces
 agv_mission
 agv_sensors
 agv_vision
-Arguments (pass arguments as '<name>:=<value>'):
+Traceback (most recent call last):
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/launch_description_sources/any_launch_file_utilities.py", line 58, in get_launch_description_from_any_launch_file
+    return loader(launch_file_path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/launch_description_sources/python_launch_file_utilities.py", line 72, in get_launch_description_from_python_launch_file
+    return getattr(launch_file_module, 'generate_launch_description')()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lab4090/ros2_curri/agv_ws/install/agv_bringup/share/agv_bringup/launch/agv_sim.launch.py", line 19, in generate_launch_description
+    DeclareLaunchArgument('rviz', default_value='true', description='Start RViz2'),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/actions/declare_launch_argument.py", line 117, in __init__
+    self.__logger = launch.logging.get_logger(__name__)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 350, in get_logger
+    launch_log_file_handler = launch_config.get_log_file_handler()
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 324, in get_log_file_handler
+    file_path = self.get_log_file_path(file_name)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 310, in get_log_file_path
+    return os.path.join(self.log_dir, file_name)
+                        ^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 137, in log_dir
+    self._log_dir = _make_unique_log_dir(
+                    ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 81, in _make_unique_log_dir
+    os.makedirs(log_dir, exist_ok=True)
+  File "<frozen os>", line 225, in makedirs
+OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-14-12-52-876224-lab4090-Z790-AORUS-ELITE-443'
 
-    'rviz':
-        Start RViz2
-        (default: 'true')
+The above exception was the direct cause of the following exception:
 
-    'gz_args':
-        Arguments to be passed to Gazebo Sim
-        (default: '')
+Traceback (most recent call last):
+  File "/opt/ros/jazzy/bin/ros2", line 33, in <module>
+    sys.exit(load_entry_point('ros2cli==0.32.10', 'console_scripts', 'ros2')())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2cli/cli.py", line 91, in main
+    rc = extension.main(parser=parser, args=args)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2launch/command/launch.py", line 170, in main
+    return print_arguments_of_launch_file(launch_file_path=path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2launch/api/api.py", line 123, in print_arguments_of_launch_file
+    launch_description = get_launch_description_from_any_launch_file(launch_file_path)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/launch_description_sources/any_launch_file_utilities.py", line 61, in get_launch_description_from_any_launch_file
+    raise InvalidLaunchFileError(extension, likely_errors=exceptions)
+launch.invalid_launch_file_error.InvalidLaunchFileError: Caught multiple exceptions when trying to load file of format [py]:
+ - OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-14-12-52-876224-lab4090-Z790-AORUS-ELITE-443'
+ - InvalidFrontendLaunchFileError: The launch file may have a syntax error, or its format is unknown
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 144, in apport_excepthook
+    os.open(pr_filename, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o640), "wb"
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 30] Read-only file system: '/var/crash/_opt_ros_jazzy_bin_ros2.1000.crash'
 
-    'gz_version':
-        Gazebo Sim's major version
-        (default: '8')
+Original exception was:
+Traceback (most recent call last):
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/launch_description_sources/any_launch_file_utilities.py", line 58, in get_launch_description_from_any_launch_file
+    return loader(launch_file_path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/launch_description_sources/python_launch_file_utilities.py", line 72, in get_launch_description_from_python_launch_file
+    return getattr(launch_file_module, 'generate_launch_description')()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lab4090/ros2_curri/agv_ws/install/agv_bringup/share/agv_bringup/launch/agv_sim.launch.py", line 19, in generate_launch_description
+    DeclareLaunchArgument('rviz', default_value='true', description='Start RViz2'),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/actions/declare_launch_argument.py", line 117, in __init__
+    self.__logger = launch.logging.get_logger(__name__)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 350, in get_logger
+    launch_log_file_handler = launch_config.get_log_file_handler()
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 324, in get_log_file_handler
+    file_path = self.get_log_file_path(file_name)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 310, in get_log_file_path
+    return os.path.join(self.log_dir, file_name)
+                        ^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 137, in log_dir
+    self._log_dir = _make_unique_log_dir(
+                    ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 81, in _make_unique_log_dir
+    os.makedirs(log_dir, exist_ok=True)
+  File "<frozen os>", line 225, in makedirs
+OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-14-12-52-876224-lab4090-Z790-AORUS-ELITE-443'
 
-    'ign_args':
-        Deprecated: Arguments to be passed to Gazebo Sim
-        (default: '')
+The above exception was the direct cause of the following exception:
 
-    'ign_version':
-        Deprecated: Gazebo Sim's major version
-        (default: '')
-
-    'debugger':
-        Run in Debugger
-        (default: 'false')
-
-    'debug_env':
-        Debug environment variables
-        (default: 'false')
-
-    'on_exit_shutdown':
-        Shutdown on gz-sim exit
-        (default: 'false')
+Traceback (most recent call last):
+  File "/opt/ros/jazzy/bin/ros2", line 33, in <module>
+    sys.exit(load_entry_point('ros2cli==0.32.10', 'console_scripts', 'ros2')())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2cli/cli.py", line 91, in main
+    rc = extension.main(parser=parser, args=args)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2launch/command/launch.py", line 170, in main
+    return print_arguments_of_launch_file(launch_file_path=path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/ros2launch/api/api.py", line 123, in print_arguments_of_launch_file
+    launch_description = get_launch_description_from_any_launch_file(launch_file_path)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/launch_description_sources/any_launch_file_utilities.py", line 61, in get_launch_description_from_any_launch_file
+    raise InvalidLaunchFileError(extension, likely_errors=exceptions)
+launch.invalid_launch_file_error.InvalidLaunchFileError: Caught multiple exceptions when trying to load file of format [py]:
+ - OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-14-12-52-876224-lab4090-Z790-AORUS-ELITE-443'
+ - InvalidFrontendLaunchFileError: The launch file may have a syntax error, or its format is unknown
 /usr/bin/rosdep:6: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
   from pkg_resources import load_entry_point
 All system dependencies have been satisfied

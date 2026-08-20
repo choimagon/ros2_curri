@@ -5,6 +5,7 @@ mission_manager:
     search_speed: 0.25
     approach_speed: 0.15
     image_center_x: 320
+    target_timeout_sec: 0.70
 safety_controller:
   ros__parameters:
     use_sim_time: true

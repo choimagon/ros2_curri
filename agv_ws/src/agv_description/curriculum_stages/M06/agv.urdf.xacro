@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="agv_m06">
+  <xacro:property name="wheel_radius" value="0.08"/>
+  <xacro:property name="half_track" value="0.19"/>
+  <xacro:macro name="wheel" params="side y">
+    <link name="${side}_wheel_link"><visual><origin rpy="1.5708 0 0"/><geometry><cylinder radius="${wheel_radius}" length="0.05"/></geometry></visual></link>
+    <joint name="${side}_wheel_joint" type="continuous"><parent link="base_link"/><child link="${side}_wheel_link"/><origin xyz="0 ${y} ${wheel_radius}"/><axis xyz="0 1 0"/></joint>
+  </xacro:macro>
+  <link name="base_link"><visual><origin xyz="0 0 0.16"/><geometry><box size="0.60 0.42 0.16"/></geometry></visual></link>
+  <xacro:wheel side="left" y="${half_track}"/><xacro:wheel side="right" y="${-half_track}"/>
+</robot>
