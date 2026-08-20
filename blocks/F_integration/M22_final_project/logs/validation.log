@@ -35,7 +35,7 @@ Traceback (most recent call last):
   File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 81, in _make_unique_log_dir
     os.makedirs(log_dir, exist_ok=True)
   File "<frozen os>", line 225, in makedirs
-OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-15-39-41-426885-lab4090-Z790-AORUS-ELITE-445'
+OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-15-40-48-619769-lab4090-Z790-AORUS-ELITE-444'
 
 The above exception was the direct cause of the following exception:
 
@@ -55,7 +55,7 @@ Traceback (most recent call last):
   File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/launch_description_sources/any_launch_file_utilities.py", line 61, in get_launch_description_from_any_launch_file
     raise InvalidLaunchFileError(extension, likely_errors=exceptions)
 launch.invalid_launch_file_error.InvalidLaunchFileError: Caught multiple exceptions when trying to load file of format [py]:
- - OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-15-39-41-426885-lab4090-Z790-AORUS-ELITE-445'
+ - OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-15-40-48-619769-lab4090-Z790-AORUS-ELITE-444'
  - InvalidFrontendLaunchFileError: The launch file may have a syntax error, or its format is unknown
 Error in sys.excepthook:
 Traceback (most recent call last):
@@ -96,7 +96,7 @@ Traceback (most recent call last):
   File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 81, in _make_unique_log_dir
     os.makedirs(log_dir, exist_ok=True)
   File "<frozen os>", line 225, in makedirs
-OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-15-39-41-426885-lab4090-Z790-AORUS-ELITE-445'
+OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-15-40-48-619769-lab4090-Z790-AORUS-ELITE-444'
 
 The above exception was the direct cause of the following exception:
 
@@ -116,7 +116,7 @@ Traceback (most recent call last):
   File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/launch_description_sources/any_launch_file_utilities.py", line 61, in get_launch_description_from_any_launch_file
     raise InvalidLaunchFileError(extension, likely_errors=exceptions)
 launch.invalid_launch_file_error.InvalidLaunchFileError: Caught multiple exceptions when trying to load file of format [py]:
- - OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-15-39-41-426885-lab4090-Z790-AORUS-ELITE-445'
+ - OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-15-40-48-619769-lab4090-Z790-AORUS-ELITE-444'
  - InvalidFrontendLaunchFileError: The launch file may have a syntax error, or its format is unknown
 /usr/bin/rosdep:6: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
   from pkg_resources import load_entry_point
