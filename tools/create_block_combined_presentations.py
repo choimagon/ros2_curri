@@ -16,6 +16,8 @@ from pptx.util import Inches, Pt
 ROOT = Path(__file__).resolve().parents[1]
 FONT = 'Noto Sans CJK KR'
 MONO = 'DejaVu Sans Mono'
+COURSE_TITLE = 'ROS 2 기반 AGV End-to-End 개발 커리큘럼'
+COURSE_DECK_FILENAME = 'ROS_2_기반_AGV_End-to-End_개발_커리큘럼_전체_통합_따라하기.pptx'
 NAVY, BLUE, GREEN, WHITE, LIGHT, GREY = (RGBColor(18, 44, 78), RGBColor(34, 91, 155), RGBColor(42, 139, 90), RGBColor(255, 255, 255), RGBColor(244, 247, 251), RGBColor(92, 102, 114))
 
 BLOCKS = {
@@ -128,7 +130,8 @@ def add_summary(presentation, block_id: str, metadata: dict) -> None:
     modules = metadata['modules']
     slide = presentation.slides.add_slide(presentation.slide_layouts[6])
     box(slide, 0, 0, 13.333, 1.15, NAVY, NAVY)
-    text_box(slide, 0.7, 0.30, 12.0, 0.34, f'Block {block_id} · M 시리즈 통합 따라 하기', 20, WHITE, True, align=PP_ALIGN.CENTER)
+    text_box(slide, 0.7, 0.22, 12.0, 0.28, COURSE_TITLE, 13, WHITE, True, align=PP_ALIGN.CENTER)
+    text_box(slide, 0.7, 0.58, 12.0, 0.28, f'Block {block_id} · M 시리즈 통합 따라 하기', 19, WHITE, True, align=PP_ALIGN.CENTER)
     text_box(slide, 0.7, 2.0, 12.0, 0.76, metadata['title'], 36, NAVY, True, align=PP_ALIGN.CENTER)
     panel = box(slide, 1.25, 3.25, 10.85, 1.5, LIGHT, LIGHT, rounded=True)
     set_text(panel, '이 파일은 Block 안의 모든 M 시리즈 PPT를 순서와 발표자 노트까지 유지해 한 번에 볼 수 있도록 합친 자료입니다.\n개별 M PPT는 실습 때, 이 통합본은 Block 전체 흐름을 복습·강의할 때 사용합니다.', 19, NAVY, True, align=PP_ALIGN.CENTER)
@@ -161,7 +164,49 @@ def build_block(block_id: str, metadata: dict) -> Path:
     return output
 
 
+def add_course_cover(presentation) -> None:
+    slide = presentation.slides.add_slide(presentation.slide_layouts[6])
+    box(slide, 0, 0, 13.333, 1.18, NAVY, NAVY)
+    text_box(slide, 0.70, 0.34, 12.0, 0.36, '전체 통합 강의·복습 자료', 21, WHITE, True, align=PP_ALIGN.CENTER)
+    text_box(slide, 0.75, 1.95, 11.85, 0.85, COURSE_TITLE, 35, NAVY, True, align=PP_ALIGN.CENTER)
+    panel = box(slide, 1.12, 3.35, 11.10, 1.54, LIGHT, LIGHT, rounded=True)
+    set_text(panel, 'Block A → B → C → D → E → F\nM01부터 M22까지의 개별 실습 PPT를 순서와 발표자 노트까지 유지해 한 파일로 합쳤습니다.', 20, NAVY, True, align=PP_ALIGN.CENTER)
+    text_box(slide, 0.85, 6.50, 11.65, 0.30, '개별 M PPT는 직접 실습에, 이 전체 통합본은 전체 흐름 강의·복습에 사용합니다.', 15, GREEN, True, align=PP_ALIGN.CENTER)
+
+
+def add_course_block_separator(presentation, block_id: str, metadata: dict, position: int) -> None:
+    slide = presentation.slides.add_slide(presentation.slide_layouts[6])
+    box(slide, 0, 0, 13.333, 1.12, NAVY, NAVY)
+    text_box(slide, 0.7, 0.31, 12.0, 0.34, f'{COURSE_TITLE} · Block {position}/6', 18, WHITE, True, align=PP_ALIGN.CENTER)
+    text_box(slide, 0.9, 2.15, 11.55, 0.65, f'Block {block_id} — {metadata["title"]}', 34, NAVY, True, align=PP_ALIGN.CENTER)
+    module_text = ' → '.join(f'{module_id} {description}' for module_id, description in metadata['modules'])
+    panel = box(slide, 1.0, 3.52, 11.35, 1.35, LIGHT, LIGHT, rounded=True)
+    set_text(panel, f'이 Block에서 진행할 모듈\n{module_text}', 17, NAVY, True, align=PP_ALIGN.CENTER)
+    text_box(slide, 0.8, 6.47, 11.75, 0.31, '아래부터 각 M의 독립 PPT 전체가 시작됩니다. 이전 M의 checkpoint를 통과한 뒤 다음 M으로 이동합니다.', 14, GREEN, True, align=PP_ALIGN.CENTER)
+
+
+def build_course() -> Path:
+    """Combine every M01–M22 deck once, grouped by Block A–F."""
+    presentation = Presentation()
+    presentation.slide_width, presentation.slide_height = Inches(13.333333), Inches(7.5)
+    add_course_cover(presentation)
+    for block_position, (block_id, metadata) in enumerate(BLOCKS.items(), start=1):
+        folder = ROOT / metadata['folder']
+        add_course_block_separator(presentation, block_id, metadata, block_position)
+        for module_position, (module_id, module_title) in enumerate(metadata['modules'], start=1):
+            module_dir = next(folder.glob(f'{module_id}_*'))
+            module_deck = next(module_dir.glob(f'{module_id}_*.pptx'))
+            separator(presentation, block_id, module_id, module_title, module_position, len(metadata['modules']))
+            source = Presentation(module_deck)
+            for source_slide in source.slides:
+                copy_slide(source_slide, presentation)
+    output = ROOT / COURSE_DECK_FILENAME
+    presentation.save(output)
+    return output
+
+
 if __name__ == '__main__':
     for identifier, definition in BLOCKS.items():
         output = build_block(identifier, definition)
         print(output.relative_to(ROOT))
+    print(build_course().relative_to(ROOT))

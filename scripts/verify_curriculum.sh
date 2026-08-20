@@ -42,6 +42,14 @@ for block in A B C D E F; do
   fi
 done
 
+course_deck="${root_dir}/ROS_2_기반_AGV_End-to-End_개발_커리큘럼_전체_통합_따라하기.pptx"
+if [ -f "${course_deck}" ]; then
+  printf 'OK      Full-course combined PPTX %s\n' "${course_deck#${root_dir}/}"
+else
+  printf 'MISSING Full-course combined PPTX\n'
+  missing=1
+fi
+
 for file in \
   docs/BEGINNER_FILE_MAKING_GUIDE.md \
   docs/PPT_FOLLOW_ALONG_DELIVERY.md \

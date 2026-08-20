@@ -10,3 +10,6 @@ __pycache__/
 # Local agent metadata
 .agents/
 .codex/
+
+# Local Word reference guides (kept on the authoring machine only)
+*.docx

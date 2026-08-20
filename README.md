@@ -1,6 +1,6 @@
-# ROS 2 + Gazebo AGV 실습 커리큘럼
+# ROS 2 기반 AGV End-to-End 개발 커리큘럼
 
-워드 원본과 개선 가이드를 실제로 따라 만들 수 있는 초보자용 ROS 2 + Gazebo AGV 실습 저장소입니다. 기준 조합은 **Ubuntu 24.04 LTS + ROS 2 Jazzy + Gazebo Harmonic**입니다.
+초보자가 빈 workspace에서 AGV를 처음부터 끝까지 직접 만드는 ROS 2 + Gazebo 실습 저장소입니다. 기준 조합은 **Ubuntu 24.04 LTS + ROS 2 Jazzy + Gazebo Harmonic**입니다.
 
 ## 시작 순서
 
@@ -17,6 +17,7 @@
 | `blocks/` | A–F 교육 구간과 M01–M22별 README, Starter/Complete, 실제 검증 로그·캡처, 따라 하기 PPT |
 | `agv_ws/` | 강의 자료 생성·검증에 쓰는 완성 참고 소스와 Complete의 원본 |
 | `~/ros2_curri/my_agv_ws/` | 학습자가 M02부터 빈 상태에서 직접 만드는 개인 workspace (처음에는 없음) |
+| `ROS_2_기반_AGV_End-to-End_개발_커리큘럼_전체_통합_따라하기.pptx` | Block A~F와 M01~M22 전체를 순서대로 합친 강의·복습용 PPT |
 | `scripts/` | 설치·커리큘럼 상태를 확인하는 점검 스크립트 |
 | `tools/` | M01–M22 따라 하기 PPT와 실제 검증 캡처를 다시 생성하는 도구 |
 
@@ -35,7 +36,7 @@ PPT의 파일 구현 구간은 단순 코드 덩어리가 아닙니다. 빈 파�
 
 ## 따라 하기 PPT 사용법
 
-제작 기준은 저장소 루트의 PPT 제작 가이드와 커리큘럼 개선 가이드이며, 가이드 반영 사항은 [PPT 배포 구조](docs/PPT_FOLLOW_ALONG_DELIVERY.md)에 정리했습니다. 각 M01–M22 폴더에 독립 실행용 PPTX가 있고, 각 Block 루트에는 해당 M 시리즈 전체를 순서대로 합친 `Block_*_M시리즈_통합_따라하기.pptx`가 있습니다. 이는 예전의 ‘실습 결과 명령어’ PPT가 아니라 개별 M 강의 자료를 모은 통합본입니다. 각 모듈 폴더는 다음 구조를 공통으로 사용합니다.
+가이드 반영 사항은 [PPT 배포 구조](docs/PPT_FOLLOW_ALONG_DELIVERY.md)에 정리했습니다. 각 M01–M22 폴더에 독립 실행용 PPTX가 있고, 각 Block 루트에는 해당 M 시리즈 전체를 순서대로 합친 `Block_*_M시리즈_통합_따라하기.pptx`가 있습니다. 저장소 루트의 [전체 통합 PPT](ROS_2_기반_AGV_End-to-End_개발_커리큘럼_전체_통합_따라하기.pptx)는 Block A~F의 M01~M22를 한 번에 강의·복습할 때 사용합니다. 이는 예전의 ‘실습 결과 명령어’ PPT가 아니라 개별 M 강의 자료를 모은 통합본입니다. 각 모듈 폴더는 다음 구조를 공통으로 사용합니다.
 
 ```text
 MXX_module/

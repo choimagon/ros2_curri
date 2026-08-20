@@ -28,6 +28,7 @@ from pptx.util import Inches, Pt
 ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE = ROOT / "agv_ws"
 SRC = WORKSPACE / "src"
+COURSE_TITLE = "ROS 2 기반 AGV End-to-End 개발 커리큘럼"
 FONT = "Noto Sans CJK KR"
 MONO = "DejaVu Sans Mono"
 FONT_FILE = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
@@ -703,7 +704,7 @@ def box(slide, x, y, w, h, fill: RGBColor = WHITE, line: RGBColor = RGBColor(212
 
 
 def add_footer(slide, module: dict) -> None:
-    text_box(slide, 0.58, 7.12, 8.5, 0.22, f"ROS 2 Jazzy · Gazebo Harmonic · {module['id']} · 따라 하기형 AGV 실습", 10, GREY)
+    text_box(slide, 0.58, 7.12, 8.5, 0.22, f"{COURSE_TITLE} · {module['id']} · Block {module['block']}", 9, GREY)
     text_box(slide, 10.0, 7.12, 2.7, 0.22, "명령·파일 경로는 슬라이드에서 복사 가능", 10, GREY, align=PP_ALIGN.RIGHT)
 
 
@@ -1328,7 +1329,7 @@ def build_deck(module: dict) -> tuple[Path, str]:
     # 1. Cover
     slide = presentation.slides.add_slide(blank)
     banner = box(slide, 0, 0, 13.333, 1.15, fill=NAVY, line=NAVY, radius=MSO_AUTO_SHAPE_TYPE.RECTANGLE)
-    set_text(banner, f"{module['id']} · Block {module['block']} · ROS 2 + Gazebo Sim AGV", 18, WHITE, True, align=PP_ALIGN.CENTER)
+    set_text(banner, f"{COURSE_TITLE} · {module['id']} · Block {module['block']}", 14, WHITE, True, align=PP_ALIGN.CENTER)
     text_box(slide, 0.78, 1.75, 11.7, 1.1, module["title"], 34, NAVY, True, align=PP_ALIGN.CENTER)
     text_box(slide, 1.1, 3.10, 11.1, 0.55, module["completion"], 22, GREEN, True, align=PP_ALIGN.CENTER)
     panel = box(slide, 1.5, 4.18, 10.3, 1.15, fill=LIGHT, line=LIGHT)
