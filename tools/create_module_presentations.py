@@ -874,6 +874,11 @@ def make_artifacts(module: dict, validation_log: str) -> None:
         f"{module['id']} complete checkpoint\n"
         "SHA-256 manifest (source snapshot at PPT generation time)\n" + ("\n".join(manifest) or "No user source file: ROS 2 built-in demo module.") + "\n",
         encoding="utf-8")
+    source_revision = os.environ.get("COURSE_SOURCE_COMMIT", "uncommitted-source")
+    (folder / "screenshots" / "SOURCE_COMMIT.txt").write_text(
+        f"Source revision: {source_revision}\n"
+        "This module's validation terminal and ordered GUI captures were generated against this source revision.\n",
+        encoding="utf-8")
     # This log is intentionally copied once more after build_deck so it is present
     # even when a module has no complete source file.
     (folder / "logs" / "validation.log").write_text(validation_log + "\n", encoding="utf-8")

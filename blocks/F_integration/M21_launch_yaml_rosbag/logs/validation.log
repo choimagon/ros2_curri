@@ -26,7 +26,7 @@ Traceback (most recent call last):
   File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 81, in _make_unique_log_dir
     os.makedirs(log_dir, exist_ok=True)
   File "<frozen os>", line 225, in makedirs
-OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-14-12-48-887200-lab4090-Z790-AORUS-ELITE-413'
+OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-14-14-10-231841-lab4090-Z790-AORUS-ELITE-414'
 
 The above exception was the direct cause of the following exception:
 
@@ -46,7 +46,7 @@ Traceback (most recent call last):
   File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/launch_description_sources/any_launch_file_utilities.py", line 61, in get_launch_description_from_any_launch_file
     raise InvalidLaunchFileError(extension, likely_errors=exceptions)
 launch.invalid_launch_file_error.InvalidLaunchFileError: Caught multiple exceptions when trying to load file of format [py]:
- - OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-14-12-48-887200-lab4090-Z790-AORUS-ELITE-413'
+ - OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-14-14-10-231841-lab4090-Z790-AORUS-ELITE-414'
  - InvalidFrontendLaunchFileError: The launch file may have a syntax error, or its format is unknown
 Error in sys.excepthook:
 Traceback (most recent call last):
@@ -87,7 +87,7 @@ Traceback (most recent call last):
   File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py", line 81, in _make_unique_log_dir
     os.makedirs(log_dir, exist_ok=True)
   File "<frozen os>", line 225, in makedirs
-OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-14-12-48-887200-lab4090-Z790-AORUS-ELITE-413'
+OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-14-14-10-231841-lab4090-Z790-AORUS-ELITE-414'
 
 The above exception was the direct cause of the following exception:
 
@@ -107,7 +107,7 @@ Traceback (most recent call last):
   File "/opt/ros/jazzy/lib/python3.12/site-packages/launch/launch_description_sources/any_launch_file_utilities.py", line 61, in get_launch_description_from_any_launch_file
     raise InvalidLaunchFileError(extension, likely_errors=exceptions)
 launch.invalid_launch_file_error.InvalidLaunchFileError: Caught multiple exceptions when trying to load file of format [py]:
- - OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-14-12-48-887200-lab4090-Z790-AORUS-ELITE-413'
+ - OSError: [Errno 30] Read-only file system: '/home/lab4090/.ros/log/2026-08-20-14-14-10-231841-lab4090-Z790-AORUS-ELITE-414'
  - InvalidFrontendLaunchFileError: The launch file may have a syntax error, or its format is unknown
 
 --- config files ---
