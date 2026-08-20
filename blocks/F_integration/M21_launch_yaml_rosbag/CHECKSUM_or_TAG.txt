@@ -1,5 +1,7 @@
 M21 complete checkpoint
 SHA-256 manifest (source snapshot at PPT generation time)
+4931998d427ecd966e162b3323d4be5f61391f59d9fab93e1834fa2608034e6f  agv_ws/src/agv_bringup/package.xml
+a5820d9fd1c4933a65f26b9f44b77ce490318aa5b9a9de23fa9020766fd62fbe  agv_ws/src/agv_bringup/setup.py
 4ebc22c7e844997cbfc262259d41df2cd1aa0df83b4f67c73f4ca9343e416d99  agv_ws/src/agv_bringup/config/robot.yaml
 b36919405fae9a836ab2e7bb6c36fdc3980df46b7f21aa9d8e4da71b690e789d  agv_ws/src/agv_bringup/config/sensors.yaml
 24212e296710c7d8f03cd804ce9a6a31095fe63360d96d49a1453fe116404204  agv_ws/src/agv_bringup/config/vision.yaml

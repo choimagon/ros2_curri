@@ -6,8 +6,8 @@
 
 1. 먼저 [설치 및 환경 확인 안내](docs/INSTALL_UBUNTU_24.04_ROS2_JAZZY.md)를 끝까지 실행합니다.
 2. 새 터미널에서 `source /opt/ros/jazzy/setup.bash`를 실행합니다.
-3. `cd agv_ws && colcon build --symlink-install`으로 워크스페이스를 빌드합니다.
-4. `source install/setup.bash` 후 아래 Block 순서대로 실습합니다.
+3. Block A의 M01을 실행한 뒤, M02 PPT의 명령으로 빈 `~/ros2_curri/my_agv_ws`와 첫 package를 직접 만듭니다.
+4. 이후 각 PPT에서 `my_agv_ws`에 폴더·파일·코드를 직접 추가하고, 해당 모듈의 build/source/run 검증을 통과한 뒤 다음 Block으로 이동합니다.
 
 ## 폴더 안내
 
@@ -15,7 +15,8 @@
 | --- | --- |
 | `docs/` | ROS 2·Gazebo 설치 및 전체 검증 안내 |
 | `blocks/` | A–F 교육 구간과 M01–M22별 README, Starter/Complete, 실제 검증 로그·캡처, 따라 하기 PPT |
-| `agv_ws/` | 빌드하여 실행하는 AGV ROS 2 패키지 소스 |
+| `agv_ws/` | 강의 자료 생성·검증에 쓰는 완성 참고 소스와 Complete의 원본 |
+| `~/ros2_curri/my_agv_ws/` | 학습자가 M02부터 빈 상태에서 직접 만드는 개인 workspace (처음에는 없음) |
 | `scripts/` | 설치·커리큘럼 상태를 확인하는 점검 스크립트 |
 | `tools/` | M01–M22 따라 하기 PPT와 실제 검증 캡처를 다시 생성하는 도구 |
 
@@ -38,7 +39,7 @@
 MXX_module/
 ├── MXX_*.pptx                 # 강의·실습용 따라 하기 PPT
 ├── starter/                   # 시작 상태와 선행 조건
-├── complete/                  # PPT에서 만든 핵심 파일 snapshot
+├── complete/                  # 막혔을 때 diff·backup 뒤 비교/복구할 핵심 파일 snapshot
 ├── screenshots/               # 실제 validation terminal / GUI 캡처
 ├── logs/                      # 실제 검증 명령 출력
 └── CHECKSUM_or_TAG.txt        # Complete source SHA-256 manifest
@@ -74,6 +75,7 @@ bash scripts/verify_curriculum.sh
 ## 중요한 원칙
 
 - 매 모듈을 끝낼 때마다 아래 모듈로 넘어가기 전에 `확인` 명령을 실행합니다.
+- 학습자는 `agv_ws/`를 직접 수정하지 않습니다. 실제 구현은 `~/ros2_curri/my_agv_ws/`에서 하고, `complete/`은 오류가 해결되지 않을 때만 비교합니다.
 - 이름과 토픽은 문서에 적힌 것을 그대로 사용합니다. 임의로 바꾸면 launch와 bridge 설정도 함께 바꿔야 합니다.
 - Gazebo Classic (`gazebo`, `gazebo_ros_pkgs`)이 아니라 modern Gazebo의 `gz sim`, `ros_gz`를 사용합니다.
 - YOLO는 선택 의존성입니다. M17 전까지는 설치하지 않아도 ROS/Gazebo 기초 실습을 진행할 수 있습니다.

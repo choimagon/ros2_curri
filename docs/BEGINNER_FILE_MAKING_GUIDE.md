@@ -1,10 +1,10 @@
 # 처음 만드는 ROS 2 파일 가이드
 
-이 문서는 각 Block의 README와 PPT를 보기 전에 읽는 “파일 지도”입니다. ROS 2 프로젝트는 한 파일을 실행하는 방식이 아니라, **패키지 선언 → 코드/모델 → 빌드 설정 → build → source → 실행** 순서로 동작합니다.
+이 문서는 각 Block의 README와 PPT를 보기 전에 읽는 “파일 지도”입니다. ROS 2 프로젝트는 한 파일을 실행하는 방식이 아니라, **패키지 선언 → 코드/모델 → 빌드 설정 → build → source → 실행** 순서로 동작합니다. 실습자는 저장소의 완성 참고 소스 `agv_ws/`가 아니라 M02에서 직접 만드는 `~/ros2_curri/my_agv_ws/`에서 작업합니다.
 
 ## 1. Python 노드 (`.py`) 만들기
 
-실제 예제: `agv_ws/src/agv_control/agv_control/counter_publisher.py`
+실제 예제: `my_agv_ws/src/agv_control/agv_control/counter_publisher.py`
 
 1. `agv_control/agv_control/` 안에 Python 파일을 만듭니다.
 2. `Node`를 상속하고 publisher/subscriber/timer를 만듭니다.
@@ -20,7 +20,7 @@ self.create_timer(1.0, self.publish_counter)
 `/counter`는 다른 노드와 약속한 topic 이름, `Int32`는 메시지 타입, `10`은 subscriber가 잠시 늦어도 보관할 queue depth입니다. timer의 `1.0`은 1초마다 callback을 호출한다는 뜻입니다.
 
 ```bash
-cd ~/ros2_curri/agv_ws
+cd ~/ros2_curri/my_agv_ws
 colcon build --symlink-install --packages-select agv_control
 source install/setup.bash
 ros2 run agv_control counter_publisher
@@ -28,7 +28,7 @@ ros2 run agv_control counter_publisher
 
 ## 2. C++ 노드 (`.cpp`) 만들기
 
-실제 예제: `agv_ws/src/agv_cpp_examples/src/status_publisher.cpp`
+실제 예제: `my_agv_ws/src/agv_cpp_examples/src/status_publisher.cpp`
 
 1. `ros2 pkg create --build-type ament_cmake 패키지이름 --dependencies rclcpp std_msgs`로 뼈대를 만듭니다.
 2. `src/파일이름.cpp`에 `rclcpp::Node`를 상속한 클래스를 작성합니다.
@@ -43,7 +43,7 @@ timer_ = this->create_wall_timer(1s, std::bind(&StatusPublisher::publish_status,
 Python의 `create_publisher`·`create_timer`와 같은 역할이지만, C++은 타입을 컴파일할 때 검사합니다. `CMakeLists.txt`의 `install(TARGETS ... DESTINATION lib/${PROJECT_NAME})`이 빠지면 컴파일에 성공해도 `ros2 run`은 실행 파일을 찾지 못합니다.
 
 ```bash
-cd ~/ros2_curri/agv_ws
+cd ~/ros2_curri/my_agv_ws
 colcon build --packages-select agv_cpp_examples
 source install/setup.bash
 ros2 run agv_cpp_examples status_publisher --ros-args -p message:='C++ 노드 시작'
@@ -53,7 +53,7 @@ ros2 run agv_cpp_examples status_publisher --ros-args -p message:='C++ 노드 �
 
 ## 3. URDF/Xacro 로봇 파일 (`.urdf.xacro`) 만들기
 
-실제 예제: `agv_ws/src/agv_description/urdf/agv.urdf.xacro`
+실제 예제: `my_agv_ws/src/agv_description/urdf/agv.urdf.xacro`
 
 - **URDF**는 RViz와 TF가 읽는 로봇 조립 설명입니다.
 - **link**는 몸체·바퀴·센서와 그 좌표계입니다.
@@ -78,7 +78,7 @@ ros2 launch agv_description display.launch.py
 
 ## 4. Gazebo SDF 파일 (`.sdf`) 만들기
 
-실제 예제: `agv_ws/src/agv_gazebo/models/agv/model.sdf`
+실제 예제: `my_agv_ws/src/agv_gazebo/models/agv/model.sdf`
 
 - **SDF**는 Gazebo가 실제 물리와 sensor를 계산할 모델입니다.
 - `visual`은 보이는 모양, `collision`은 접촉 판정, `inertial`은 질량·관성입니다.
@@ -102,7 +102,7 @@ ros2 launch agv_gazebo gazebo.launch.py
 
 ## 5. YAML 설정과 launch 파일 만들기
 
-실제 예제: `agv_ws/src/agv_bringup/config/*.yaml`, `agv_ws/src/agv_bringup/launch/agv_sim.launch.py`
+실제 예제: `my_agv_ws/src/agv_bringup/config/*.yaml`, `my_agv_ws/src/agv_bringup/launch/agv_sim.launch.py`
 
 YAML에는 실험 중 자주 바꾸는 숫자·경로·기능 on/off를 두고, Python 코드에는 계산 로직만 둡니다.
 

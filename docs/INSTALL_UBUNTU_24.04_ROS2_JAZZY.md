@@ -80,10 +80,10 @@ source /opt/ros/jazzy/setup.bash
 echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
 ```
 
-`~/.bashrc`에는 한 번만 추가해야 합니다. 이미 같은 줄이 있으면 다시 추가하지 마세요. 워크스페이스를 빌드한 뒤에는 아래 줄도 한 번 추가합니다.
+`~/.bashrc`에는 한 번만 추가해야 합니다. 이미 같은 줄이 있으면 다시 추가하지 마세요. M02에서 개인 workspace `my_agv_ws`를 직접 만들고 처음 빌드한 뒤에만 아래 줄을 한 번 추가합니다.
 
 ```bash
-echo "source ~/ros2_curri/agv_ws/install/setup.bash" >> ~/.bashrc
+echo "source ~/ros2_curri/my_agv_ws/install/setup.bash" >> ~/.bashrc
 ```
 
 프로젝트를 다른 위치로 옮겼다면 위 경로도 실제 경로로 바꿉니다. ROS 기본 환경을 먼저 source하고, 그 다음 오버레이 워크스페이스를 source하는 순서가 중요합니다.
@@ -148,7 +148,7 @@ source ~/.venvs/agv-vision/bin/activate
 2. `apt-cache policy ros-jazzy-desktop`으로 Jazzy 패키지 후보가 있는지 확인합니다.
 3. `ros2 doctor --report`와 `bash scripts/verify_install.sh` 결과를 저장합니다.
 4. Gazebo만 문제면 `gz sim --versions`와 `echo $GZ_SIM_RESOURCE_PATH`를 확인합니다.
-5. 워크스페이스만 문제면 `cd agv_ws && rm -rf build install log` 대신, 먼저 `colcon build --event-handlers console_direct+`의 **첫 오류**를 읽습니다. 삭제 빌드는 마지막 수단입니다.
+5. 워크스페이스만 문제면 `cd ~/ros2_curri/my_agv_ws`에서 먼저 `colcon build --event-handlers console_direct+`의 **첫 오류**를 읽습니다. 삭제 빌드는 마지막 수단입니다.
 
 ### 이 PC에서 실제로 만난 Miniconda 충돌
 
@@ -157,7 +157,7 @@ source ~/.venvs/agv-vision/bin/activate
 ```bash
 conda deactivate
 source /opt/ros/jazzy/setup.bash
-cd ~/ros2_curri/agv_ws
+cd ~/ros2_curri/my_agv_ws
 colcon build --symlink-install --cmake-clean-cache --cmake-args -DPython3_EXECUTABLE=/usr/bin/python3
 ```
 
