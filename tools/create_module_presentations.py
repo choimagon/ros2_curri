@@ -824,6 +824,269 @@ def add_code_reading_slide(slide, module: dict, focus: tuple[str, str, str, str]
     add_notes(slide, purpose, check=observe)
 
 
+def teaching_line_kind(line: str, relative: str) -> str | None:
+    """Classify a source line that is worth stopping to explain to a beginner."""
+    value = line.strip()
+    if (not value or value.startswith(("#", "//", "<!--", "<?", "*", '"""', "'''"))
+            or value in {"{", "}", "[", "]", "(", ")", "},", ")"}
+            or value.startswith(("</", "return ]", "return )"))):
+        return None
+    if value.startswith("from ") or value.startswith("import ") or value.startswith("#include"):
+        return "import"
+    if "<name>" in value:
+        return "package_name"
+    if "buildtool_depend" in value:
+        return "build_tool"
+    if "<depend>" in value or "exec_depend" in value:
+        return "dependency"
+    if "find_package(" in value:
+        return "find_package"
+    if "add_executable(" in value:
+        return "executable"
+    if "ament_target_dependencies(" in value:
+        return "cpp_dependency"
+    if value.startswith("install(") or "install(TARGETS" in value or "install(DIRECTORY" in value:
+        return "install"
+    if value.startswith("setup("):
+        return "setup"
+    if "packages=find_packages" in value or value.startswith("packages="):
+        return "python_packages"
+    if "data_files=" in value:
+        return "data_files"
+    if "entry_points=" in value or "console_scripts" in value:
+        return "entry_point"
+    if value.startswith("class "):
+        return "class"
+    if "super().__init__(" in value:
+        return "node_name"
+    if "create_publisher(" in value:
+        return "publisher"
+    if "create_subscription(" in value:
+        return "subscription"
+    if "create_timer(" in value:
+        return "timer"
+    if "declare_parameter(" in value:
+        return "parameter"
+    if "get_parameter(" in value:
+        return "read_parameter"
+    if ".publish(" in value:
+        return "publish"
+    if "get_logger()." in value or "RCLCPP_INFO" in value:
+        return "log"
+    if value.startswith("def ") and "__init__" not in value:
+        return "function"
+    if "rclpy.init(" in value:
+        return "ros_init"
+    if "rclpy.spin(" in value:
+        return "spin"
+    if "rclpy.shutdown(" in value or "destroy_node(" in value:
+        return "shutdown"
+    if "LaunchDescription(" in value:
+        return "launch_description"
+    if "DeclareLaunchArgument(" in value:
+        return "launch_argument"
+    if value.startswith("Node(") or " Node(" in value:
+        return "launch_node"
+    if "parameters=" in value:
+        return "launch_parameters"
+    if "IncludeLaunchDescription(" in value:
+        return "launch_include"
+    if "<robot" in value or "<model" in value or "<world" in value:
+        return "model_root"
+    if "<xacro:macro" in value:
+        return "xacro_macro"
+    if "<xacro:property" in value:
+        return "xacro_property"
+    if "<link" in value:
+        return "link"
+    if "<joint" in value:
+        return "joint"
+    if "<visual" in value:
+        return "visual"
+    if "<collision" in value:
+        return "collision"
+    if "<inertial" in value or "<mass>" in value:
+        return "physics"
+    if "<sensor" in value:
+        return "sensor"
+    if "<plugin" in value:
+        return "plugin"
+    if "<topic>" in value or "topic_name" in value:
+        return "topic"
+    if "<update_rate>" in value or "<width>" in value or "<height>" in value:
+        return "sensor_value"
+    if Path(relative).suffix in {".yaml", ".yml"} and ":" in value:
+        return "yaml_value"
+    if Path(relative).suffix == ".msg" and value.split()[0] in {"string", "float32", "float64", "int32", "int64", "bool"}:
+        return "message_field"
+    return None
+
+
+def teaching_line_explanation(kind: str, line: str, relative: str) -> tuple[str, str]:
+    """Return the spoken-style explanation and a concrete effect to observe."""
+    makes, _, use, observe = file_guidance(relative)
+    explanations = {
+        "import": ("다른 파일에 이미 있는 도구를 이 파일에서 쓰겠다고 가져옵니다.", "이 import가 빠지면 실행 전에 이름을 찾지 못했다는 오류가 납니다."),
+        "package_name": ("ROS 2가 이 폴더를 부를 공식 package 이름입니다.", "build 뒤 `ros2 pkg prefix`가 이 이름으로 package를 찾습니다."),
+        "build_tool": ("이 package를 어떤 빌드 도구로 처리할지 colcon에 알려 줍니다.", "build 단계에서 ament 도구가 이 package의 규칙을 읽습니다."),
+        "dependency": ("이 코드가 빌드하거나 실행할 때 반드시 필요한 ROS package를 선언합니다.", "dependency 이름이 틀리면 build 또는 실행에서 package를 찾지 못합니다."),
+        "find_package": ("CMake에게 사용할 ROS/C++ 라이브러리를 먼저 찾으라고 요청합니다.", "이후 target 연결 단계가 해당 라이브러리를 사용할 수 있습니다."),
+        "executable": ("C++ 소스 파일을 `ros2 run`으로 실행할 프로그램 이름으로 만듭니다.", "build·source 뒤 `ros2 run`에서 이 실행 이름이 보여야 합니다."),
+        "cpp_dependency": ("방금 만든 C++ 실행 파일과 ROS 라이브러리를 실제로 연결합니다.", "연결이 빠지면 header 또는 symbol 관련 컴파일 오류가 납니다."),
+        "install": ("build 결과물이나 설정 파일을 install 공간에 복사하는 규칙입니다.", "source 뒤 ROS 2가 파일·launch·실행 파일을 찾을 수 있습니다."),
+        "setup": ("Python package를 설치하기 위한 설정 묶음을 시작합니다.", "colcon build가 이 파일을 읽어 Python package를 install합니다."),
+        "python_packages": ("현재 폴더 안의 Python module들을 install 목록에 넣습니다.", "source 뒤 node Python 코드를 import할 수 있습니다."),
+        "data_files": ("launch·config 같은 코드 밖의 파일도 install하도록 지정합니다.", "`ros2 launch`가 package share 경로에서 설정 파일을 찾습니다."),
+        "entry_point": ("긴 Python 파일 경로 대신 `ros2 run package 실행이름`을 등록합니다.", "build·source 뒤 `ros2 pkg executables`로 실행 이름을 확인합니다."),
+        "class": ("이 Node가 가질 변수와 callback을 한 덩어리로 묶는 설계도입니다.", "아래 초기화·callback이 모두 이 node 한 개의 동작이 됩니다."),
+        "node_name": ("ROS graph에 표시될 node 이름을 실제로 정합니다.", "실행 후 `ros2 node list`에서 이 이름을 찾습니다."),
+        "publisher": ("이 node가 어떤 message를 어느 topic으로 내보낼지 만듭니다.", "실행 후 `ros2 topic info`에서 publisher 수가 늘어납니다."),
+        "subscription": ("이 node가 지정 topic의 message를 받아 callback으로 넘깁니다.", "입력 topic을 publish하면 callback의 log 또는 출력이 바뀝니다."),
+        "timer": ("사람이 호출하지 않아도 일정 주기로 함수를 실행하게 합니다.", "topic의 publish rate 또는 terminal log 주기가 생깁니다."),
+        "parameter": ("코드 밖에서 바꿀 값을 이름과 기본값으로 등록합니다.", "launch/CLI parameter를 바꾸면 코드 수정 없이 동작이 달라집니다."),
+        "read_parameter": ("등록한 parameter의 현재 값을 읽어 실제 계산에 사용합니다.", "`ros2 param get` 값이 node 동작에 반영됩니다."),
+        "publish": ("완성한 message를 지금 topic으로 한 번 전송합니다.", "다른 terminal의 `ros2 topic echo`에서 같은 값이 보입니다."),
+        "log": ("현재 상태나 계산 결과를 사람이 볼 수 있게 terminal에 남깁니다.", "node를 실행한 terminal에서 이 문장이 출력됩니다."),
+        "function": ("입력 message가 오거나 timer가 울릴 때 실행할 작은 기능 단위입니다.", "이 함수 안의 계산·publish가 실제 node의 반응이 됩니다."),
+        "ros_init": ("Python 프로그램을 ROS 2 통신에 참여시키는 첫 준비입니다.", "이 호출 전에는 node·publisher·subscription을 정상 생성할 수 없습니다."),
+        "spin": ("프로그램이 끝나지 않고 message와 timer를 계속 처리하게 합니다.", "이 줄이 있어야 실행 뒤 topic을 받고 publish를 계속합니다."),
+        "shutdown": ("node와 ROS 통신을 안전하게 닫는 마무리 단계입니다.", "Ctrl+C 또는 종료 뒤 자원이 정리됩니다."),
+        "launch_description": ("launch가 시작할 모든 node와 설정을 담는 목록을 만듭니다.", "`ros2 launch` 한 명령이 여러 구성 요소를 함께 시작합니다."),
+        "launch_argument": ("실행할 때 바꿀 수 있는 옵션 이름과 기본값을 선언합니다.", "`ros2 launch ... 이름:=값`으로 기본 동작을 바꿀 수 있습니다."),
+        "launch_node": ("launch 안에서 시작할 ROS node 하나의 package·실행 이름을 지정합니다.", "실행 뒤 `ros2 node list`에 이 node가 나타납니다."),
+        "launch_parameters": ("YAML/값을 node에 parameter로 전달하는 연결 지점입니다.", "파일 값이 node parameter와 실행 결과에 반영됩니다."),
+        "launch_include": ("다른 launch 파일도 현재 실행 묶음에 포함합니다.", "복잡한 bringup을 기능별 launch로 나눠도 한 번에 실행합니다."),
+        "model_root": ("로봇 model 또는 Gazebo world의 가장 바깥 이름과 범위를 선언합니다.", "문법 검사와 Gazebo/RViz가 이 구조부터 읽기 시작합니다."),
+        "xacro_macro": ("반복되는 로봇 부품을 이름 있는 설계 블록으로 만듭니다.", "같은 macro를 여러 번 호출해도 바퀴·부품 구조가 일관됩니다."),
+        "xacro_property": ("여러 위치에서 함께 쓸 치수·질량 같은 값을 한 번 정의합니다.", "값 하나를 바꾸면 그 property를 쓰는 구조가 함께 바뀝니다."),
+        "link": ("로봇의 몸체·바퀴처럼 실제로 존재하는 하나의 부품을 선언합니다.", "RViz/Gazebo에서 이 부품이 별도 frame/물체로 보입니다."),
+        "joint": ("두 link를 어떤 축·방식으로 연결할지 정합니다.", "joint 이름·축이 맞아야 바퀴와 센서 frame이 기대한 위치에 있습니다."),
+        "visual": ("사람이 화면에서 보는 모양·색·mesh를 설정합니다.", "Gazebo/RViz 화면에서 해당 부품의 외형이 바뀝니다."),
+        "collision": ("물리 엔진이 부딪힘을 계산할 모양을 설정합니다.", "주행 중 장애물·바닥과의 접촉 결과가 이 구조를 따릅니다."),
+        "physics": ("질량과 관성처럼 움직임에 직접 영향을 주는 물리값입니다.", "Gazebo에서 가속·회전·접촉 반응이 달라집니다."),
+        "sensor": ("Gazebo model에 camera·LiDAR·IMU처럼 데이터를 만드는 sensor를 붙입니다.", "시뮬레이터가 해당 sensor topic의 원본 데이터를 생성합니다."),
+        "plugin": ("Gazebo에 구동·bridge·sensor 처리 기능을 연결하는 확장 코드입니다.", "plugin 이름이 틀리면 model은 떠도 topic/구동 기능이 생기지 않습니다."),
+        "topic": ("데이터가 오가는 채널의 정확한 이름을 지정합니다.", "SDF·bridge·node 세 곳의 이름이 같을 때 message가 연결됩니다."),
+        "sensor_value": ("sensor의 해상도·갱신 주기 같은 관찰 가능한 값을 정합니다.", "실행 뒤 image 크기 또는 `ros2 topic hz`가 이 값을 검증합니다."),
+        "yaml_value": ("실행 코드와 분리한 설정 키와 값을 적습니다.", "launch 뒤 parameter/topic 동작에서 이 값의 효과를 확인합니다."),
+        "message_field": ("custom message 안에 전달할 데이터 한 칸의 type과 이름을 정합니다.", "build 뒤 `ros2 interface show`에서 이 필드가 보입니다."),
+    }
+    return explanations.get(kind, (f"이 줄은 {makes}에 필요한 구조 또는 값을 추가합니다.", f"다음 단계에서 {use}; {observe}로 확인합니다."))
+
+
+def teaching_code_lines(lines: list[str], relative: str) -> list[tuple[str, str, str]]:
+    """Pick ordered, distinct, beginner-important lines from a complete source file."""
+    selected: list[tuple[str, str, str]] = []
+    seen: set[str] = set()
+    for raw in lines:
+        kind = teaching_line_kind(raw, relative)
+        if not kind or kind in seen:
+            continue
+        meaning, effect = teaching_line_explanation(kind, raw, relative)
+        selected.append((raw.strip(), meaning, effect))
+        seen.add(kind)
+    # A short data/config file may only have one recognisable construct. Keep
+    # its actual values visible rather than presenting an empty explanation.
+    if len(selected) < 2:
+        for raw in lines:
+            value = raw.strip()
+            if (value and not value.startswith(("#", "//", "<!--", "<?", "</"))
+                    and len(value) > 2 and value not in {item[0] for item in selected}):
+                makes, _, use, observe = file_guidance(relative)
+                selected.append((value, f"이 값은 {makes}의 일부입니다.", f"다음에 {use}; {observe}로 확인합니다."))
+            if len(selected) >= 3:
+                break
+    # Two cards fit one teaching page at a readable size. Up to nine distinct constructs gives
+    # a Node's full path (import → create → receive/publish → spin) room to
+    # appear without turning every source line into a separate slide.
+    return selected[:9]
+
+
+def display_teaching_code(line: str) -> str:
+    return "\n".join(textwrap.wrap(line, width=58, break_long_words=False, break_on_hyphens=False) or [line])
+
+
+def add_file_code_explanation_slide(slide, module: dict, relative: str,
+                                    items: list[tuple[str, str, str]], page_no: int, page_count: int,
+                                    file_no: int, file_total: int) -> None:
+    """A compact, spoken-style code reading page before the learner types a file."""
+    title(slide, module, f"구현 {file_no}/{file_total}: 코드 읽기 ({page_no}/{page_count})", "짧은 실제 코드 조각을 먼저 읽고, 다음 슬라이드에서 같은 코드를 직접 입력합니다.")
+    status(slide, module, f"코드 해설 {file_no}/{file_total}", "~/ros2_curri/my_agv_ws")
+    text_box(slide, 0.76, 1.77, 11.8, 0.30, canonical_path(relative), 13, BLUE, True, MONO)
+    text_box(slide, 0.76, 2.12, 11.8, 0.30, "말로 먼저 답해 보세요: 이 줄은 무엇을 만들고, 실행하면 어디에서 확인할 수 있을까요?", 15, ORANGE, True, align=PP_ALIGN.CENTER)
+    for index, (code, meaning, effect) in enumerate(items, start=1):
+        y = 2.58 + (index - 1) * 1.88
+        code_panel = box(slide, 0.72, y, 4.55, 1.55, fill=DARK, line=DARK)
+        set_text(code_panel, display_teaching_code(code), 13, WHITE, False, MONO)
+        detail_panel = box(slide, 5.50, y, 7.15, 1.55, fill=LIGHT, line=BLUE)
+        text_box(slide, 5.73, y + 0.12, 0.65, 0.24, f"{index}.", 14, BLUE, True)
+        text_box(slide, 6.12, y + 0.10, 6.23, 0.54, "뜻: " + meaning, 13, NAVY)
+        text_box(slide, 6.12, y + 0.82, 6.23, 0.50, "실행에서: " + effect, 12, GREEN)
+    text_box(slide, 0.82, 6.78, 11.7, 0.20, "다음 코드 입력 슬라이드에서 이 줄을 발견하면, 방금 설명한 ‘뜻’과 ‘실행에서 보이는 변화’를 다시 말해 봅니다.", 11, GREY, align=PP_ALIGN.CENTER)
+    add_notes(slide, "코드를 읽어 주는 방식으로 한 줄의 역할과 실행 효과를 연결한다.", check="각 코드 줄의 뜻과 확인 위치를 한 문장으로 설명한다.")
+
+
+def command_line_explanation(line: str) -> tuple[str, str]:
+    value = line.strip()
+    if value.startswith("source /opt/ros/"):
+        return ("현재 terminal에 ROS 2 명령과 기본 package 경로를 등록합니다.", "이 줄 뒤에 `ros2 --help`와 `ros2 run` 명령이 동작합니다.")
+    if value.startswith("source ") and "install/setup.bash" in value:
+        return ("내 workspace에서 build한 package를 현재 terminal에 겹쳐 등록합니다.", "이 줄 뒤 `ros2 run`이 내가 만든 package와 executable을 찾습니다.")
+    if value.startswith("cd "):
+        return ("다음 명령을 실행할 작업 폴더를 정확히 이동합니다.", "`pwd` 결과가 PPT의 workspace 경로와 같아야 합니다.")
+    if value.startswith("colcon build"):
+        return ("src 아래 package를 찾아 build/install/log 결과를 새로 만듭니다.", "성공 뒤 install/setup.bash를 source해야 수정 내용이 반영됩니다.")
+    if value.startswith("ros2 run tf2_ros static_transform_publisher"):
+        return ("숫자 xyz·rpy와 parent/child frame을 받아 움직이지 않는 TF를 발행합니다.", "`/tf_static`과 TF frame tree에서 base_link → lidar_link를 확인합니다.")
+    if value.startswith("ros2 run "):
+        return ("앞 단어는 package, 뒤 단어는 그 package에 등록된 실행 이름입니다.", "실행 terminal의 log와 `ros2 node list`에서 node 동작을 확인합니다.")
+    if value.startswith("ros2 launch "):
+        return ("package의 launch 파일을 열어 여러 node와 설정을 함께 시작합니다.", "실행 뒤 node·topic·Gazebo/RViz 화면이 동시에 준비됩니다.")
+    if value.startswith("ros2 topic info"):
+        return ("이 topic의 message type과 publisher/subscriber 수를 조회합니다.", "연결이 맞으면 기대한 type과 1개 이상의 publisher가 보입니다.")
+    if value.startswith("ros2 topic echo"):
+        return ("topic 안에 실제로 흐르는 message 한 건 이상을 화면에 출력합니다.", "값·frame_id·필드를 직접 확인할 수 있습니다.")
+    if value.startswith("ros2 node list"):
+        return ("현재 ROS graph에서 실행 중인 node 이름을 나열합니다.", "talker/listener 또는 launch node가 목록에 나타납니다.")
+    if value.startswith("rviz2 "):
+        return ("저장해 둔 RViz 설정 파일을 열어 동일한 display 구성을 재현합니다.", "RobotModel·TF·LaserScan display가 설정 파일대로 보입니다.")
+    return ("이 명령은 지금 모듈의 기능을 실행하거나 관찰하는 한 단계입니다.", "명령 뒤 terminal 또는 GUI에서 완료 조건이 충족됐는지 확인합니다.")
+
+
+def teaching_command_lines(module: dict) -> list[tuple[str, str, str]]:
+    result: list[tuple[str, str, str]] = []
+    seen: set[str] = set()
+    for _, _, command in module["actions"]:
+        for raw in command.splitlines():
+            value = raw.strip()
+            if not value or value.startswith("#") or value in seen:
+                continue
+            meaning, effect = command_line_explanation(value)
+            result.append((value, meaning, effect))
+            seen.add(value)
+            if len(result) >= 6:
+                return result
+    return result
+
+
+def add_command_reading_slide(slide, module: dict, items: list[tuple[str, str, str]],
+                              page_no: int, page_count: int) -> None:
+    title(slide, module, f"명령어를 코드처럼 읽기 ({page_no}/{page_count})", "새 파일을 만들지 않는 모듈도 한 줄씩 뜻과 화면에서 확인할 결과를 먼저 읽습니다.")
+    folder = "~/ros2_curri" if module["id"] == "M01" else "~/ros2_curri/my_agv_ws"
+    status(slide, module, "명령 해설", folder)
+    text_box(slide, 0.76, 1.82, 11.8, 0.30, "말로 먼저 답해 보세요: 이 명령은 무엇을 시작하고, 성공하면 어디에 무엇이 보일까요?", 15, ORANGE, True, align=PP_ALIGN.CENTER)
+    for index, (command, meaning, effect) in enumerate(items, start=1):
+        y = 2.58 + (index - 1) * 1.88
+        code_panel = box(slide, 0.72, y, 4.55, 1.55, fill=DARK, line=DARK)
+        set_text(code_panel, display_teaching_code(command), 13, WHITE, False, MONO)
+        detail_panel = box(slide, 5.50, y, 7.15, 1.55, fill=LIGHT, line=BLUE)
+        text_box(slide, 5.73, y + 0.12, 0.65, 0.24, f"{index}.", 14, BLUE, True)
+        text_box(slide, 6.12, y + 0.10, 6.23, 0.54, "뜻: " + meaning, 13, NAVY)
+        text_box(slide, 6.12, y + 0.82, 6.23, 0.50, "실행에서: " + effect, 12, GREEN)
+    text_box(slide, 0.82, 6.78, 11.7, 0.20, "다음 실행 슬라이드에서는 이 명령을 직접 입력하고, 방금 말한 확인 결과가 보일 때까지 진행하지 않습니다.", 11, GREY, align=PP_ALIGN.CENTER)
+    add_notes(slide, "파일 구현이 없는 모듈에서도 명령의 역할과 관찰 결과를 코드 설명처럼 연결한다.", check=module["completion"])
+
+
 def add_project_increment_slide(slide, module: dict) -> None:
     title(slide, module, "프로젝트에 이번 기능을 직접 추가한다", "완성본을 먼저 복사하지 않습니다. 빈 workspace에 지금 필요한 폴더와 파일을 하나씩 만듭니다.")
     status(slide, module, "프로젝트 조립", "~/ros2_curri/my_agv_ws")
@@ -1158,6 +1421,15 @@ def build_deck(module: dict) -> tuple[Path, str]:
         slide = presentation.slides.add_slide(blank)
         add_bootstrap_slide(slide, module, MODULE_BOOTSTRAP[module["id"]])
 
+    # M01/M04/M11 deliberately add no source file. Teach their ROS/RViz
+    # commands with the same "line → meaning → observable result" rhythm.
+    if not module["files"]:
+        command_items = teaching_command_lines(module)
+        command_pages = [command_items[index:index + 2] for index in range(0, len(command_items), 2)]
+        for page_no, items in enumerate(command_pages, start=1):
+            slide = presentation.slides.add_slide(blank)
+            add_command_reading_slide(slide, module, items, page_no, len(command_pages))
+
     # The core of the lesson: make one empty file, type its implementation in
     # small saved blocks, and only then move to the next project file.
     file_total = len(module["files"])
@@ -1165,6 +1437,11 @@ def build_deck(module: dict) -> tuple[Path, str]:
         slide = presentation.slides.add_slide(blank)
         add_create_file_slide(slide, module, relative, file_no, file_total)
         lines = source_text(relative).splitlines() or [""]
+        teaching_items = teaching_code_lines(lines, relative)
+        teaching_pages = [teaching_items[index:index + 2] for index in range(0, len(teaching_items), 2)]
+        for page_no, items in enumerate(teaching_pages, start=1):
+            slide = presentation.slides.add_slide(blank)
+            add_file_code_explanation_slide(slide, module, relative, items, page_no, len(teaching_pages), file_no, file_total)
         chunks = [lines[index:index + 12] for index in range(0, len(lines), 12)]
         for number, chunk in enumerate(chunks, start=1):
             slide = presentation.slides.add_slide(blank)

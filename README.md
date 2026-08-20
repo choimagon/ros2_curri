@@ -29,6 +29,8 @@
 - 명령어가 실제로 하는 일과 바꿔 볼 수 있는 parameter/설정값
 - 코드·URDF/SDF/YAML이 구현하는 구조와 실행 뒤 확인할 결과
 
+PPT의 파일 구현 구간은 단순 코드 덩어리가 아닙니다. 빈 파일을 연 다음, 먼저 실제 코드/태그를 두 줄씩 보며 **이 줄의 뜻**과 **실행하면 어디서 확인되는지**를 설명하고, 이어서 같은 코드를 직접 입력합니다. 예를 들어 ROS publisher는 topic 출력과 `ros2 topic info` 결과를, Gazebo sensor는 sensor 설정과 실제 camera/LiDAR/IMU topic을 한 쌍으로 배웁니다.
+
 실제 Gazebo, RViz, Camera topic 화면은 해당 모듈의 `screenshots/`에 저장합니다. 화면마다 파일명 순서와 source commit을 기록해 PPT의 결과가 어떤 코드 기준인지 추적할 수 있습니다.
 
 ## 따라 하기 PPT 사용법
