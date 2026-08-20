@@ -1,0 +1,129 @@
+[INFO] [launch]: All log files can be found below /tmp/ros2_curri_sensor_logs/2026-08-20-14-41-38-598399-lab4090-Z790-AORUS-ELITE-446274
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [gazebo-1]: process started with pid [446287]
+[INFO] [parameter_bridge-2]: process started with pid [446288]
+[INFO] [robot_state_publisher-3]: process started with pid [446289]
+[INFO] [lidar_processor-4]: process started with pid [446291]
+[INFO] [imu_monitor-5]: process started with pid [446292]
+[INFO] [odom_path-6]: process started with pid [446293]
+[INFO] [yolo_node-7]: process started with pid [446294]
+[INFO] [rviz2-8]: process started with pid [446295]
+[robot_state_publisher-3] [INFO] [1787204498.916018008] [robot_state_publisher]: Robot initialized
+[rviz2-8] [INFO] [1787204499.651059676] [rviz2]: Stereo is NOT SUPPORTED
+[rviz2-8] [INFO] [1787204499.651111321] [rviz2]: OpenGl version: 4.6 (GLSL 4.6)
+[rviz2-8] [INFO] [1787204499.714139549] [rviz2]: Stereo is NOT SUPPORTED
+[parameter_bridge-2] [INFO] [1787204499.940140018] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/cmd_vel (geometry_msgs/msg/Twist) -> /cmd_vel (gz.msgs.Twist)] (Lazy 0)
+[parameter_bridge-2] [INFO] [1787204499.941931836] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/odom (gz.msgs.Odometry) -> /odom (nav_msgs/msg/Odometry)] (Lazy 0)
+[parameter_bridge-2] [INFO] [1787204499.943073120] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/scan (gz.msgs.LaserScan) -> /scan (sensor_msgs/msg/LaserScan)] (Lazy 0)
+[parameter_bridge-2] [INFO] [1787204499.944123629] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/imu/data (gz.msgs.IMU) -> /imu/data (sensor_msgs/msg/Imu)] (Lazy 0)
+[parameter_bridge-2] [INFO] [1787204499.944554167] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/camera/image_raw (gz.msgs.Image) -> /camera/image_raw (sensor_msgs/msg/Image)] (Lazy 0)
+[parameter_bridge-2] [INFO] [1787204499.945026783] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/clock (gz.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[parameter_bridge-2] [INFO] [1787204499.995816770] [ros_gz_bridge]: Passing message from ROS geometry_msgs/msg/Twist to Gazebo gz.msgs.Twist (showing msg only once per type)
+[rviz2-8] [INFO] [1787204500.639104265] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 63246.500 for reason 'discarding message because the queue is full'
+[gazebo-1] libEGL warning: pci id for fd 153: 10de:2684, driver (null)
+[gazebo-1] 
+[gazebo-1] pci id for fd 154: 10de:2684, driver (null)
+[gazebo-1] pci id for fd 155: 10de:2684, driver (null)
+[gazebo-1] libEGL warning: egl: failed to create dri2 screen
+[gazebo-1] libEGL warning: pci id for fd 153: 10de:2684, driver (null)
+[gazebo-1] 
+[gazebo-1] pci id for fd 154: 10de:2684, driver (null)
+[gazebo-1] pci id for fd 155: 10de:2684, driver (null)
+[gazebo-1] libEGL warning: egl: failed to create dri2 screen
+[gazebo-1] libEGL warning: pci id for fd 153: 10de:2684, driver (null)
+[gazebo-1] 
+[imu_monitor-5] [INFO] [1787204501.019487366] [imu_monitor]: gyro z=-0.000 rad/s, acceleration z=-0.000 m/s², frame=agv/base_link/imu
+[gazebo-1] libEGL warning: pci id for fd 93: 10de:2684, driver (null)
+[gazebo-1] 
+[gazebo-1] pci id for fd 94: 10de:2684, driver (null)
+[gazebo-1] pci id for fd 95: 10de:2684, driver (null)
+[gazebo-1] libEGL warning: egl: failed to create dri2 screen
+[gazebo-1] libEGL warning: pci id for fd 93: 10de:2684, driver (null)
+[gazebo-1] 
+[gazebo-1] pci id for fd 94: 10de:2684, driver (null)
+[gazebo-1] pci id for fd 95: 10de:2684, driver (null)
+[gazebo-1] libEGL warning: egl: failed to create dri2 screen
+[gazebo-1] libEGL warning: pci id for fd 93: 10de:2684, driver (null)
+[gazebo-1] 
+[imu_monitor-5] [INFO] [1787204502.020320678] [imu_monitor]: gyro z=0.007 rad/s, acceleration z=9.730 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204503.020367694] [imu_monitor]: gyro z=0.010 rad/s, acceleration z=9.157 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204503.167554954] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 1.200 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204504.020541214] [imu_monitor]: gyro z=-0.107 rad/s, acceleration z=9.499 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204505.020551610] [imu_monitor]: gyro z=-0.002 rad/s, acceleration z=8.794 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204505.695916516] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 3.700 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204506.022259435] [imu_monitor]: gyro z=0.077 rad/s, acceleration z=8.751 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204507.022392367] [imu_monitor]: gyro z=-0.025 rad/s, acceleration z=8.813 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204508.024467677] [imu_monitor]: gyro z=0.088 rad/s, acceleration z=8.096 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204508.223936765] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 63254.200 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204509.026182738] [imu_monitor]: gyro z=-0.004 rad/s, acceleration z=9.471 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204510.026564795] [imu_monitor]: gyro z=0.012 rad/s, acceleration z=9.429 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204510.751371022] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 63256.700 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204511.026623812] [imu_monitor]: gyro z=-0.063 rad/s, acceleration z=9.479 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204512.028192956] [imu_monitor]: gyro z=0.028 rad/s, acceleration z=12.993 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204513.028368339] [imu_monitor]: gyro z=-0.047 rad/s, acceleration z=9.480 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204513.280269152] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 11.300 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204514.038229288] [imu_monitor]: gyro z=0.028 rad/s, acceleration z=9.014 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204515.077338880] [imu_monitor]: gyro z=0.067 rad/s, acceleration z=9.432 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204515.808244561] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 13.800 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204516.077976618] [imu_monitor]: gyro z=-0.002 rad/s, acceleration z=9.430 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204517.078255577] [imu_monitor]: gyro z=0.040 rad/s, acceleration z=9.444 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204518.078260286] [imu_monitor]: gyro z=0.199 rad/s, acceleration z=9.418 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204518.335825568] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 63264.300 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204519.080678355] [imu_monitor]: gyro z=0.011 rad/s, acceleration z=9.411 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204520.090751577] [imu_monitor]: gyro z=-0.131 rad/s, acceleration z=9.505 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204520.864381531] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 63266.800 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204521.090771785] [imu_monitor]: gyro z=0.011 rad/s, acceleration z=9.409 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204522.091250467] [imu_monitor]: gyro z=0.011 rad/s, acceleration z=9.416 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204523.091857401] [imu_monitor]: gyro z=0.012 rad/s, acceleration z=9.426 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204523.392616839] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 21.400 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204524.100512387] [imu_monitor]: gyro z=0.023 rad/s, acceleration z=9.408 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204525.100542654] [imu_monitor]: gyro z=-0.047 rad/s, acceleration z=9.455 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204525.919927983] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 23.900 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204526.100788444] [imu_monitor]: gyro z=0.119 rad/s, acceleration z=9.001 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204527.101082610] [imu_monitor]: gyro z=0.030 rad/s, acceleration z=9.412 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204528.101164002] [imu_monitor]: gyro z=0.097 rad/s, acceleration z=9.406 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204528.448138291] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 63274.400 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204529.110544292] [imu_monitor]: gyro z=0.052 rad/s, acceleration z=9.421 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204530.110972150] [imu_monitor]: gyro z=-0.027 rad/s, acceleration z=9.587 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204530.976461686] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 29.000 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204531.111024356] [imu_monitor]: gyro z=0.059 rad/s, acceleration z=9.418 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204532.111279687] [imu_monitor]: gyro z=-0.077 rad/s, acceleration z=9.429 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204533.120437673] [imu_monitor]: gyro z=-0.014 rad/s, acceleration z=9.241 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204533.503908396] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 31.500 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204534.120629733] [imu_monitor]: gyro z=-0.039 rad/s, acceleration z=8.608 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204535.124306588] [imu_monitor]: gyro z=0.033 rad/s, acceleration z=8.032 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204536.032569006] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 63282.000 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204536.124444692] [imu_monitor]: gyro z=0.036 rad/s, acceleration z=8.049 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204537.124713768] [imu_monitor]: gyro z=0.006 rad/s, acceleration z=9.383 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204538.125817576] [imu_monitor]: gyro z=0.055 rad/s, acceleration z=9.417 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204538.560409846] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 63284.500 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204539.125883065] [imu_monitor]: gyro z=0.020 rad/s, acceleration z=8.937 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204540.125943875] [imu_monitor]: gyro z=0.069 rad/s, acceleration z=7.974 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204541.088227594] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 39.100 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204541.126048059] [imu_monitor]: gyro z=-0.009 rad/s, acceleration z=9.415 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204542.126972643] [imu_monitor]: gyro z=0.091 rad/s, acceleration z=8.916 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204543.127395441] [imu_monitor]: gyro z=0.035 rad/s, acceleration z=8.542 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204543.616119003] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 41.600 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204544.127423338] [imu_monitor]: gyro z=0.062 rad/s, acceleration z=9.535 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204545.137005032] [imu_monitor]: gyro z=0.006 rad/s, acceleration z=9.414 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204546.137420354] [imu_monitor]: gyro z=0.012 rad/s, acceleration z=9.497 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204546.144267912] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 63292.100 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204547.137481309] [imu_monitor]: gyro z=-0.030 rad/s, acceleration z=9.381 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204548.144096493] [imu_monitor]: gyro z=-0.014 rad/s, acceleration z=9.483 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204548.672370737] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 63294.600 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204549.144855829] [imu_monitor]: gyro z=0.029 rad/s, acceleration z=10.975 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204550.154167057] [imu_monitor]: gyro z=0.082 rad/s, acceleration z=9.499 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204551.155472167] [imu_monitor]: gyro z=0.100 rad/s, acceleration z=8.944 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204551.201388003] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 49.200 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204552.155724738] [imu_monitor]: gyro z=-0.011 rad/s, acceleration z=9.419 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204553.156175903] [imu_monitor]: gyro z=0.029 rad/s, acceleration z=9.412 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204553.728449030] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 51.700 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204554.165693430] [imu_monitor]: gyro z=-0.006 rad/s, acceleration z=9.592 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204555.166082189] [imu_monitor]: gyro z=0.023 rad/s, acceleration z=9.415 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204556.166350749] [imu_monitor]: gyro z=0.038 rad/s, acceleration z=9.430 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204556.257020254] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 63302.200 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204557.175511535] [imu_monitor]: gyro z=0.065 rad/s, acceleration z=9.443 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204558.175819495] [imu_monitor]: gyro z=0.086 rad/s, acceleration z=8.768 m/s², frame=agv/base_link/imu
+[rviz2-8] [INFO] [1787204558.784368318] [rviz]: Message Filter dropping message: frame 'agv/lidar_link/lidar' at time 56.800 for reason 'discarding message because the queue is full'
+[imu_monitor-5] [INFO] [1787204559.176272564] [imu_monitor]: gyro z=-0.062 rad/s, acceleration z=9.443 m/s², frame=agv/base_link/imu
+[imu_monitor-5] [INFO] [1787204560.185661151] [imu_monitor]: gyro z=0.024 rad/s, acceleration z=9.389 m/s², frame=agv/base_link/imu

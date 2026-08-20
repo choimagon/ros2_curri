@@ -1,0 +1,368 @@
+$ ros2 topic list | grep -E "camera|scan|imu|clock"
+/camera/image_raw
+/clock
+/imu/data
+/scan
+
+$ ros2 topic info /camera/image_raw
+Type: sensor_msgs/msg/Image
+Publisher count: 1
+Subscription count: 3
+
+$ ros2 topic echo /scan --once
+header:
+  stamp:
+    sec: 63246
+    nanosec: 700000000
+  frame_id: agv/lidar_link/lidar
+angle_min: -3.141590118408203
+angle_max: 3.141590118408203
+angle_increment: 0.008738775737583637
+time_increment: 0.0
+scan_time: 0.0
+range_min: 0.11999999731779099
+range_max: 12.0
+ranges:
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- .inf
+- '...'
+intensities:
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- '...'
+---
+
+$ ros2 topic echo /imu/data --once
+header:
+  stamp:
+    sec: 0
+    nanosec: 10000000
+  frame_id: agv/base_link/imu
+orientation:
+  x: 1.4977033776162875e-22
+  y: -1.3258674109791654e-20
+  z: 2.9173090086165672e-21
+  w: 1.0
+orientation_covariance:
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+angular_velocity:
+  x: 0.0003434394446081713
+  y: -4.352654558002502e-18
+  z: 6.570222700217382e-19
+angular_velocity_covariance:
+- 9.999999974752427e-07
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+linear_acceleration:
+  x: 2.3184333088500572e-18
+  y: -3.948809383457217e-20
+  z: 0.0
+linear_acceleration_covariance:
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+- 0.0
+---
+
+$ ros2 topic echo /clock --once
+clock:
+  sec: 63249
+  nanosec: 175000000
+---
+
+$ ros2 topic hz /camera/image_raw (5 s)
+average rate: 18.733
+	min: 0.001s max: 0.397s std dev: 0.08806s window: 19
+average rate: 24.138
+	min: 0.001s max: 0.397s std dev: 0.06220s window: 50
+average rate: 26.421
+	min: 0.001s max: 0.397s std dev: 0.05255s window: 82
+
+$ ros2 topic hz /scan (5 s)
+average rate: 31.640
+	min: 0.000s max: 0.330s std dev: 0.05825s window: 33
+average rate: 35.711
+	min: 0.000s max: 0.330s std dev: 0.04356s window: 73
+average rate: 37.448
+	min: 0.000s max: 0.330s std dev: 0.03806s window: 114
+
+$ ros2 topic hz /imu/data (5 s)
+average rate: 73.433
+	min: 0.008s max: 0.343s std dev: 0.03453s window: 92
+average rate: 130.539
+	min: 0.000s max: 0.343s std dev: 0.02010s window: 295
+average rate: 151.846
+	min: 0.000s max: 0.343s std dev: 0.01588s window: 495
+[INFO] [1787204519.349385132] [course_image_capture]: saved /home/lab4090/ros2_curri/blocks/D_sensors/captures/01_camera_image_raw_actual.png (640x480)
+[INFO] [1787204520.665187413] [course_image_capture]: saved /home/lab4090/ros2_curri/blocks/D_sensors/captures/04_vision_debug_actual.png (640x480)

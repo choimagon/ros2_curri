@@ -272,7 +272,7 @@ MODULES = [
         "start": "IMU sensor가 base_link에 장착되어 있고 M09 주행이 가능한 상태.",
         "previous": "M13 /scan", "next": "M15 운영/QoS",
         "flow": ["Gazebo IMU", "bridge", "/imu/data", "imu_monitor"],
-        "files": ["agv_gazebo/models/agv/model.sdf", "agv_gazebo/config/bridge.yaml", "agv_sensors/agv_sensors/imu_monitor.py"],
+        "files": ["agv_gazebo/models/agv/model.sdf", "agv_gazebo/worlds/warehouse.sdf", "agv_gazebo/config/bridge.yaml", "agv_sensors/agv_sensors/imu_monitor.py"],
         "actions": [("Imu message 필드를 확인한다", "z축 angular velocity는 제자리 회전에서 가장 먼저 변화를 보인다.", "ros2 interface show sensor_msgs/msg/Imu\nros2 topic echo /imu/data --once"), ("IMU monitor를 실행한다", "출력에 단위와 frame을 함께 남기면 축 오류를 찾기 쉽다.", "source ~/ros2_curri/agv_ws/install/setup.bash\nros2 run agv_sensors imu_monitor")],
         "run": "ros2 launch agv_bringup agv_sim.launch.py rviz:=false\n# 새 터미널: ros2 run agv_sensors imu_monitor",
         "validate": "ros2 topic info /imu/data\nros2 topic hz /imu/data\nros2 topic echo /imu/data --once",
@@ -420,6 +420,136 @@ MODULES = [
         "extra": [("최종 미션 시나리오", ["1. START: launch와 sensor topic을 확인한다.", "2. SEARCH: target이 없을 때 회전 탐색 command를 관찰한다.", "3. APPROACH: detection 중심 오차가 angular command로 바뀌는지 확인한다.", "4. AVOID/STOP: LiDAR threshold 안에서는 safety가 우선하는지 확인한다.", "5. GOAL/STOP: 목표 도달 뒤 forward /cmd_vel이 0인지 확인한다."]), ("최종 기능 체크표", ["Model/Physics: body·wheel·collision·inertia", "Drive/TF/Odom: /cmd_vel, /odom, frame tree", "Sensors: /camera/image_raw, /scan, /imu/data", "Autonomy: detection, safety priority, mission state", "Operations/Data: launch, YAML, rosbag2, README/checkpoint"]), ("Milestone 1~8 제출 증거", ["1 모델 TF, 2 World spawn, 3 Differential Drive, 4 bridge/RViz", "5 Camera/LiDAR/IMU, 6 safety/perception, 7 FSM/PID, 8 launch/rosbag", "각 milestone마다 command 결과와 정상 화면을 함께 저장한다."]), ("실패를 재현 가능하게 기록한다", ["topic: 이름·타입·publisher/subscriber 수", "TF: frame_id·parent/child·Fixed Frame", "bridge: 방향·Gazebo/ROS type", "physics: collision·friction·inertia", "launch: package share·YAML key·실행 순서"] )],
     },
 ]
+
+
+# PDF example policy: do not show a file or a result without telling a beginner
+# (1) what it creates, (2) which part to read first, (3) how it is used, and
+# (4) where the result is observed.  Specific guidance overrides the generic
+# extension-based explanation below.
+FILE_GUIDANCE = {
+    "agv_description/curriculum_stages/M05/agv.urdf": (
+        "몸체·두 바퀴·caster·camera/lidar/imu frame을 link와 joint로 조립한 기본 AGV",
+        "각 <link>의 geometry와 각 <joint>의 parent/child를 차례로 작성한다.",
+        "check_urdf로 tree를 확인한 뒤 robot_state_publisher + RViz RobotModel에 넣는다.",
+        "terminal의 base_link 자식 6개와 RViz의 바퀴·센서 frame"),
+    "agv_description/curriculum_stages/M06/agv.urdf.xacro": (
+        "반복되는 좌·우 바퀴를 property와 macro 하나로 생성하는 재사용 가능한 AGV 설명",
+        "property → macro 정의 → macro 호출 순서로 읽고, wheel_radius 한 값만 바꾼다.",
+        "xacro로 URDF를 만든 뒤 check_urdf를 실행한다.",
+        "생성 URDF의 left/right wheel과 같은 반지름"),
+    "agv_description/curriculum_stages/M07/model.sdf": (
+        "Gazebo가 질량·충돌·마찰을 계산할 수 있는 물리 AGV",
+        "visual(보임), collision(부딪힘), inertial(무게), friction(접지)을 분리해 작성한다.",
+        "gz sdf -k로 문법을 검사하고 값 하나만 바꿔 다시 실행한다.",
+        "terminal의 Valid와 물리 태그, Gazebo에서 바닥 위 안정 상태"),
+    "agv_description/curriculum_stages/M08/model.config": (
+        "Gazebo가 model://agv 이름으로 SDF 모델을 찾게 하는 모델 등록 정보",
+        "name과 sdf 파일 이름이 실제 파일과 같은지 먼저 맞춘다.",
+        "models/ 아래에 둘 때 Gazebo가 URI를 해석한다.",
+        "World의 <uri>model://agv</uri>"),
+    "agv_description/curriculum_stages/M08/model.sdf": (
+        "World에 배치하기 직전의 AGV 본체·바퀴·joint 모델",
+        "M07 물리 요소를 유지한 채 sensor/drive plugin이 아직 없는지 읽는다.",
+        "gz sdf -k 뒤 model.config와 함께 Gazebo models 경로에 둔다.",
+        "Valid 출력과 World에 spawn된 AGV"),
+    "agv_description/curriculum_stages/M08/warehouse.sdf": (
+        "바닥·벽·장애물·목표물과 AGV를 배치하는 실습 공간",
+        "world → 환경 model → include 순서로 만들고 include의 pose를 마지막에 조정한다.",
+        "gz sim으로 World를 연다.",
+        "Gazebo Entity Tree의 ground·wall·target·agv"),
+    "agv_gazebo/models/agv/model.sdf": (
+        "구동·카메라·LiDAR·IMU를 포함해 Gazebo가 시뮬레이션할 완성 AGV",
+        "link/joint 다음에 sensor와 DiffDrive plugin을 찾고, topic 이름을 bridge와 비교한다.",
+        "Gazebo launch 뒤 각 ROS topic을 확인한다.",
+        "Gazebo의 AGV, /camera/image_raw, /scan, /imu/data"),
+    "agv_gazebo/worlds/warehouse.sdf": (
+        "센서·물리 system plugin과 warehouse 환경을 함께 여는 Gazebo World",
+        "Physics/Sensors/Imu plugin → 환경 → include AGV 순서로 읽는다.",
+        "World를 다시 열면 Imu system이 /imu/data의 원천을 생성한다.",
+        "Gazebo World와 IMU terminal의 frame_id·publish rate"),
+    "agv_gazebo/config/bridge.yaml": (
+        "Gazebo Transport 메시지와 ROS 2 topic을 방향별로 연결하는 번역표",
+        "한 항목에서 ros_topic_name → type → direction을 세 줄씩 비교한다.",
+        "parameter_bridge가 이 YAML을 읽도록 launch한다.",
+        "ros2 topic info에서 보이는 type과 publisher 수"),
+    "agv_vision/agv_vision/yolo_node.py": (
+        "카메라 Image를 받아 검출 결과와 debug Image를 내보내는 인지 노드",
+        "subscription → cv_bridge 변환 → 검출 → Detection/debug publish 순서로 읽는다.",
+        "enable_yolo=false로 fallback부터 실행하고 모델 준비 뒤 true로 바꾼다.",
+        "/vision/debug_image의 노란 box와 target 거리"),
+    "agv_sensors/agv_sensors/lidar_processor.py": (
+        "LaserScan의 전방 sector에서 유효 거리 최소값을 계산하는 안전 입력 노드",
+        "ranges 필터 → 각도 index → minimum → /obstacle_distance publish 순서로 읽는다.",
+        "launch 뒤 /scan과 /obstacle_distance를 별 터미널에서 본다.",
+        "LiDAR terminal의 frame·range와 RViz LaserScan"),
+    "agv_sensors/agv_sensors/imu_monitor.py": (
+        "IMU frame·각속도·가속도를 단위와 함께 출력하는 진단 노드",
+        "message header → angular_velocity → linear_acceleration 순서로 읽는다.",
+        "제자리 회전 명령과 함께 실행해 z축 부호를 비교한다.",
+        "IMU terminal의 frame_id와 publish rate"),
+    "agv_bringup/config/sensors.yaml": (
+        "센서 처리 노드가 공통으로 사용할 use_sim_time 등 실행 파라미터",
+        "노드 이름 아래 parameter와 값의 단위를 확인한다.",
+        "launch가 YAML을 넘긴 뒤 ros2 param get으로 확인한다.",
+        "/clock과 use_sim_time=true"),
+}
+
+
+MODULE_FOCUS = {
+    "M05": ("URDF는 로봇의 부품표가 아니라, ‘어떤 부품을 어느 frame에 고정할지’ 적는 조립도입니다.",
+            "<link name=\"base_link\">, <joint name=\"...\">, <parent>, <child>",
+            "wheel link의 cylinder radius를 바꾸면 보이는 바퀴 크기가 바뀌고, joint origin은 장착 위치를 바꿉니다.",
+            "check_urdf의 root Link와 child 목록을 먼저 읽고 RViz RobotModel로 형태를 봅니다."),
+    "M06": ("Xacro는 같은 바퀴 코드를 복사하지 않고 ‘값 한 번, 생성 여러 번’으로 바꾸는 도구입니다.",
+            "<xacro:property>, <xacro:macro>, <xacro:wheel ...>",
+            "wheel_radius 값을 하나 바꾸면 좌우 macro 호출에 같은 값이 전달됩니다.",
+            "xacro → /tmp/agv.urdf → check_urdf 순서가 변환과 검증을 분리합니다."),
+    "M07": ("SDF 물리 모델은 화면에 보이는 모양과 실제 접촉 계산을 서로 다른 태그로 관리합니다.",
+            "<visual>, <collision>, <inertial>, <friction>",
+            "visual만 바꾸면 모양만 변하고, mass/inertia/friction은 주행·접지 반응을 바꿉니다.",
+            "Valid 뒤 Gazebo에서 떠오름·떨림·미끄럼이 없는지 관찰합니다."),
+    "M08": ("World는 무대이고 model://agv include는 그 무대 위에 로봇을 놓는 한 줄입니다.",
+            "<world>, <include>, <uri>model://agv</uri>, <pose>",
+            "include pose x/y/z를 바꾸면 spawn 위치만 바뀌며 AGV 모델 파일은 바뀌지 않습니다.",
+            "Gazebo Entity Tree에서 환경 model과 agv가 따로 보이는지 확인합니다."),
+    "M12": ("Camera는 SDF에서 영상을 만들고 bridge가 ROS Image로 옮긴 뒤 cv_bridge 코드가 픽셀로 바꿉니다.",
+            "<horizontal_fov>, <width>, <height>, <update_rate>, /camera/image_raw", 
+            "FOV는 보이는 폭, width/height는 프레임 크기, update_rate는 새 영상의 주기를 바꿉니다.",
+            "Camera raw 화면 → ros2 topic info/hz → debug Image 순서로 정상 여부를 확인합니다."),
+    "M13": ("LiDAR의 ranges는 거리 배열이고, 각 원소의 방향은 angle_min + index × angle_increment입니다.",
+            "<samples>, <min_angle>, <max_angle>, range_min/range_max, qos_profile_sensor_data", 
+            "front_half_angle_deg를 바꾸면 최소거리 판단에 포함되는 전방 sector가 바뀝니다.",
+            "terminal에서 frame/range/rate를 보고 RViz LaserScan에서 공간 방향을 확인합니다."),
+    "M14": ("IMU는 로봇 base에 붙은 좌표계에서 회전과 가속을 계속 발행하는 센서입니다.",
+            "<sensor name=\"imu\">, update_rate, Imu system plugin, angular_velocity", 
+            "World의 gz-sim-imu-system이 없으면 sensor 태그가 있어도 실제 메시지가 나오지 않습니다.",
+            "terminal의 agv/base_link/imu frame과 publish rate를 보고 제자리 회전 시 z축을 비교합니다."),
+    "M15": ("센서를 동시에 운영할 때는 ‘topic이 있다’보다 시간·QoS·frame·rate가 서로 맞는지가 중요합니다.",
+            "/clock, use_sim_time, qos_profile_sensor_data, ros2 topic hz", 
+            "SDF update_rate와 실제 hz가 크게 다르면 시뮬레이터 부하·QoS·bridge를 먼저 점검합니다.",
+            "camera/LiDAR/IMU terminal과 RViz를 함께 열어 이름·rate·Fixed Frame을 대조합니다."),
+}
+
+
+# Each path was captured from the live Ubuntu/ROS 2 environment.  The third
+# value is the exact observation a learner should make before moving on.
+VISUAL_SEQUENCES = {
+    "M05": [("blocks/B_robot_build/captures/02_m05_urdf_terminal_actual.png", "실제 terminal: check_urdf가 base_link와 6개 자식 link를 확인한 결과", "root Link=base_link와 wheel·camera·lidar·imu child 이름을 찾습니다.")],
+    "M06": [("blocks/B_robot_build/captures/03_m06_xacro_terminal_actual.png", "실제 terminal: Xacro 변환 뒤 생성 URDF를 check_urdf로 검사한 결과", "xacro 명령 다음의 Successfully Parsed XML과 left/right wheel child를 찾습니다.")],
+    "M07": [("blocks/B_robot_build/captures/04_m07_sdf_terminal_actual.png", "실제 terminal: SDF Valid 검사와 visual·collision·mass·friction 태그", "Valid 다음에 visual/collision과 mass/friction이 서로 다른 책임임을 읽습니다.")],
+    "M08": [("blocks/B_robot_build/captures/05_m08_world_terminal_actual.png", "실제 terminal: World 이름과 model://agv include·spawn pose", "warehouse_m08, model://agv, pose 세 항목을 순서대로 찾습니다."),
+            ("blocks/B_robot_build/captures/01_gazebo_world_spawn_actual.png", "실제 Gazebo Sim: warehouse World와 Entity Tree에 보이는 AGV", "오른쪽 Entity Tree에서 ground·wall·target·agv가 따로 생성됐는지 확인합니다.")],
+    "M12": [("blocks/D_sensors/captures/01_camera_image_raw_actual.png", "실제 /camera/image_raw: AGV 전방 camera가 target·장애물 방향을 보는 원본 프레임", "빨간 target과 노란 장애물의 화면 위치로 camera pose·FOV를 판단합니다."),
+            ("blocks/D_sensors/captures/02_camera_terminal_actual.png", "실제 GNOME Terminal: camera Image type·publisher/subscriber·publish rate", "Image 타입, publisher 1개 이상, average rate를 함께 찾습니다."),
+            ("blocks/D_sensors/captures/04_vision_debug_actual.png", "실제 /vision/debug_image: fallback 검출 결과가 target box·거리로 표시된 화면", "노란 box와 ‘target … m’ 텍스트가 raw frame 처리 결과인지 확인합니다.")],
+    "M13": [("blocks/D_sensors/captures/05_lidar_terminal_actual.png", "실제 GNOME Terminal: LaserScan frame·angle·range와 publish rate", "frame_id, ±pi angle, range_min/max, average rate를 순서대로 읽습니다."),
+            ("blocks/D_sensors/captures/03_rviz_sensors_actual.png", "실제 RViz2: LaserScan을 RobotModel·TF와 같은 Fixed Frame에서 연 화면", "Displays에서 LaserScan이 켜져 있고 scan frame을 TF가 변환하는지 확인합니다.")],
+    "M14": [("blocks/D_sensors/captures/06_imu_terminal_actual.png", "실제 GNOME Terminal: /imu/data의 frame·필드와 publish rate", "agv/base_link/imu frame과 angular_velocity·linear_acceleration 필드, average rate를 찾습니다.")],
+    "M15": [("blocks/D_sensors/captures/02_camera_terminal_actual.png", "실제 terminal: Camera topic의 type·연결 수·실측 rate", "camera가 message를 내보내고 있는지 type·publisher·rate로 확인합니다."),
+            ("blocks/D_sensors/captures/05_lidar_terminal_actual.png", "실제 terminal: LiDAR의 frame·range·실측 rate", "SDF 설정값과 실제 range/angle/rate가 논리적으로 맞는지 대조합니다."),
+            ("blocks/D_sensors/captures/06_imu_terminal_actual.png", "실제 terminal: IMU frame·필드·실측 rate", "IMU도 같은 simulation 시간에 갱신되는지 average rate를 확인합니다."),
+            ("blocks/D_sensors/captures/03_rviz_sensors_actual.png", "실제 RViz2: sensor display를 같은 Fixed Frame에서 대조", "camera·LiDAR·IMU 각각을 화면·terminal·frame 기준으로 교차 확인합니다.")],
+}
 
 
 def canonical_path(relative: str) -> str:
@@ -609,6 +739,63 @@ def add_flow(slide, module: dict) -> None:
     add_notes(slide, "도식의 각 상자가 무엇을 만들고 화살표가 어떤 방향으로 데이터를 보내는지 설명한다.", check="교육생이 왼쪽에서 오른쪽(또는 제어 방향)으로 흐름을 말할 수 있다.")
 
 
+def file_guidance(relative: str) -> tuple[str, str, str, str]:
+    if relative in FILE_GUIDANCE:
+        return FILE_GUIDANCE[relative]
+    suffix = Path(relative).suffix
+    if "/launch/" in relative or relative.endswith("launch.py"):
+        return ("여러 ROS 2 node를 시작 순서대로 조립하는 launch 파일", "launch argument → Node → parameters/config 순서로 읽는다.",
+                "ros2 launch로 실행한다.", "terminal의 실행 node와 topic")
+    if suffix == ".py":
+        return ("ROS 2 node 또는 실행 보조 로직", "import → Node 생성 → publisher/subscription → callback/main 순서로 읽는다.",
+                "package를 build·source한 뒤 ros2 run 또는 launch에서 실행한다.", "terminal의 node/topic/log 출력")
+    if suffix in {".sdf", ".urdf", ".xacro"}:
+        return ("로봇 또는 Gazebo 환경의 구조·물리·sensor 설정", "link/model → geometry → joint/sensor/plugin 순서로 읽는다.",
+                "문법 검사 뒤 Gazebo/RViz에서 열어 본다.", "terminal 검사 결과와 3D 화면")
+    if suffix in {".yaml", ".yml"}:
+        return ("실행 시 읽히는 ROS 2 설정값", "이름 → type/value → launch에서 전달되는 위치를 비교한다.",
+                "launch 실행 뒤 ros2 param/topic 명령으로 확인한다.", "terminal의 parameter/topic 출력")
+    return ("이번 모듈의 재현 가능한 파일", "파일명·경로·핵심 이름을 슬라이드와 동일하게 작성한다.",
+            "build/source 뒤 실행 단계에서 사용한다.", "검증 명령의 파일·topic 이름")
+
+
+def add_file_role_slide(slide, module: dict, group: list[str], page_no: int, page_count: int) -> None:
+    title(slide, module, f"코드/설정이 실제로 만드는 것 ({page_no}/{page_count})", "파일을 입력하기 전에 ‘무엇을 만들고 어디서 볼지’를 먼저 연결합니다.")
+    status(slide, module, "파일 역할", "~/ros2_curri/agv_ws")
+    for index, relative in enumerate(group):
+        makes, read_order, use, observe = file_guidance(relative)
+        y = 1.78 + index * 2.53
+        panel = box(slide, 0.70, y, 12.0, 2.24, fill=LIGHT, line=RGBColor(204, 219, 235))
+        text_box(slide, 0.93, y + 0.15, 11.4, 0.28, canonical_path(relative), 13, BLUE, True, MONO)
+        text_box(slide, 0.95, y + 0.55, 1.35, 0.25, "만드는 것", 15, GREEN, True)
+        text_box(slide, 2.16, y + 0.53, 10.05, 0.30, makes, 15, NAVY)
+        text_box(slide, 0.95, y + 0.96, 1.35, 0.25, "코드 읽기", 15, ORANGE, True)
+        text_box(slide, 2.16, y + 0.94, 10.05, 0.33, read_order, 14, NAVY)
+        text_box(slide, 0.95, y + 1.38, 1.35, 0.25, "사용/확인", 15, BLUE, True)
+        text_box(slide, 2.16, y + 1.36, 10.05, 0.56, f"사용: {use}\n화면/출력: {observe}", 13, NAVY)
+    add_notes(slide, "파일을 코드 문법보다 먼저 역할·사용법·확인 화면으로 설명한다.", check="교육생이 각 파일의 산출물과 확인 위치를 말할 수 있다.")
+
+
+def add_code_reading_slide(slide, module: dict, focus: tuple[str, str, str, str]) -> None:
+    purpose, markers, change, observe = focus
+    title(slide, module, "코드를 ‘만드는 것 → 표시할 줄 → 바꾼 결과’로 읽는다", "PDF 예시처럼 화면을 보기 전에 코드의 역할과 관찰 지점을 한 번 짚고 갑니다.")
+    status(slide, module, "코드 해설", "~/ros2_curri/agv_ws")
+    panels = [
+        ("1. 이 파일이 만드는 것", purpose, GREEN),
+        ("2. 먼저 찾을 코드/태그", markers, BLUE),
+        ("3. 값을 바꾸면", change, ORANGE),
+        ("4. 실제로 보는 곳", observe, RED),
+    ]
+    for index, (heading, body, color) in enumerate(panels):
+        x = 0.72 + (index % 2) * 6.08
+        y = 1.82 + (index // 2) * 2.35
+        panel = box(slide, x, y, 5.82, 1.93, fill=LIGHT, line=color)
+        text_box(slide, x + 0.22, y + 0.18, 5.35, 0.29, heading, 17, color, True)
+        text_box(slide, x + 0.22, y + 0.63, 5.30, 1.03, body, 16, NAVY)
+    text_box(slide, 0.85, 6.75, 11.6, 0.22, "다음 코드 슬라이드에서는 위의 태그/함수를 찾아 색으로 표시하며 한 줄씩 설명합니다.", 12, GREEN, True, align=PP_ALIGN.CENTER)
+    add_notes(slide, purpose, check=observe)
+
+
 def add_code_slide(slide, module: dict, relative: str, lines: list[str], chunk_no: int, chunk_count: int, step_no: int) -> None:
     display_path = canonical_path(relative)
     title(slide, module, f"파일을 {'새로 만들고' if chunk_no == 1 else '계속 작성하고'} 저장한다 ({chunk_no}/{chunk_count})", display_path)
@@ -640,15 +827,16 @@ def add_action_slide(slide, module: dict, step_number: int, total_steps: int, ac
     add_notes(slide, why, command=command, check="명령 출력에서 슬라이드의 확인 항목을 찾는다.")
 
 
-def add_capture_slide(slide, module: dict, image_path: Path, caption: str) -> None:
+def add_capture_slide(slide, module: dict, image_path: Path, caption: str, observation: str = "") -> None:
     title(slide, module, "정상 결과: 실제 환경에서 확인한 출력", caption)
     with Image.open(image_path) as image:
         ratio = image.width / image.height
     max_w, max_h = 11.6, 5.25
     width = min(max_w, max_h * ratio); height = width / ratio
     slide.shapes.add_picture(str(image_path), Inches((13.33 - width) / 2), Inches(1.48 + (max_h - height) / 2), width=Inches(width), height=Inches(height))
-    text_box(slide, 0.85, 6.80, 11.6, 0.20, "① 명령/설정  ② 정상 출력 또는 화면  ③ 다음 검증 명령으로 재확인", 11, GREEN, True, align=PP_ALIGN.CENTER)
-    add_notes(slide, "실제 Ubuntu/ROS 2 환경에서 생성한 검증 화면이다.", check="캡처의 명령과 다음 슬라이드의 검증 명령을 비교한다.")
+    read_line = observation or "① 명령/설정  ② 정상 출력 또는 화면  ③ 다음 검증 명령으로 재확인"
+    text_box(slide, 0.85, 6.72, 11.6, 0.34, f"화면에서 확인: {read_line}", 11, GREEN, True, align=PP_ALIGN.CENTER)
+    add_notes(slide, "실제 Ubuntu/ROS 2 환경에서 생성한 검증 화면이다.", check=read_line)
 
 
 def add_validation_slide(slide, module: dict) -> None:
@@ -792,6 +980,17 @@ def build_deck(module: dict) -> tuple[Path, str]:
     text_box(slide, 0.96, 6.72, 11.3, 0.22, "파일 전체 코드는 다음 슬라이드에 이어집니다. 중간 줄을 빼지 않고 끝까지 제공합니다.", 11, GREY, align=PP_ALIGN.CENTER)
     add_notes(slide, "실제 파일 경로를 보여 주고 어떤 package의 책임인지 설명한다.", check="교육생이 파일의 부모 package를 찾을 수 있다.")
 
+    # Before the complete source appears, connect every file to the robot part,
+    # running command, and visible result it is responsible for.
+    if module["files"]:
+        role_groups = [module["files"][index:index + 2] for index in range(0, len(module["files"]), 2)]
+        for index, group in enumerate(role_groups, start=1):
+            slide = presentation.slides.add_slide(blank)
+            add_file_role_slide(slide, module, group, index, len(role_groups))
+    if module["id"] in MODULE_FOCUS:
+        slide = presentation.slides.add_slide(blank)
+        add_code_reading_slide(slide, module, MODULE_FOCUS[module["id"]])
+
     # action slides before code
     action_count = len(module["actions"])
     for index, action in enumerate(module["actions"], start=1):
@@ -821,12 +1020,15 @@ def build_deck(module: dict) -> tuple[Path, str]:
     add_notes(slide, "build/source/run을 생략 없이 실행한다.", command=module["run"], check=module["completion"])
 
     slide = presentation.slides.add_slide(blank); add_capture_slide(slide, module, terminal_image, "실제 ROS 2 환경의 파일·패키지·구성 검증 로그")
-    if module.get("visual"):
-        visual = ROOT / module["visual"]
+    visual_items = VISUAL_SEQUENCES.get(module["id"])
+    if visual_items is None and module.get("visual"):
+        visual_items = [(module["visual"], module["visual_caption"], "명령·설정과 화면의 topic·frame·결과 이름을 대조합니다.")]
+    for visual_relative, visual_caption, observation in visual_items or []:
+        visual = ROOT / visual_relative
         if visual.exists():
             shutil.copy2(visual, capture_dir / visual.name)
             slide = presentation.slides.add_slide(blank)
-            add_capture_slide(slide, module, visual, module["visual_caption"])
+            add_capture_slide(slide, module, visual, visual_caption, observation)
     slide = presentation.slides.add_slide(blank); add_validation_slide(slide, module)
     slide = presentation.slides.add_slide(blank); add_errors_slide(slide, module)
     slide = presentation.slides.add_slide(blank)
