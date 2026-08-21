@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import ast
 import os
+import re
 import shutil
 import subprocess
 import textwrap
@@ -59,10 +60,10 @@ MODULES = [
         "files": [],
         "actions": [
             ("ROS 2 환경을 등록한다", "새 터미널은 ROS 명령을 아직 모른다.", "source /opt/ros/jazzy/setup.bash\nros2 --help | head"),
-            ("두 노드를 서로 다른 터미널에서 실행한다", "Publisher와 Subscriber는 동시에 살아 있어야 한다.", "# 터미널 1\nros2 run demo_nodes_cpp talker\n\n# 새 터미널 2\nsource /opt/ros/jazzy/setup.bash\nros2 run demo_nodes_py listener"),
+            ("두 노드를 서로 다른 터미널에서 실행한다", "Publisher와 Subscriber는 동시에 살아 있어야 한다. 터미널 1은 talker를 계속 실행하고, 터미널 2는 listener가 받은 문자열을 출력하는지 관찰한다.", "# 터미널 1\nsource /opt/ros/jazzy/setup.bash\nros2 run demo_nodes_cpp talker\n\n# 터미널 2\nsource /opt/ros/jazzy/setup.bash\nros2 run demo_nodes_py listener"),
             ("연결을 명령으로 관찰한다", "코드 밖에서도 이름·타입·연결 수를 확인할 수 있다.", "ros2 node list\nros2 topic list\nros2 topic info /chatter\nros2 topic echo /chatter --once"),
         ],
-        "run": "source /opt/ros/jazzy/setup.bash\nros2 run demo_nodes_cpp talker\n# 새 터미널: ros2 run demo_nodes_py listener",
+        "run": "# 터미널 1\nsource /opt/ros/jazzy/setup.bash\nros2 run demo_nodes_cpp talker\n\n# 터미널 2\nsource /opt/ros/jazzy/setup.bash\nros2 run demo_nodes_py listener",
         "validate": "ros2 node list\nros2 topic info /chatter\nros2 topic echo /chatter --once",
         "capture": "ros2 pkg prefix demo_nodes_cpp; ros2 interface show std_msgs/msg/String",
         "errors": [("ros2: command not found", "source /opt/ros/jazzy/setup.bash를 실행한다."), ("echo가 출력되지 않음", "talker 실행·/chatter 이름·publisher 수를 순서대로 확인한다.")],
@@ -93,8 +94,8 @@ MODULES = [
         "previous": "M02 agv_control 패키지", "next": "M04 TF2 frame",
         "flow": ["timer", "publisher\n/counter", "subscriber\ncallback"],
         "files": ["agv_control/agv_control/counter_publisher.py", "agv_control/agv_control/counter_monitor.py", "agv_control/agv_control/cmd_test_node.py", "agv_control/agv_control/velocity_monitor.py", "agv_control/setup.py"],
-        "actions": [("console_scripts를 등록한다", "ros2 run은 setup.py에 등록된 실행 이름을 사용한다.", "cd ~/ros2_curri/my_agv_ws\ncolcon build --symlink-install --packages-select agv_control\nsource install/setup.bash"), ("counter 두 노드를 실행한다", "publisher 출력과 monitor 수신을 분리해 확인한다.", "# 터미널 1\nros2 run agv_control counter_publisher\n# 터미널 2\nros2 run agv_control counter_monitor")],
-        "run": "cd ~/ros2_curri/my_agv_ws && source install/setup.bash\nros2 run agv_control counter_publisher\n# 새 터미널: ros2 run agv_control counter_monitor",
+        "actions": [("console_scripts를 등록한다", "ros2 run은 setup.py에 등록된 실행 이름을 사용한다.", "cd ~/ros2_curri/my_agv_ws\ncolcon build --symlink-install --packages-select agv_control\nsource install/setup.bash"), ("counter 두 노드를 실행한다", "publisher 출력과 monitor 수신을 분리해 확인한다. 두 node가 동시에 살아 있어야 /counter를 주고받는다.", "# 터미널 1\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 run agv_control counter_publisher\n\n# 터미널 2\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 run agv_control counter_monitor")],
+        "run": "# 터미널 1\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 run agv_control counter_publisher\n\n# 터미널 2\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 run agv_control counter_monitor",
         "validate": "ros2 topic info /counter\nros2 topic echo /counter --once\nros2 interface show geometry_msgs/msg/Twist",
         "capture": "ros2 pkg executables agv_control; ros2 interface show geometry_msgs/msg/Twist",
         "errors": [("No executable found", "setup.py entry_points·재빌드·source 순서로 확인한다."), ("callback이 오지 않음", "토픽 이름과 message type이 양쪽에서 같은지 확인한다.")],
@@ -125,7 +126,7 @@ MODULES = [
         "previous": "M04 frame tree", "next": "M06 Xacro 모듈화",
         "flow": ["base_link\nbox", "wheel\ncylinder", "sensor\nfixed joint"],
         "files": ["agv_description/curriculum_stages/M05/agv.urdf"],
-        "actions": [("단일 URDF를 검사한다", "M05에서는 macro·property·xacro 없이 한 파일에 link와 joint를 직접 작성한다.", "cd ~/ros2_curri/my_agv_ws\ncheck_urdf src/agv_description/curriculum_stages/M05/agv.urdf"), ("RViz로 표시한다", "RobotModel에는 단일 URDF 텍스트를 robot_description으로 넣고 TF를 함께 확인한다.", "ros2 run robot_state_publisher robot_state_publisher \\\n  --ros-args -p robot_description:=\"$(cat src/agv_description/curriculum_stages/M05/agv.urdf)\"\n# 새 터미널: rviz2 → Add → RobotModel, TF")],
+        "actions": [("단일 URDF를 검사한다", "M05에서는 macro·property·xacro 없이 한 파일에 link와 joint를 직접 작성한다.", "cd ~/ros2_curri/my_agv_ws\ncheck_urdf src/agv_description/curriculum_stages/M05/agv.urdf"), ("RViz로 표시한다", "터미널 1은 URDF를 robot_description과 TF로 계속 발행한다. 터미널 2의 RViz에서 Add → RobotModel, TF를 차례로 추가하고 Fixed Frame을 base_link로 맞춘다.", "# 터미널 1\nsource /opt/ros/jazzy/setup.bash\nros2 run robot_state_publisher robot_state_publisher \\\n  --ros-args -p robot_description:=\"$(cat ~/ros2_curri/my_agv_ws/src/agv_description/curriculum_stages/M05/agv.urdf)\"\n\n# 터미널 2\nsource /opt/ros/jazzy/setup.bash\nrviz2")],
         "run": "cd ~/ros2_curri/my_agv_ws\ncheck_urdf src/agv_description/curriculum_stages/M05/agv.urdf\n# 다음 M06에서 처음으로 xacro를 사용한다.",
         "validate": "check_urdf ~/ros2_curri/my_agv_ws/src/agv_description/curriculum_stages/M05/agv.urdf\nrg -n '<xacro:|<link |<joint ' ~/ros2_curri/my_agv_ws/src/agv_description/curriculum_stages/M05/agv.urdf",
         "capture": "check_urdf src/agv_description/curriculum_stages/M05/agv.urdf",
@@ -191,7 +192,7 @@ MODULES = [
         "flow": ["/cmd_vel\nTwist", "DiffDrive", "left/right\nwheel", "/odom"],
         "files": ["agv_gazebo/package.xml", "agv_gazebo/setup.py", "agv_gazebo/models/agv/model.sdf", "agv_control/agv_control/cmd_test_node.py"],
         "actions": [("직진 명령을 보낸다", "linear.x는 m/s이고 angular.z는 rad/s다.", "ros2 topic pub --rate 10 /cmd_vel geometry_msgs/msg/Twist \\\n  \"{linear: {x: 0.15}, angular: {z: 0.0}}\""), ("회전과 odom을 확인한다", "제자리 회전은 linear.x=0, angular.z만 양수/음수로 바꾼다.", "ros2 topic pub --rate 10 /cmd_vel geometry_msgs/msg/Twist \\\n  \"{linear: {x: 0.0}, angular: {z: 0.4}}\"\nros2 topic echo /odom --once")],
-        "run": "ros2 launch agv_gazebo gazebo.launch.py\n# 새 터미널: ros2 run agv_control cmd_test_node",
+        "run": "# 터미널 1\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 launch agv_gazebo gazebo.launch.py\n\n# 터미널 2\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 run agv_control cmd_test_node",
         "validate": "ros2 topic info /cmd_vel\nros2 topic echo /odom --once",
         "capture": "rg -n 'DiffDrive|wheel_separation|wheel_radius|<topic>/cmd_vel' src/agv_gazebo/models/agv/model.sdf",
         "visual": "blocks/C_drive_visualization/captures/01_gazebo_drive_actual.png", "visual_caption": "실제 Gazebo Sim: World 안의 AGV와 장애물·목표물 배치",
@@ -241,7 +242,7 @@ MODULES = [
         "flow": ["Gazebo camera", "bridge", "/camera/image_raw", "cv_bridge"],
         "files": ["agv_sensors/package.xml", "agv_sensors/setup.py", "agv_vision/package.xml", "agv_vision/setup.py", "agv_gazebo/models/agv/model.sdf", "agv_gazebo/config/bridge.yaml", "agv_vision/agv_vision/yolo_node.py"],
         "actions": [("camera sensor 설정을 확인한다", "해상도·FOV·update_rate는 생성되는 영상의 크기와 주기를 정한다.", "rg -n '<sensor name=\"camera\"|<width>|<height>|<horizontal_fov>|<update_rate>' \\\n  ~/ros2_curri/my_agv_ws/src/agv_gazebo/models/agv/model.sdf"), ("Image topic을 확인한다", "topic 이름은 SDF sensor와 bridge YAML 양쪽에서 일치해야 한다.", "ros2 topic info /camera/image_raw\nros2 topic hz /camera/image_raw\nros2 run rqt_image_view rqt_image_view")],
-        "run": "ros2 launch agv_bringup agv_sim.launch.py rviz:=false autonomy:=false\n# 새 터미널: ros2 run rqt_image_view rqt_image_view /camera/image_raw",
+        "run": "# 터미널 1\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 launch agv_bringup agv_sim.launch.py rviz:=false autonomy:=false\n\n# 터미널 2\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nrqt_image_view /camera/image_raw",
         "validate": "ros2 topic info /camera/image_raw\nros2 topic hz /camera/image_raw",
         "capture": "rg -n '<sensor name=\"camera\"|<topic>/camera/image_raw|<width>|<height>' src/agv_gazebo/models/agv/model.sdf; rg -n 'camera/image_raw' src/agv_gazebo/config/bridge.yaml",
         "visual": "blocks/D_sensors/captures/02_camera_image_actual.png", "visual_caption": "실제 /camera/image_raw 캡처: 화면 방향·FOV·world 배치를 점검하는 기준",
@@ -258,7 +259,7 @@ MODULES = [
         "flow": ["gpu_lidar", "bridge\n/scan", "lidar_processor", "/obstacle_distance"],
         "files": ["agv_gazebo/models/agv/model.sdf", "agv_gazebo/config/bridge.yaml", "agv_sensors/agv_sensors/lidar_processor.py"],
         "actions": [("LiDAR 범위와 angle을 읽는다", "ranges의 index는 angle_min + index×angle_increment로 실제 각도가 된다.", "ros2 interface show sensor_msgs/msg/LaserScan\nros2 topic echo /scan --once"), ("전방 최소거리 노드를 실행한다", "inf·NaN은 충돌 판단에서 제외해야 안전한 최소값을 얻는다.", "source ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 run agv_sensors lidar_processor\nros2 topic echo /obstacle_distance")],
-        "run": "ros2 launch agv_bringup agv_sim.launch.py rviz:=false\n# 새 터미널: ros2 run agv_sensors lidar_processor",
+        "run": "# 터미널 1\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 launch agv_bringup agv_sim.launch.py rviz:=false\n\n# 터미널 2\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 run agv_sensors lidar_processor",
         "validate": "ros2 topic info /scan\nros2 topic hz /scan\nros2 topic echo /obstacle_distance --once",
         "capture": "ros2 pkg executables agv_sensors; rg -n '<sensor name=\"lidar\"|<samples>|<min_angle>|<max_angle>' src/agv_gazebo/models/agv/model.sdf",
         "visual": "blocks/D_sensors/captures/03_rviz_sensors_actual.png", "visual_caption": "실제 RViz2 통합 display: LaserScan·frame·Fixed Frame을 점검하는 화면",
@@ -275,7 +276,7 @@ MODULES = [
         "flow": ["Gazebo IMU", "bridge", "/imu/data", "imu_monitor"],
         "files": ["agv_gazebo/models/agv/model.sdf", "agv_gazebo/worlds/warehouse.sdf", "agv_gazebo/config/bridge.yaml", "agv_sensors/agv_sensors/imu_monitor.py"],
         "actions": [("Imu message 필드를 확인한다", "z축 angular velocity는 제자리 회전에서 가장 먼저 변화를 보인다.", "ros2 interface show sensor_msgs/msg/Imu\nros2 topic echo /imu/data --once"), ("IMU monitor를 실행한다", "출력에 단위와 frame을 함께 남기면 축 오류를 찾기 쉽다.", "source ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 run agv_sensors imu_monitor")],
-        "run": "ros2 launch agv_bringup agv_sim.launch.py rviz:=false\n# 새 터미널: ros2 run agv_sensors imu_monitor",
+        "run": "# 터미널 1\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 launch agv_bringup agv_sim.launch.py rviz:=false\n\n# 터미널 2\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 run agv_sensors imu_monitor",
         "validate": "ros2 topic info /imu/data\nros2 topic hz /imu/data\nros2 topic echo /imu/data --once",
         "capture": "ros2 pkg executables agv_sensors; rg -n '<sensor name=\"imu\"|<stddev>|<update_rate>' src/agv_gazebo/models/agv/model.sdf",
         "visual": "blocks/B_robot_build/captures/01_gazebo_world_spawn_actual.png", "visual_caption": "실제 Gazebo AGV: IMU가 base_link 위에 고정 장착되는 물리 모델 화면",
@@ -308,8 +309,8 @@ MODULES = [
         "previous": "M09 wheel joint", "next": "M17~M20 autonomy command",
         "flow": ["/cmd_vel", "controller_manager", "gz_ros2_control", "Gazebo joints"],
         "files": ["agv_control/config/controllers.yaml", "agv_description/urdf/agv_ros2_control.urdf.xacro", "agv_gazebo/models/agv_ros2_control/model.sdf", "agv_gazebo/launch/ros2_control.launch.py"],
-        "actions": [("controller YAML을 작성한다", "controller type과 wheel parameter는 URDF/SDF joint 이름과 같아야 한다.", "nano ~/ros2_curri/my_agv_ws/src/agv_control/config/controllers.yaml\nros2 pkg prefix gz_ros2_control"), ("실제 controller를 활성화한다", "M16은 M09 native DiffDrive와 별도 launch를 사용한다. plugin이 controller_manager를 만들고 spawner가 두 controller를 active로 전환한다.", "ros2 launch agv_gazebo ros2_control.launch.py\n# 새 터미널\nros2 control list_controllers -c /controller_manager")],
-        "run": "source ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 launch agv_gazebo ros2_control.launch.py\n# 새 터미널: ros2 control list_controllers -c /controller_manager",
+        "actions": [("controller YAML을 작성한다", "controller type과 wheel parameter는 URDF/SDF joint 이름과 같아야 한다.", "nano ~/ros2_curri/my_agv_ws/src/agv_control/config/controllers.yaml\nros2 pkg prefix gz_ros2_control"), ("실제 controller를 활성화한다", "M16은 M09 native DiffDrive와 별도 launch를 사용한다. 터미널 1이 controller_manager를 유지하는 동안 터미널 2에서 controller 상태를 확인한다.", "# 터미널 1\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 launch agv_gazebo ros2_control.launch.py\n\n# 터미널 2\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 control list_controllers -c /controller_manager")],
+        "run": "# 터미널 1\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 launch agv_gazebo ros2_control.launch.py\n\n# 터미널 2\nsource /opt/ros/jazzy/setup.bash\nsource ~/ros2_curri/my_agv_ws/install/setup.bash\nros2 control list_controllers -c /controller_manager",
         "validate": "ros2 control list_controllers -c /controller_manager\nros2 topic echo /joint_states --once",
         "capture": "ros2 pkg prefix gz_ros2_control; ros2 pkg prefix controller_manager; cat src/agv_control/config/controllers.yaml",
         "visual": "blocks/E_autonomy_logic/captures/01_controller_active_actual.png", "visual_caption": "실제 M16 격리 launch의 ros2 control 출력: 두 controller가 모두 active",
@@ -535,11 +536,17 @@ MODULE_FOCUS = {
 # Each path was captured from the live Ubuntu/ROS 2 environment.  The third
 # value is the exact observation a learner should make before moving on.
 VISUAL_SEQUENCES = {
-    "M05": [("blocks/B_robot_build/captures/02_m05_urdf_terminal_actual.png", "실제 terminal: check_urdf가 base_link와 6개 자식 link를 확인한 결과", "root Link=base_link와 wheel·camera·lidar·imu child 이름을 찾습니다.")],
-    "M06": [("blocks/B_robot_build/captures/03_m06_xacro_terminal_actual.png", "실제 terminal: Xacro 변환 뒤 생성 URDF를 check_urdf로 검사한 결과", "xacro 명령 다음의 Successfully Parsed XML과 left/right wheel child를 찾습니다.")],
-    "M07": [("blocks/B_robot_build/captures/04_m07_sdf_terminal_actual.png", "실제 terminal: SDF Valid 검사와 visual·collision·mass·friction 태그", "Valid 다음에 visual/collision과 mass/friction이 서로 다른 책임임을 읽습니다.")],
+    "M05": [("blocks/C_drive_visualization/captures/rviz_agv_sensors_actual.png", "실제 RViz2: URDF RobotModel의 차체·두 바퀴·camera/lidar/imu frame", "파란 base_link 차체, 양쪽 검은 바퀴, 빨강·초록·파랑 TF 축을 순서대로 찾습니다."),
+            ("blocks/B_robot_build/captures/02_m05_urdf_terminal_actual.png", "실제 terminal: check_urdf가 base_link와 6개 자식 link를 확인한 결과", "root Link=base_link와 wheel·camera·lidar·imu child 이름을 찾습니다.")],
+    "M06": [("blocks/C_drive_visualization/captures/rviz_agv_sensors_actual.png", "실제 RViz2: Xacro가 생성한 AGV RobotModel과 TF 축", "M05의 단일 URDF가 Xacro macro/property로 바뀌어도 같은 차체·바퀴 형상이 유지되는지 봅니다."),
+            ("blocks/B_robot_build/captures/03_m06_xacro_terminal_actual.png", "실제 terminal: Xacro 변환 뒤 생성 URDF를 check_urdf로 검사한 결과", "xacro 명령 다음의 Successfully Parsed XML과 left/right wheel child를 찾습니다.")],
+    "M07": [("blocks/B_robot_build/captures/gazebo_agv_actual.png", "실제 Gazebo Sim: SDF 물리 model로 World에 올라간 파란 AGV·장애물·target", "파란 차체와 검은 바퀴가 화면상 visual이며, collision·inertial은 화면에 보이지 않아도 물리 계산에 쓰인다는 점을 구분합니다."),
+            ("blocks/B_robot_build/captures/04_m07_sdf_terminal_actual.png", "실제 terminal: SDF Valid 검사와 visual·collision·mass·friction 태그", "Valid 다음에 visual/collision과 mass/friction이 서로 다른 책임임을 읽습니다.")],
     "M08": [("blocks/B_robot_build/captures/05_m08_world_terminal_actual.png", "실제 terminal: World 이름과 model://agv include·spawn pose", "warehouse_m08, model://agv, pose 세 항목을 순서대로 찾습니다."),
-            ("blocks/B_robot_build/captures/01_gazebo_world_spawn_actual.png", "실제 Gazebo Sim: warehouse World와 Entity Tree에 보이는 AGV", "오른쪽 Entity Tree에서 ground·wall·target·agv가 따로 생성됐는지 확인합니다.")],
+            ("blocks/B_robot_build/captures/gazebo_agv_actual.png", "실제 Gazebo Sim: warehouse World와 Entity Tree에 보이는 AGV", "오른쪽 Entity Tree에서 ground·wall·target·agv가 따로 생성됐는지, 왼쪽 World에 파란 AGV가 놓였는지 확인합니다.")],
+    "M09": [("blocks/B_robot_build/captures/gazebo_agv_actual.png", "실제 Gazebo Sim: Differential Drive의 대상이 되는 AGV 모델·바퀴·World", "파란 base와 두 검은 바퀴를 먼저 찾고, 다음 명령에서 /cmd_vel이 이 model의 DiffDrive plugin으로 들어간다고 연결합니다.")],
+    "M11": [("blocks/C_drive_visualization/captures/rviz_agv_sensors_actual.png", "실제 RViz2: RobotModel과 TF를 같은 Fixed Frame에서 확인한 화면", "왼쪽 Displays의 RobotModel·TF가 켜져 있고, 오른쪽에 차체·바퀴·sensor frame 축이 함께 보이는지 확인합니다."),
+            ("blocks/C_drive_visualization/captures/01_rviz_integrated_actual.png", "실제 RViz2: LaserScan·Odometry display를 RobotModel과 함께 켠 화면", "Displays에서 LaserScan·Odometry가 활성화되어 있는지와 scan point가 TF 좌표계에 붙는지를 확인합니다.")],
     "M12": [("blocks/D_sensors/captures/01_camera_image_raw_actual.png", "실제 /camera/image_raw: AGV 전방 camera가 target·장애물 방향을 보는 원본 프레임", "빨간 target과 노란 장애물의 화면 위치로 camera pose·FOV를 판단합니다."),
             ("blocks/D_sensors/captures/02_camera_terminal_actual.png", "실제 GNOME Terminal: camera Image type·publisher/subscriber·publish rate", "Image 타입, publisher 1개 이상, average rate를 함께 찾습니다."),
             ("blocks/D_sensors/captures/04_vision_debug_actual.png", "실제 /vision/debug_image: fallback 검출 결과가 target box·거리로 표시된 화면", "노란 box와 ‘target … m’ 텍스트가 raw frame 처리 결과인지 확인합니다.")],
@@ -686,6 +693,32 @@ def set_text(shape, text: str, size: int = 20, color: RGBColor = NAVY, bold: boo
     paragraph.font.bold = bold
     paragraph.font.color.rgb = color
     paragraph.space_after = Pt(0)
+
+
+def set_copyable_lines(shape, text: str, size: int = 16, color: RGBColor = WHITE,
+                       font: str = MONO) -> None:
+    """Use real PPT paragraphs so copying produces real shell newlines.
+
+    A single paragraph containing embedded newlines is serialized as soft
+    breaks by python-pptx. Terminal/code blocks need real paragraphs: users
+    must be able to copy a multi-line command including `\\` continuation and
+    indentation directly into a shell.
+    """
+    frame = shape.text_frame
+    frame.clear()
+    frame.word_wrap = True
+    frame.margin_left = frame.margin_right = Inches(0.12)
+    frame.margin_top = frame.margin_bottom = Inches(0.08)
+    lines = text.splitlines() or [""]
+    for index, line in enumerate(lines):
+        paragraph = frame.paragraphs[0] if index == 0 else frame.add_paragraph()
+        paragraph.text = line
+        paragraph.alignment = PP_ALIGN.LEFT
+        paragraph.font.name = font
+        paragraph.font.size = Pt(size)
+        paragraph.font.bold = False
+        paragraph.font.color.rgb = color
+        paragraph.space_after = Pt(0)
 
 
 def text_box(slide, x, y, w, h, text: str, size: int = 20, color: RGBColor = NAVY,
@@ -1114,7 +1147,7 @@ def add_bootstrap_slide(slide, module: dict, bootstrap: tuple[str, str, str]) ->
     status(slide, module, "workspace/package 생성", "~/ros2_curri/my_agv_ws/src")
     text_box(slide, 0.76, 1.94, 11.7, 0.50, why, 19, NAVY)
     panel = box(slide, 0.74, 2.75, 11.9, 2.48, fill=DARK, line=DARK)
-    set_text(panel, command, 15, WHITE, False, MONO)
+    set_copyable_lines(panel, command, 15)
     text_box(slide, 0.86, 5.65, 1.55, 0.28, "확인", 18, GREEN, True)
     text_box(slide, 0.86, 5.98, 11.25, 0.42, "각 package 이름의 새 폴더와 package.xml이 src 아래에 보이면 다음 파일 작성 단계로 갑니다.", 17, NAVY)
     add_notes(slide, why, command=command, check="src 아래에 새 package 폴더와 package.xml이 생성되었는지 확인한다.")
@@ -1131,7 +1164,7 @@ def add_create_file_slide(slide, module: dict, relative: str, file_no: int, file
     text_box(slide, 0.75, 2.30, 1.55, 0.28, "만드는 것", 18, GREEN, True)
     text_box(slide, 2.10, 2.30, 10.1, 0.48, makes, 17, NAVY)
     panel = box(slide, 0.74, 3.12, 11.9, 1.84, fill=DARK, line=DARK)
-    set_text(panel, f"mkdir -p {directory}\nnano {display_path}", 16, WHITE, False, MONO)
+    set_copyable_lines(panel, f"mkdir -p {directory}\nnano {display_path}", 16)
     text_box(slide, 0.88, 5.36, 11.2, 0.36, "nano 저장: Ctrl+O → Enter → Ctrl+X  |  파일이 열리면 아직 비어 있는 것이 정상입니다.", 16, ORANGE, True, align=PP_ALIGN.CENTER)
     text_box(slide, 0.88, 6.02, 11.2, 0.36, f"다음 단계의 확인 화면: {observe}", 15, GREEN, True, align=PP_ALIGN.CENTER)
     add_notes(slide, makes, command=f"mkdir -p {directory}\nnano {display_path}", check="빈 파일을 연 뒤 다음 코드 입력 슬라이드로 간다.")
@@ -1175,7 +1208,7 @@ def add_code_slide(slide, module: dict, relative: str, lines: list[str], chunk_n
     code_box = box(slide, 0.72, 2.96, 12.0, 3.68, fill=DARK, line=DARK, radius=MSO_AUTO_SHAPE_TYPE.RECTANGLE)
     code_shape = code_box
     code_text = "\n".join(lines)
-    set_text(code_shape, code_text, 14, WHITE, False, MONO)
+    set_copyable_lines(code_shape, code_text, 14)
     code_shape.text_frame.margin_left = code_shape.text_frame.margin_right = Inches(0.18)
     code_shape.text_frame.margin_top = Inches(0.12)
     text_box(slide, 0.82, 6.76, 11.8, 0.22, f"입력 {chunk_no}/{chunk_count} · 이 파일의 다음 코드 블록이 바로 다음 슬라이드에 이어집니다.", 10, GREY)
@@ -1194,22 +1227,117 @@ def add_rescue_slide(slide, module: dict, artifact_dir: Path) -> None:
         "cd my_agv_ws && colcon build --symlink-install && source install/setup.bash"
     )
     panel = box(slide, 0.74, 2.65, 11.9, 2.85, fill=DARK, line=DARK)
-    set_text(panel, command, 14, WHITE, False, MONO)
+    set_copyable_lines(panel, command, 14)
     text_box(slide, 0.86, 5.92, 11.4, 0.47, "복구 뒤에는 끝내지 말고, 내 파일과 Complete의 차이를 한 줄씩 설명한 뒤 다시 직접 입력해 봅니다.", 17, GREEN, True, align=PP_ALIGN.CENTER)
     add_notes(slide, "Complete는 정답 복사본이 아니라 막혔을 때 비교·복구하는 안전망이다.", command=command, check="diff에서 내 파일과 Complete의 차이를 설명할 수 있다.")
+
+
+def terminal_command_groups(command: str) -> list[tuple[str, str]]:
+    """Keep terminal labels and commentary outside copyable command blocks."""
+    groups: list[tuple[str, str]] = []
+    lines: list[str] = []
+    label = "터미널 1"
+    next_terminal = 1
+    for raw_line in command.splitlines():
+        stripped = raw_line.strip()
+        if stripped.startswith("#"):
+            if "터미널" in stripped:
+                if lines:
+                    groups.append((label, "\n".join(lines).rstrip()))
+                    lines = []
+                match = re.search(r"터미널\s*(\d+)", stripped)
+                if match:
+                    next_terminal = int(match.group(1))
+                else:
+                    next_terminal += 1
+                label = f"터미널 {next_terminal}"
+            # Comments are instructions for the slide, not text to paste.
+            continue
+        if stripped:
+            lines.append(raw_line.rstrip())
+    if lines:
+        groups.append((label, "\n".join(lines).rstrip()))
+    return groups or [("터미널 1", "")]
+
+
+def terminal_role(command: str, number: int) -> str:
+    if "ros2 launch" in command:
+        return "시뮬레이터·bridge·node를 먼저 시작한 뒤 이 창은 종료하지 않고 둡니다."
+    if "static_transform_publisher" in command or "robot_state_publisher" in command:
+        return "TF/robot_description을 계속 발행하므로 이 창은 실행 상태로 유지합니다."
+    if "rqt_image_view" in command or command.lstrip().startswith("rviz2"):
+        return "첫 터미널이 발행하는 데이터를 화면에서 확인하는 관찰용 창입니다."
+    if "ros2 topic echo" in command or "ros2 topic info" in command or "ros2 control list" in command:
+        return "다른 터미널의 실행 결과를 이 창에서 관찰·검증합니다."
+    if "ros2 run" in command:
+        return "이 node를 실행합니다. 출력이 계속 나오는 동안 Ctrl+C로 종료하지 않습니다."
+    return f"터미널 {number}에서 이 명령만 그대로 복사해 실행합니다."
+
+
+def add_terminal_commands(slide, command: str, explanation: str, check: str) -> None:
+    """Render commands only in dark panels; all teaching prose stays outside."""
+    groups = terminal_command_groups(command)
+    multiple = len(groups) > 1
+    text_box(slide, 0.74, 1.88, 1.85, 0.30, "명령의 목적", 17, BLUE, True)
+    text_box(slide, 0.74, 2.19, 11.8, 0.56, explanation, 18, NAVY)
+    if multiple:
+        text_box(slide, 0.74, 2.93, 11.8, 0.26, "두 터미널은 동시에 필요합니다. 각 검은 블록에는 그대로 복사할 명령만 들어 있습니다.", 14, ORANGE, True, align=PP_ALIGN.CENTER)
+        visible_groups = groups[:2]
+        for index, (label, commands) in enumerate(visible_groups, start=1):
+            x = 0.74 + (index - 1) * 6.03
+            text_box(slide, x, 3.30, 5.62, 0.28, f"{label} — 명령만 복사", 16, BLUE, True, align=PP_ALIGN.CENTER)
+            panel = box(slide, x, 3.64, 5.62, 1.86, fill=DARK, line=DARK, radius=MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE)
+            font_size = 13 if commands.count("\n") >= 4 else 14
+            set_copyable_lines(panel, commands, font_size)
+            text_box(slide, x + 0.08, 5.65, 5.46, 0.48, f"{label} 역할: {terminal_role(commands, index)}", 13, GREEN, True, align=PP_ALIGN.CENTER)
+    else:
+        label, commands = groups[0]
+        text_box(slide, 0.74, 3.08, 11.85, 0.28, f"{label} — 아래 검은 블록은 명령만 복사합니다.", 16, BLUE, True, align=PP_ALIGN.CENTER)
+        panel = box(slide, 0.74, 3.45, 11.85, 2.12, fill=DARK, line=DARK, radius=MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE)
+        font_size = 14 if commands.count("\n") >= 5 else 16
+        set_copyable_lines(panel, commands, font_size)
+        text_box(slide, 0.84, 5.77, 11.55, 0.42, f"{label} 역할: {terminal_role(commands, 1)}", 15, GREEN, True, align=PP_ALIGN.CENTER)
+    text_box(slide, 0.84, 6.47, 11.55, 0.32, f"확인: {check}", 15, NAVY, True, align=PP_ALIGN.CENTER)
+
+
+def is_gui_procedure(instruction: str) -> bool:
+    """RViz/Gazebo click paths are teaching directions, never terminal commands."""
+    return "→" in instruction or instruction.lstrip().startswith(("Fixed Frame:", "Add ", "File "))
+
+
+def add_gui_procedure(slide, instruction: str, explanation: str, check: str) -> None:
+    """Keep mouse/UI directions visibly separate from copyable shell panels."""
+    text_box(slide, 0.74, 1.88, 1.85, 0.30, "이 화면에서 하는 일", 17, BLUE, True)
+    text_box(slide, 0.74, 2.19, 11.8, 0.56, explanation, 18, NAVY)
+    text_box(slide, 0.74, 3.08, 11.85, 0.28, "RViz 클릭 순서 — 아래 내용은 터미널 명령이 아니라 화면 조작 안내입니다.", 16, BLUE, True, align=PP_ALIGN.CENTER)
+    panel = box(slide, 0.74, 3.46, 11.85, 1.72, fill=LIGHT, line=BLUE, radius=MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE)
+    set_copyable_lines(panel, instruction, 18, color=NAVY, font="Aptos")
+    text_box(slide, 0.84, 5.54, 11.55, 0.42, "각 줄을 위에서 아래로 클릭한 뒤, 왼쪽 Displays 목록에 항목이 추가됐는지 확인합니다.", 15, GREEN, True, align=PP_ALIGN.CENTER)
+    text_box(slide, 0.84, 6.47, 11.55, 0.32, f"확인: {check}", 15, NAVY, True, align=PP_ALIGN.CENTER)
 
 
 def add_action_slide(slide, module: dict, step_number: int, total_steps: int, action: tuple[str, str, str]) -> None:
     heading, why, command = action
     title(slide, module, f"구현 뒤 실행 {step_number}/{total_steps}: {heading}", "방금 직접 만든 파일을 실행·검사하며 다음 파일로 넘어갈 기준을 만듭니다.")
-    status(slide, module, f"실행 {step_number}/{total_steps}", "~/ros2_curri/my_agv_ws", "새 터미널" if "새 터미널" in command else "현재 터미널")
-    text_box(slide, 0.74, 1.93, 2.0, 0.38, "왜 하는가", 18, BLUE, True)
-    text_box(slide, 0.74, 2.30, 11.8, 0.56, why, 20, NAVY)
-    command_box = box(slide, 0.74, 3.14, 11.85, 2.55, fill=DARK, line=DARK, radius=MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE)
-    set_text(command_box, command, 16, WHITE, False, MONO)
-    text_box(slide, 0.84, 5.98, 1.25, 0.28, "확인", 18, GREEN, True)
-    text_box(slide, 0.84, 6.28, 11.55, 0.38, "출력에서 topic·frame·파일 이름 또는 성공 메시지를 찾고, 맞지 않으면 다음 파일로 가지 않습니다.", 18, NAVY)
+    check = "출력에서 topic·frame·파일 이름 또는 성공 메시지를 찾고, 맞지 않으면 다음 파일로 가지 않습니다."
+    if is_gui_procedure(command):
+        status(slide, module, f"실행 {step_number}/{total_steps}", "RViz2 화면", "GUI 조작")
+        add_gui_procedure(slide, command, why, check)
+    else:
+        groups = terminal_command_groups(command)
+        terminal_state = "터미널 1 + 2" if len(groups) > 1 else "터미널 1"
+        status(slide, module, f"실행 {step_number}/{total_steps}", "~/ros2_curri/my_agv_ws", terminal_state)
+        add_terminal_commands(slide, command, why, check)
     add_notes(slide, why, command=command, check="명령 출력에서 슬라이드의 확인 항목을 찾는다.")
+
+
+def add_run_slide(slide, module: dict) -> None:
+    title(slide, module, "build → source → run 순서로 실행한다", "새 파일 또는 수정 파일은 build와 source 뒤에만 실행 이름·설정에 반영됩니다.")
+    groups = terminal_command_groups(module["run"])
+    terminal_state = "터미널 1 + 2" if len(groups) > 1 else "터미널 1"
+    status(slide, module, "실행", "~/ros2_curri/my_agv_ws", terminal_state)
+    add_terminal_commands(slide, module["run"], "명령 순서를 바꾸지 않습니다. build가 끝난 뒤 source하고, 마지막 명령으로 node·Gazebo·RViz를 실행합니다.", module["completion"])
+    add_notes(slide, "build/source/run을 생략 없이 실행한다.", command=module["run"], check=module["completion"])
 
 
 def add_capture_slide(slide, module: dict, image_path: Path, caption: str, observation: str = "") -> None:
@@ -1248,7 +1376,7 @@ def add_validation_slide(slide, module: dict) -> None:
     title(slide, module, "객관적 검증 명령으로 완료를 확인한다", "화면만 보지 말고 topic·frame·파일·parameter를 다시 확인합니다.")
     status(slide, module, "검증", "~/ros2_curri/my_agv_ws")
     command_box = box(slide, 0.72, 1.92, 12.0, 2.35, fill=DARK, line=DARK)
-    set_text(command_box, module["validate"], 16, WHITE, False, MONO)
+    set_copyable_lines(command_box, module["validate"], 16)
     check_box = box(slide, 0.72, 4.60, 12.0, 1.70, fill=LIGHT, line=RGBColor(209, 223, 213))
     set_text(check_box, "완료 체크\n□ 명령이 오류 없이 실행된다.\n□ 기대한 파일·topic·frame·parameter 이름이 보인다.\n□ 값의 단위와 방향을 한 문장으로 설명할 수 있다.", 18, GREEN, True)
     text_box(slide, 0.80, 6.55, 11.8, 0.26, f"완료 조건: {module['completion']}", 15, NAVY, True)
@@ -1457,13 +1585,16 @@ def build_deck(module: dict) -> tuple[Path, str]:
 
     # build/run, real capture, optional GUI capture, validation, errors, mini, extras, checkpoint, references.
     slide = presentation.slides.add_slide(blank)
-    title(slide, module, "build → source → run 순서로 실행한다", "새 파일 또는 수정 파일은 build와 source 뒤에만 실행 이름·설정에 반영됩니다.")
-    status(slide, module, "실행", "~/ros2_curri/my_agv_ws")
-    panel = box(slide, 0.72, 1.86, 12.0, 3.48, fill=DARK, line=DARK)
-    set_text(panel, module["run"], 16, WHITE, False, MONO)
-    text_box(slide, 0.86, 5.73, 1.38, 0.26, "확인 기준", 18, GREEN, True)
-    text_box(slide, 0.86, 6.05, 11.45, 0.46, module["completion"], 18, NAVY)
-    add_notes(slide, "build/source/run을 생략 없이 실행한다.", command=module["run"], check=module["completion"])
+    add_run_slide(slide, module)
+
+    # The target screen reappears immediately after execution. It is not a
+    # decorative thumbnail: learners compare this real Gazebo/RViz/terminal
+    # evidence with their own result before moving to the CLI validation.
+    for visual_relative, visual_caption, observation in visual_items:
+        visual = ROOT / visual_relative
+        if visual.exists():
+            slide = presentation.slides.add_slide(blank)
+            add_capture_slide(slide, module, visual, visual_caption, observation)
 
     slide = presentation.slides.add_slide(blank); add_capture_slide(slide, module, terminal_image, "실제 ROS 2 환경의 파일·패키지·구성 검증 로그")
     slide = presentation.slides.add_slide(blank); add_validation_slide(slide, module)
